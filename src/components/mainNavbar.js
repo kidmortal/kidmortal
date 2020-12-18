@@ -12,6 +12,8 @@ import TransferWithinAStationIcon from "@material-ui/icons/TransferWithinAStatio
 import ComputerIcon from "@material-ui/icons/Computer";
 
 import React from "react";
+import { useDispatch } from "react-redux";
+import FireBase from "../firebase/firebase";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import Logo from "../assets/dragonlogo.svg";
@@ -65,7 +67,18 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SimpleTabs() {
   const classes = useStyles();
+  let dispatch = useDispatch();
   const [value, setValue] = React.useState(1);
+
+  FireBase.auth().onAuthStateChanged((user) => {
+    if (user) {
+      user = user.uid;
+      dispatch({
+        type: "UPDATE_USER",
+        user,
+      });
+    }
+  });
 
   const handleChange = (event, newValue) => {
     setValue(newValue);

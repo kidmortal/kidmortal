@@ -52,7 +52,6 @@ export default function UserInfo(props) {
 
   useEffect(() => {
     turnOnFirebaseListener();
-    turnOnAuthListener();
 
     return () => {
       FireBase.database().ref("users").off("value", listener);
@@ -72,17 +71,6 @@ export default function UserInfo(props) {
           });
         });
     }
-  }
-  async function turnOnAuthListener() {
-    FireBase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        user = user.uid;
-        dispatch({
-          type: "UPDATE_USER",
-          user,
-        });
-      }
-    });
   }
 
   function deslogar() {
