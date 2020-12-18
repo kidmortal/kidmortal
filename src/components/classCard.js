@@ -5,6 +5,7 @@ import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
 import styled from "styled-components";
+import * as Icons from "../assets/skins";
 
 const ClassName = styled.p`
   font-size: 16px;
@@ -53,7 +54,7 @@ const ClassCard = (props) => {
             }}
             style={{ backgroundColor: "transparent" }}
           >
-            <ClassImage src={Icon["Warrior"]} />
+            <ClassImage src={Icons["Warrior"]} />
           </Button>
         </Paper>
       </Grid>
@@ -70,7 +71,7 @@ const ClassCard = (props) => {
             }}
             style={{ backgroundColor: "transparent" }}
           >
-            <ClassImage src={Icon["Mage"]} />
+            <ClassImage src={Icons["Mage"]} />
           </Button>
         </Paper>
       </Grid>
@@ -87,7 +88,7 @@ const ClassCard = (props) => {
             }}
             style={{ backgroundColor: "transparent" }}
           >
-            <ClassImage src={Icon["Thief"]} />
+            <ClassImage src={Icons["Thief"]} />
           </Button>
         </Paper>
       </Grid>
@@ -104,7 +105,7 @@ const ClassCard = (props) => {
             }}
             style={{ backgroundColor: "transparent" }}
           >
-            <ClassImage src={Icon["Archer"]} />
+            <ClassImage src={Icons["Archer"]} />
           </Button>
         </Paper>
       </Grid>
