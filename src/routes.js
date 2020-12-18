@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
-import { Provider } from "react-redux";
+import { Provider, useSelector } from "react-redux";
 import store from "./store";
 import Home from "./pages/home";
 import Sistemas from "./pages/sistemas";
@@ -11,21 +11,14 @@ import Profile from "./pages/profile";
 import Register from "./pages/register";
 import MainNavbar from "./components/mainNavbar";
 import Footer from "./components/copyrightFooter";
-import { isAuthenticated } from "./auth";
 
-const PrivateRoute = ({ component: Component, ...rest }) => {
-  return (
-    <Route
-      {...rest}
-      render={(props) =>
-        isAuthenticated() ? (
-          <Component {...props} />
-        ) : (
-          <Redirect to={{ pathname: "/", state: { from: props.location } }} />
-        )
-      }
-    />
-  );
+const AuthRoute = (props) => {
+  let player = useSelector((state) => state.player);
+  const { type } = props;
+  if (type === "guest" && player) return <Redirect to="/profile" />;
+  else if (type === "logged" && !player) return <Redirect to="/" />;
+
+  return <Route {...props} />;
 };
 
 const Routes = () => {
@@ -39,9 +32,9 @@ const Routes = () => {
           <Route exact path="/loja" component={Shop} />
           <Route exact path="/batalha" component={Battle} />
           <Route exact path="/informacoes" component={Home} />
-          <Route exact path="/login" component={Login} />
-          <Route exact path="/register" component={Register} />
-          <PrivateRoute exact path="/profile" component={Profile} />
+          <AuthRoute exact path="/register" type="guest" component={Register} />
+          <AuthRoute exact path="/login" type="guest" component={Login} />
+          <AuthRoute exact path="/profile" type="logged" component={Profile} />
         </Switch>
         <Footer />
       </BrowserRouter>

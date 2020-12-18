@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import firebase from "../firebase/firebase";
 import { Redirect } from "react-router-dom";
 import Avatar from "@material-ui/core/Avatar";
@@ -10,6 +11,8 @@ import Checkbox from "@material-ui/core/Checkbox";
 import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
+import Snackbar from "@material-ui/core/Snackbar";
+import MuiAlert from "@material-ui/lab/Alert";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
@@ -26,6 +29,10 @@ function Copyright() {
       {"."}
     </Typography>
   );
+}
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -50,19 +57,39 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Login() {
   const classes = useStyles();
+  let player = useSelector((state) => state.player);
   let [email, setEmail] = useState("");
   let [password, setPassword] = useState("");
+  const [open, setOpen] = useState(false);
+  const [message, setMessage] = useState("");
+  let [type, setType] = useState("error");
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
 
   function logar(e) {
     e.preventDefault();
     console.log("login");
+    if (!email || !password) {
+      setOpen(true);
+      setMessage("Preenche os dados filho da puta");
+      setType("warning");
+      return;
+    }
+
     firebase
       .auth()
       .signInWithEmailAndPassword(email, password)
       .catch((error) => {
-        console.log(error);
+        setOpen(true);
+        setMessage(error.message);
+        setType("error");
       });
-    return <Redirect to="/" />;
   }
 
   return (
@@ -121,6 +148,11 @@ export default function Login() {
           </Button>
         </form>
       </div>
+      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity={type}>
+          {message}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 }

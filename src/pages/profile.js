@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Profile() {
   const classes = useStyles();
-  const [character, setCharacter] = useState({ Str: 0, Int: 0, StatPoint: 0 });
+  let character = useSelector((state) => state.character);
 
   return (
     <>

@@ -11,10 +11,13 @@ import Checkbox from "@material-ui/core/Checkbox";
 import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
+import Snackbar from "@material-ui/core/Snackbar";
+import MuiAlert from "@material-ui/lab/Alert";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
+import { isWidthUp } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -36,39 +39,55 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
+
 export default function Register() {
   const classes = useStyles();
+  let classe = useSelector((state) => state.selectedClass);
   let [name, setName] = useState("");
   let [email, setEmail] = useState("");
   let [password, setPassword] = useState("");
-  let classe = useSelector((state) => state.selectedClass);
+  const [open, setOpen] = useState(false);
+  const [message, setMessage] = useState("");
+  const [type, setType] = useState("error");
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
 
   function signUp() {
+    if (!name) {
+      setMessage("Falta preencher o nome");
+      setType("warning");
+      setOpen(true);
+      return;
+    }
     let className = "";
-    let classIcon = "";
     let Health = 0;
     let Mana = 0;
     if (classe === 0) {
       className = "Warrior";
-      classIcon = "http://nn.ai4rei.net/dev/npclist/i/4_M_REDMAN.gif";
       Health = 50;
       Mana = 15;
     }
     if (classe === 1) {
       className = "Mage";
-      classIcon = "http://nn.ai4rei.net/dev/npclist/i/4_M_ARUNA_NFM1.gif";
       Health = 20;
       Mana = 50;
     }
     if (classe === 2) {
       className = "Thief";
-      classIcon = "http://nn.ai4rei.net/dev/npclist/i/4_M_THIEF_RUMIN.gif";
       Health = 30;
       Mana = 20;
     }
     if (classe === 3) {
       className = "Archer";
-      classIcon = "http://nn.ai4rei.net/dev/npclist/i/4_M_ARCHER.gif";
       Health = 35;
       Mana = 25;
     }
@@ -76,13 +95,14 @@ export default function Register() {
     FireBase.auth()
       .createUserWithEmailAndPassword(email, password)
       .catch((error) => {
-        console.log(error);
+        setMessage(error.message);
+        setType("error");
+        setOpen(true);
       })
       .then((success) => {
         if (success && success.user) {
           console.log(success.user.uid);
           FireBase.database().ref("users").child(success.user.uid).set({
-            ClassIcon: classIcon,
             Classe: className,
             CurrentHealth: Health,
             CurrentMana: Mana,
@@ -176,6 +196,11 @@ export default function Register() {
           </Button>
         </form>
       </div>
+      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity={type}>
+          {message}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 }
