@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Component, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import getClassUrl from "../assets/skinIndex";
+import * as Icons from "../assets/skins/";
 import FireBase from "../firebase/firebase";
 import styled from "styled-components";
 
@@ -96,7 +96,7 @@ export default function UserInfo(props) {
   if (player) {
     return (
       <>
-        <UserAvatar alt="user avatar" src={getClassUrl(character.Classe)} />
+        <UserAvatar alt="user avatar" src={Icons[character.Skin]} />
         <Box flexDirection="column">
           <Typography variant="subtitle2">{character.Name}</Typography>
           <Typography variant="subtitle2">Level: {character.Level}</Typography>

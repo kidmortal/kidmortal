@@ -104,6 +104,7 @@ export default function Register() {
           console.log(success.user.uid);
           FireBase.database().ref("users").child(success.user.uid).set({
             Classe: className,
+            Skin: className,
             CurrentHealth: Health,
             CurrentMana: Mana,
             Dogecoin: 10,

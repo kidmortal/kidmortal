@@ -6,11 +6,6 @@ import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
 import styled from "styled-components";
 
-import warrior from "../assets/warrior.gif";
-import mage from "../assets/mage.gif";
-import thief from "../assets/thief.gif";
-import archer from "../assets/archer.gif";
-
 const ClassName = styled.p`
   font-size: 16px;
   margin-left: 20px;
@@ -58,7 +53,7 @@ const ClassCard = (props) => {
             }}
             style={{ backgroundColor: "transparent" }}
           >
-            <ClassImage src={warrior} />
+            <ClassImage src={Icon["Warrior"]} />
           </Button>
         </Paper>
       </Grid>
@@ -75,7 +70,7 @@ const ClassCard = (props) => {
             }}
             style={{ backgroundColor: "transparent" }}
           >
-            <ClassImage src={mage} />
+            <ClassImage src={Icon["Mage"]} />
           </Button>
         </Paper>
       </Grid>
@@ -92,7 +87,7 @@ const ClassCard = (props) => {
             }}
             style={{ backgroundColor: "transparent" }}
           >
-            <ClassImage src={thief} />
+            <ClassImage src={Icon["Thief"]} />
           </Button>
         </Paper>
       </Grid>
@@ -109,7 +104,7 @@ const ClassCard = (props) => {
             }}
             style={{ backgroundColor: "transparent" }}
           >
-            <ClassImage src={archer} />
+            <ClassImage src={Icon["Archer"]} />
           </Button>
         </Paper>
       </Grid>
