@@ -10,9 +10,10 @@ import ImportContactsIcon from "@material-ui/icons/ImportContacts";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import TransferWithinAStationIcon from "@material-ui/icons/TransferWithinAStation";
 import ComputerIcon from "@material-ui/icons/Computer";
+import EqualizerIcon from "@material-ui/icons/Equalizer";
 
 import React from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import FireBase from "../firebase/firebase";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
@@ -65,36 +66,41 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SimpleTabs() {
+export default function MainNavbar() {
   const classes = useStyles();
   let dispatch = useDispatch();
-  const [value, setValue] = React.useState(1);
+  const headerIndex = useSelector((state) => state.headerIndex);
 
   FireBase.auth().onAuthStateChanged((user) => {
     if (user) {
-      user = user.uid;
+      let player = user.uid;
       dispatch({
-        type: "UPDATE_USER",
-        user,
+        type: "UPDATE_PLAYER",
+        player,
       });
     }
   });
 
   const handleChange = (event, newValue) => {
-    setValue(newValue);
+    dispatch({
+      type: "UPDATE_HEADER_INDEX",
+      headerIndex: newValue,
+    });
   };
 
   return (
     <div className={classes.root}>
       <AppBar position="static">
         <ToolBar>
-          <img alt="Dragon Logo" src={Logo} width="100px" />
+          <Link to="/">
+            <img alt="Dragon Logo" src={Logo} width="100px" />
+          </Link>
           <Typography className={classes.logoTitle}>
             Kidmortal Test Zone
           </Typography>
           <Tabs
             className={classes.headerTabs}
-            value={value}
+            value={headerIndex}
             onChange={handleChange}
             aria-label="simple tabs example"
           >
@@ -115,6 +121,12 @@ export default function SimpleTabs() {
               component={Link}
               to="/batalha"
               icon={<TransferWithinAStationIcon />}
+            />
+            <Tab
+              label="Rankings"
+              component={Link}
+              to="/ranking"
+              icon={<EqualizerIcon />}
             />
             <Tab
               label="Informaçoes"

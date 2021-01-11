@@ -1,9 +1,9 @@
 import React from "react";
 import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
-import { Provider, useSelector } from "react-redux";
-import store from "./store";
+import { useSelector } from "react-redux";
 import Home from "./pages/home";
 import Sistemas from "./pages/sistemas";
+import Ranking from "./pages/ranking";
 import Battle from "./pages/battle";
 import Shop from "./pages/shop";
 import Login from "./pages/login";
@@ -23,22 +23,21 @@ const AuthRoute = (props) => {
 
 const Routes = () => {
   return (
-    <Provider store={store}>
-      <BrowserRouter>
-        <MainNavbar />
-        <Switch>
-          <Route exact path="/" component={Home} />
-          <Route exact path="/sistemas" component={Sistemas} />
-          <Route exact path="/loja" component={Shop} />
-          <Route exact path="/batalha" component={Battle} />
-          <Route exact path="/informacoes" component={Home} />
-          <AuthRoute exact path="/register" type="guest" component={Register} />
-          <AuthRoute exact path="/login" type="guest" component={Login} />
-          <AuthRoute exact path="/profile" type="logged" component={Profile} />
-        </Switch>
-        <Footer />
-      </BrowserRouter>
-    </Provider>
+    <BrowserRouter>
+      <MainNavbar />
+      <Switch>
+        <Route exact path="/" component={Home} />
+        <Route exact path="/sistemas" component={Sistemas} />
+        <Route exact path="/loja" component={Shop} />
+        <Route exact path="/batalha" component={Battle} />
+        <Route exact path="/informacoes" component={Home} />
+        <Route exact path="/ranking" component={Ranking} />
+        <AuthRoute exact path="/register" type="guest" component={Register} />
+        <AuthRoute exact path="/login" type="guest" component={Login} />
+        <AuthRoute exact path="/profile" type="logged" component={Profile} />
+      </Switch>
+      <Footer />
+    </BrowserRouter>
   );
 };
 

@@ -1,8 +1,7 @@
 export default function player(state = "", action) {
   switch (action.type) {
-    case "UPDATE_USER":
-      state = action.user;
-      console.log("user update");
+    case "UPDATE_PLAYER":
+      state = action.player;
       return state;
 
     default:

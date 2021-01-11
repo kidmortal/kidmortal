@@ -2,10 +2,12 @@ import { Link } from "react-router-dom";
 import { Component, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as Icons from "../assets/skins/";
+import GoldCoin from "../assets/coin.svg";
 import FireBase from "../firebase/firebase";
 import styled from "styled-components";
 
 import Box from "@material-ui/core/Box";
+import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
@@ -75,13 +77,18 @@ export default function UserInfo(props) {
 
   function deslogar() {
     FireBase.auth().signOut();
+    localStorage.setItem("uid", "");
     dispatch({
-      type: "UPDATE_USER",
-      user: null,
+      type: "UPDATE_PLAYER",
+      player: null,
+    });
+    dispatch({
+      type: "UPDATE_CHARACTER",
+      characterData: {},
     });
   }
 
-  if (player) {
+  if (player && character) {
     return (
       <>
         <UserAvatar alt="user avatar" src={Icons[character.Skin]} />
@@ -98,31 +105,37 @@ export default function UserInfo(props) {
             Mana: {character.CurrentMana}/{character.MaxMana}
           </Typography>
         </Box>
-        <ButtonGroup
-          orientation="vertical"
-          color="primary"
-          aria-label="vertical outlined primary button group"
-        >
-          <Button
-            className={props.classes.button}
-            startIcon={<PersonIcon />}
-            component={Link}
-            to="/profile"
-          >
-            Perfil
-          </Button>
-          <Button
-            className={props.classes.button}
-            startIcon={<ExitToAppIcon />}
-            onClick={deslogar}
-          >
-            Sair
-          </Button>
-        </ButtonGroup>
+
+        <Grid container direction="column">
+          <Grid item>
+            <Grid container direction="row">
+              <img alt="gold coins" src={GoldCoin} width="20px" height="20px" />
+              <Typography variant="subtitle2">{character.Dogecoin}</Typography>
+            </Grid>
+          </Grid>
+          <Grid item>
+            <Button
+              className={props.classes.button}
+              startIcon={<PersonIcon />}
+              component={Link}
+              to="/profile"
+            >
+              Perfil
+            </Button>
+          </Grid>
+          <Grid item>
+            <Button
+              className={props.classes.button}
+              startIcon={<ExitToAppIcon />}
+              onClick={deslogar}
+            >
+              Sair
+            </Button>
+          </Grid>
+        </Grid>
       </>
     );
-  }
-  if (!player) {
+  } else {
     return (
       <>
         <ButtonGroup

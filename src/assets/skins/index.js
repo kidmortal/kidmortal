@@ -5,3 +5,6 @@ export { default as Warrior } from "./warrior.gif";
 export { default as Black_Knight } from "./black_knight.gif";
 export { default as Lilith } from "./lilith.gif";
 export { default as Fariy_King } from "./fariy_king.gif";
+export { default as Punk_Girl } from "./punk_girl.gif";
+export { default as Dark_Lord } from "./dark_lord.gif";
+export { default as Blade_Master } from "./blade_master.gif";
