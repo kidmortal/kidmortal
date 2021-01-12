@@ -1,3 +1,5 @@
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
@@ -23,6 +25,7 @@ const useStyles = makeStyles({
 
 const Sistemas = () => {
   const classes = useStyles();
+  let character = useSelector((state) => state.character);
   return (
     <>
       <Grid
@@ -47,6 +50,20 @@ const Sistemas = () => {
                   This peepo is very sad
                 </Typography>
               </CardContent>
+              {character.Cheques === true ? (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  component={Link}
+                  to="/cheques"
+                >
+                  Da uma clicadinha ak no pai
+                </Button>
+              ) : (
+                <Button variant="contained" color="primary" disabled>
+                  You don't have access to this application.
+                </Button>
+              )}
             </CardActionArea>
           </Card>
         </Grid>
@@ -66,6 +83,15 @@ const Sistemas = () => {
                   This peepo is suspicious about you
                 </Typography>
               </CardContent>
+              {character.ContaCorrente === true ? (
+                <Button variant="contained" color="primary">
+                  Da uma clicadinha ak no pai
+                </Button>
+              ) : (
+                <Button variant="contained" color="primary" disabled>
+                  You don't have access to this application.
+                </Button>
+              )}
             </CardActionArea>
           </Card>
         </Grid>
@@ -85,6 +111,15 @@ const Sistemas = () => {
                   This peepo is about to zzzzzz
                 </Typography>
               </CardContent>
+              {character.algo === true ? (
+                <Button variant="contained" color="primary">
+                  Da uma clicadinha ak no pai
+                </Button>
+              ) : (
+                <Button variant="contained" color="primary" disabled>
+                  You don't have access to this application.
+                </Button>
+              )}
             </CardActionArea>
           </Card>
         </Grid>
