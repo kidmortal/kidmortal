@@ -19,7 +19,7 @@ export default function Cheques() {
   const [data, setData] = React.useState([]);
 
   React.useEffect(() => {
-    fetch("http://localhost:2500/mongo/500")
+    fetch("http://the-business-dogo.herokuapp.com/mongo/500")
       .then((response) => response.json())
       .then((data) => {
         data.forEach((element) => {

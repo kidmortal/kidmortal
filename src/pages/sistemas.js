@@ -9,6 +9,9 @@ import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
 import Typography from "@material-ui/core/Typography";
+import cheques from "../assets/cheques.svg";
+import contaCorrente from "../assets/contacorrente.svg";
+import pagamento from "../assets/pagamento.svg";
 
 const useStyles = makeStyles({
   root: {
@@ -39,15 +42,15 @@ const Sistemas = () => {
             <CardActionArea>
               <CardMedia
                 className={classes.media}
-                image="https://cdn.discordapp.com/emojis/405951684339302400.png?v=1"
+                image={cheques}
                 title="Rain peepo"
               />
               <CardContent>
                 <Typography gutterBottom variant="h5" component="h2">
-                  Sad Peepo
+                  Cheques
                 </Typography>
                 <Typography variant="body2" color="textSecondary" component="p">
-                  This peepo is very sad
+                  Controle e lançamento de cheques
                 </Typography>
               </CardContent>
               {character.Cheques === true ? (
@@ -72,19 +75,24 @@ const Sistemas = () => {
             <CardActionArea>
               <CardMedia
                 className={classes.media}
-                image="https://cdn.discordapp.com/emojis/622096423579680798.png?v=1"
+                image={contaCorrente}
                 title="Rain peepo"
               />
               <CardContent>
                 <Typography gutterBottom variant="h5" component="h2">
-                  Suspicious Peepo
+                  Conta corrente
                 </Typography>
                 <Typography variant="body2" color="textSecondary" component="p">
-                  This peepo is suspicious about you
+                  Relatorio dos safados que não pagam
                 </Typography>
               </CardContent>
               {character.ContaCorrente === true ? (
-                <Button variant="contained" color="primary">
+                <Button
+                  variant="contained"
+                  color="primary"
+                  component={Link}
+                  to="/contacorrente"
+                >
                   Da uma clicadinha ak no pai
                 </Button>
               ) : (
@@ -100,15 +108,15 @@ const Sistemas = () => {
             <CardActionArea>
               <CardMedia
                 className={classes.media}
-                image="https://cdn.discordapp.com/emojis/664124984985255946.png?v=1"
+                image={pagamento}
                 title="Rain peepo"
               />
               <CardContent>
                 <Typography gutterBottom variant="h5" component="h2">
-                  Slep Peepo
+                  Pagamentos
                 </Typography>
                 <Typography variant="body2" color="textSecondary" component="p">
-                  This peepo is about to zzzzzz
+                  Hora de queimar dinheiro
                 </Typography>
               </CardContent>
               {character.algo === true ? (
