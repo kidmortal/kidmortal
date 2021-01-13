@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
-import { Component, useEffect } from "react";
+import { Component, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as Icons from "../assets/skins/";
 import GoldCoin from "../assets/coin.svg";
 import FireBase from "../firebase/firebase";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 
 import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
@@ -16,6 +16,19 @@ import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import PersonIcon from "@material-ui/icons/Person";
 import { PlayCircleOutlineRounded } from "@material-ui/icons";
 
+const coinAnimation = keyframes`   0% {
+  top: 6px;
+  opacity: 1;
+}
+50% {
+  top: -10px;
+  opacity: 0.5;
+}
+100% {
+  top: -20px;
+  opacity: 0;
+}`;
+
 const UserAvatar = styled.img`
   display: block;
   max-width: 100px;
@@ -23,30 +36,17 @@ const UserAvatar = styled.img`
   width: auto;
   height: auto;
 `;
-
-/*
-state = {
-  user: false,
-  character: {
-    ClassIcon: "",
-    Classe: "",
-    CurrentHealth: 1,
-    CurrentMana: 1,
-    Dogecoin: 1,
-    Email: "",
-    Experiencia: 1,
-    Int: 1,
-    Level: 1,
-    MaxHealth: 1,
-    MaxMana: 1,
-    Name: "",
-    StatPoint: 1,
-    Str: 1,
-  },
-};
-*/
+const AddValue = styled.span`
+  position: absolute;
+  right: 15px;
+  -webkit-animation: linear;
+  -webkit-animation-fill-mode: forwards;
+  -webkit-animation-name: ${coinAnimation};
+  -webkit-animation-duration: 1s;
+`;
 
 export default function UserInfo(props) {
+  let [valueChanged, setValueChanged] = useState("");
   let player = useSelector((state) => state.player);
   let character = useSelector((state) => state.character);
   let dispatch = useDispatch();

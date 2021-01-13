@@ -41,11 +41,7 @@ const Sistemas = () => {
         <Grid item xs={2}>
           <Card className={classes.root}>
             <CardActionArea>
-              <CardMedia
-                className={classes.media}
-                image={cheques}
-                title="Rain peepo"
-              />
+              <CardMedia className={classes.media} image={cheques} />
               <CardContent>
                 <Typography gutterBottom variant="h5" component="h2">
                   Cheques
@@ -74,11 +70,7 @@ const Sistemas = () => {
         <Grid item xs={2}>
           <Card className={classes.root}>
             <CardActionArea>
-              <CardMedia
-                className={classes.media}
-                image={contaCorrente}
-                title="Rain peepo"
-              />
+              <CardMedia className={classes.media} image={contaCorrente} />
               <CardContent>
                 <Typography gutterBottom variant="h5" component="h2">
                   Conta corrente
@@ -107,11 +99,7 @@ const Sistemas = () => {
         <Grid item xs={2}>
           <Card className={classes.root}>
             <CardActionArea>
-              <CardMedia
-                className={classes.media}
-                image={pagamento}
-                title="Rain peepo"
-              />
+              <CardMedia className={classes.media} image={pagamento} />
               <CardContent>
                 <Typography gutterBottom variant="h5" component="h2">
                   Pagamentos
@@ -140,11 +128,7 @@ const Sistemas = () => {
         <Grid item xs={2}>
           <Card className={classes.root}>
             <CardActionArea>
-              <CardMedia
-                className={classes.media}
-                image={configuracoes}
-                title="Rain peepo"
-              />
+              <CardMedia className={classes.media} image={configuracoes} />
               <CardContent>
                 <Typography gutterBottom variant="h5" component="h2">
                   Configurações
