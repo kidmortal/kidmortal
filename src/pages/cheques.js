@@ -1,6 +1,7 @@
 import * as React from "react";
-import Button from "@material-ui/core/Button";
 import { DataGrid } from "@material-ui/data-grid";
+import Chip from "@material-ui/core/Chip";
+import PaymentIcon from "@material-ui/icons/Payment";
 
 const columns = [
   { field: "dataCheque", headerName: "Data", width: 150 },
@@ -17,9 +18,13 @@ const columns = [
 export default function Cheques() {
   const rows = [];
   const [data, setData] = React.useState([]);
+  const [selected, setSelected] = React.useState([]);
+  const [total, setTotal] = React.useState(0);
 
   React.useEffect(() => {
-    fetch("https://the-business-dogo.herokuapp.com/mongo/500")
+    fetch(
+      "http://the-business-dogo.herokuapp.com/mongo?key=758232&from=01/05/2020&to=01/01/2021&limit=2000"
+    )
       .then((response) => response.json())
       .then((data) => {
         data.forEach((element) => {
@@ -42,13 +47,24 @@ export default function Cheques() {
   }, []);
 
   return (
-    <div style={{ width: "100%" }}>
-      <DataGrid
-        rows={data}
-        columns={columns}
-        pageSize={10}
-        checkboxSelection
-        autoHeight
+    <div>
+      <div style={{ width: "100%", height: 400, marginTop: 50 }}>
+        <DataGrid
+          rows={data}
+          columns={columns}
+          pageSize={100}
+          checkboxSelection
+          headerHeight={30}
+          rowHeight={20}
+          onSelectionChange={(change) => {
+            setSelected(change.rowIds);
+          }}
+        />
+      </div>
+      <Chip
+        label={`Total separado: R$ ${total} `}
+        icon={<PaymentIcon />}
+        color="secondary"
       />
     </div>
   );
