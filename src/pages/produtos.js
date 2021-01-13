@@ -1,7 +1,7 @@
-import { useState } from "react";
 import Grid from "@material-ui/core/Grid";
+import { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { useSelector, useDispatch } from "react-redux";
+import Button from "@material-ui/core/Button";
 import ProdutosSearchOptions from "../components/produtosSearchOptions";
 import ProdutosTransfer from "../components/produtosTransfer";
 
@@ -13,29 +13,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Produtos() {
   const classes = useStyles();
-  const data = useSelector((state) => state.produtosImport);
-  const [left, setLeft] = useState([
-    {
-      codigo: "PY2283",
-      descricao: "DISCO DE FERRO",
-      ncm: "6804.22.19",
-      status: "pending",
-    },
-    {
-      codigo: "PY2284",
-      descricao: "DISCO DE MANTEIGA",
-      ncm: "6804.22.19",
-      status: "success",
-    },
-    {
-      codigo: "PY2285",
-      descricao: "DISCO DE PAO",
-      ncm: "6804.22.19",
-      status: "error",
-      message: "ncm invalido",
-    },
-  ]);
-  const [right, setRight] = useState([]);
+  const [data, setData] = useState([]);
 
   return (
     <Grid
@@ -46,15 +24,10 @@ export default function Produtos() {
       className={classes.root}
     >
       <Grid item>
-        <ProdutosSearchOptions />
+        <ProdutosSearchOptions setData={setData} />
       </Grid>
       <Grid item>
-        <ProdutosTransfer
-          left={left}
-          right={right}
-          setLeft={setLeft}
-          setRight={setRight}
-        />
+        <ProdutosTransfer data={data} />
       </Grid>
     </Grid>
   );

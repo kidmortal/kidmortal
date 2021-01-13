@@ -31,9 +31,20 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ProdutosSearchOptions() {
+export default function ProdutosSearchOptions(props) {
   const classes = useStyles();
-  const [selected, setSelected] = useState("");
+  const [selected, setSelected] = useState("mongodb");
+  const [search, setSearch] = useState("");
+
+  function requestMongoData() {
+    fetch(
+      `http://localhost:2500/mongo?key=758232&from=01/05/2020&to=01/01/2021&limit=50&data=produtos&source=${selected}&search=${search}`
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        props.setData(data);
+      });
+  }
 
   function SourceOptions() {
     return (
@@ -70,14 +81,6 @@ export default function ProdutosSearchOptions() {
             }}
           />
         </Grid>
-        <Grid item xs={3}>
-          <TextField
-            className={classes.searchField}
-            id="standard-search"
-            label="Codigo Produto"
-            type="search"
-          />
-        </Grid>
       </Grid>
     );
   }
@@ -100,15 +103,34 @@ export default function ProdutosSearchOptions() {
 
   return (
     <Grid container justify="center" alignItems="center" spacing={10}>
-      <Grid item xs={5}>
+      <Grid item xs={4}>
         <SourceOptions />
       </Grid>
-      <Grid item item xs={2}>
-        <Button variant="contained" color="primary" startIcon={<SearchIcon />}>
+      <Grid item xs={2}>
+        <TextField
+          className={classes.searchField}
+          id="standard-search"
+          label="Codigo Produto"
+          type="search"
+          value={search}
+          onChange={(e) => {
+            setSearch(e.target.value);
+          }}
+        />
+      </Grid>
+      <Grid item xs={2}>
+        <Button
+          variant="contained"
+          color="primary"
+          startIcon={<SearchIcon />}
+          onClick={() => {
+            requestMongoData();
+          }}
+        >
           Search
         </Button>
       </Grid>
-      <Grid item item xs={5}>
+      <Grid item item xs={4}>
         <TargetOptions />
       </Grid>
     </Grid>

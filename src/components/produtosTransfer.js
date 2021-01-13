@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import List from "@material-ui/core/List";
@@ -11,6 +11,8 @@ import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
 import DoneIcon from "@material-ui/icons/Done";
 import WarningIcon from "@material-ui/icons/Warning";
+import ForwardIcon from "@material-ui/icons/Forward";
+import { DataUsageOutlined } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -35,11 +37,16 @@ function intersection(a, b) {
 }
 
 export default function ProdutosTransfer(props) {
+  useEffect(() => {
+    setLeft(props.data);
+  }, [props.data]);
   const classes = useStyles();
   const [checked, setChecked] = React.useState([]);
+  const [left, setLeft] = React.useState([]);
+  const [right, setRight] = React.useState([]);
 
-  const leftChecked = intersection(checked, props.left);
-  const rightChecked = intersection(checked, props.right);
+  const leftChecked = intersection(checked, left);
+  const rightChecked = intersection(checked, right);
 
   const handleToggle = (value) => () => {
     const currentIndex = checked.indexOf(value);
@@ -55,25 +62,25 @@ export default function ProdutosTransfer(props) {
   };
 
   const handleAllRight = () => {
-    props.setRight(props.right.concat(props.left));
-    props.setLeft([]);
+    setRight(right.concat(left));
+    setLeft([]);
   };
 
   const handleCheckedRight = () => {
-    props.setRight(props.right.concat(leftChecked));
-    props.setLeft(not(props.left, leftChecked));
+    setRight(right.concat(leftChecked));
+    setLeft(not(left, leftChecked));
     setChecked(not(checked, leftChecked));
   };
 
   const handleCheckedLeft = () => {
-    props.setLeft(props.left.concat(rightChecked));
-    props.setRight(not(props.right, rightChecked));
+    setLeft(left.concat(rightChecked));
+    setRight(not(right, rightChecked));
     setChecked(not(checked, rightChecked));
   };
 
   const handleAllLeft = () => {
-    props.setLeft(props.left.concat(props.right));
-    props.setRight([]);
+    setLeft(left.concat(right));
+    setRight([]);
   };
 
   const renderStatus = (status, message) => {
@@ -86,6 +93,7 @@ export default function ProdutosTransfer(props) {
             <DoneIcon style={{ color: "green" }} />
           </Tooltip>
         );
+
       case "error":
         return (
           <Tooltip title={message}>
@@ -98,30 +106,48 @@ export default function ProdutosTransfer(props) {
     }
   };
 
+  function changeStatus(data) {
+    setRight((right) =>
+      right.map((e) =>
+        e.CODIGO === data.codigo
+          ? { ...e, status: data.status, message: data.message }
+          : e
+      )
+    );
+  }
+
+  async function addItens() {
+    right.map((item) => {
+      fetch(
+        `http://localhost:2500/cadastrarOmie?key=758232&CODIGO=${item.CODIGO}&DESCRICAO=${item.DESCRICAO}&NCM=${item.NCM}&MEDIDA=${item.MEDIDA}`
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          changeStatus(data);
+        });
+    });
+  }
+
   const customList = (items) => (
     <Paper className={classes.paper}>
       <List dense component="div" role="list">
         {items.map((element) => {
-          const labelId = `transfer-list-item-${element.codigo}-label`;
-
           return (
             <ListItem
               key={element.codigo}
               role="listitem"
               button
-              onClick={handleToggle(element.codigo)}
+              onClick={handleToggle(element)}
             >
               <ListItemIcon>
                 <Checkbox
-                  checked={checked.indexOf(element.codigo) !== -1}
+                  checked={checked.indexOf(element) !== -1}
                   tabIndex={-1}
                   disableRipple
-                  inputProps={{ "aria-labelledby": labelId }}
                 />
               </ListItemIcon>
               <ListItemText
-                id={labelId}
-                primary={`${element.codigo} - ${element.descricao} - ${element.ncm}`}
+                primary={`${element.CODIGO} - ${element.DESCRICAO} - ${element.NCM} - ${element.MEDIDA}`}
               />
               <ListItemIcon>
                 {renderStatus(element.status, element.message)}
@@ -142,7 +168,7 @@ export default function ProdutosTransfer(props) {
       alignItems="center"
       className={classes.root}
     >
-      <Grid item>{customList(props.left)}</Grid>
+      <Grid item>{customList(left)}</Grid>
       <Grid item>
         <Grid container direction="column" alignItems="center">
           <Button
@@ -150,7 +176,7 @@ export default function ProdutosTransfer(props) {
             size="small"
             className={classes.button}
             onClick={handleAllRight}
-            disabled={props.left.length === 0}
+            disabled={left.length === 0}
             aria-label="move all right"
           >
             ≫
@@ -180,14 +206,33 @@ export default function ProdutosTransfer(props) {
             size="small"
             className={classes.button}
             onClick={handleAllLeft}
-            disabled={props.right.length === 0}
+            disabled={right.length === 0}
             aria-label="move all left"
           >
             ≪
           </Button>
         </Grid>
       </Grid>
-      <Grid item>{customList(props.right)}</Grid>
+      <Grid item>{customList(right)}</Grid>
+      <Grid item>
+        <Button
+          variant="contained"
+          color="secondary"
+          startIcon={<ForwardIcon style={{ color: "#1a508b" }} />}
+          onClick={() => {
+            addItens();
+          }}
+        >
+          Go
+        </Button>
+        <Button
+          onClick={() => {
+            console.log(right);
+          }}
+        >
+          Amostra
+        </Button>
+      </Grid>
     </Grid>
   );
 }
