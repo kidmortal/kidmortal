@@ -33,12 +33,12 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ProdutosSearchOptions(props) {
   const classes = useStyles();
-  const [selected, setSelected] = useState("mongodb");
+  const [selectedSource, setSelectedSource] = useState("mongodb");
   const [search, setSearch] = useState("");
 
   function requestMongoData() {
     fetch(
-      `http://localhost:2500/mongo?key=758232&from=01/05/2020&to=01/01/2021&limit=50&data=produtos&source=${selected}&search=${search}`
+      `http://the-business-dogo.herokuapp.com/mongo?key=758232&limit=50&data=produtos&source=${selectedSource}&search=${search}`
     )
       .then((response) => response.json())
       .then((data) => {
@@ -53,9 +53,11 @@ export default function ProdutosSearchOptions(props) {
           <img
             alt="source"
             src={Bling}
-            className={selected === "bling" ? classes.imgSelected : classes.img}
+            className={
+              selectedSource === "bling" ? classes.imgSelected : classes.img
+            }
             onClick={() => {
-              setSelected("bling");
+              setSelectedSource("bling");
             }}
           />
         </Grid>
@@ -63,9 +65,11 @@ export default function ProdutosSearchOptions(props) {
           <img
             alt="source"
             src={Excel}
-            className={selected === "excel" ? classes.imgSelected : classes.img}
+            className={
+              selectedSource === "excel" ? classes.imgSelected : classes.img
+            }
             onClick={() => {
-              setSelected("excel");
+              setSelectedSource("excel");
             }}
           />
         </Grid>
@@ -74,10 +78,10 @@ export default function ProdutosSearchOptions(props) {
             alt="source"
             src={Mongodb}
             className={
-              selected === "mongodb" ? classes.imgSelected : classes.img
+              selectedSource === "mongodb" ? classes.imgSelected : classes.img
             }
             onClick={() => {
-              setSelected("mongodb");
+              setSelectedSource("mongodb");
             }}
           />
         </Grid>
@@ -89,13 +93,46 @@ export default function ProdutosSearchOptions(props) {
     return (
       <Grid container spacing={6}>
         <Grid item xs={3}>
-          <img className={classes.img} alt="source" src={Bling} />
+          <img
+            alt="source"
+            src={Bling}
+            className={
+              props.selectedTarget === "blingpyramid"
+                ? classes.imgSelected
+                : classes.img
+            }
+            onClick={() => {
+              props.setSelectedTarget("blingpyramid");
+            }}
+          />
         </Grid>
         <Grid item xs={3}>
-          <img className={classes.img} alt="source" src={OmiePyramid} />
+          <img
+            alt="source"
+            src={OmiePyramid}
+            className={
+              props.selectedTarget === "omiepyramid"
+                ? classes.imgSelected
+                : classes.img
+            }
+            onClick={() => {
+              props.setSelectedTarget("omiepyramid");
+            }}
+          />
         </Grid>
         <Grid item xs={3}>
-          <img className={classes.img} alt="source" src={OmieDix} />
+          <img
+            alt="source"
+            src={OmieDix}
+            className={
+              props.selectedTarget === "omiedix"
+                ? classes.imgSelected
+                : classes.img
+            }
+            onClick={() => {
+              props.setSelectedTarget("omiedix");
+            }}
+          />
         </Grid>
       </Grid>
     );

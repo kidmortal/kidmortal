@@ -14,6 +14,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Produtos() {
   const classes = useStyles();
   const [data, setData] = useState([]);
+  const [selectedTarget, setSelectedTarget] = useState("omiepyramid");
 
   return (
     <Grid
@@ -24,10 +25,14 @@ export default function Produtos() {
       className={classes.root}
     >
       <Grid item>
-        <ProdutosSearchOptions setData={setData} />
+        <ProdutosSearchOptions
+          setData={setData}
+          selectedTarget={selectedTarget}
+          setSelectedTarget={setSelectedTarget}
+        />
       </Grid>
       <Grid item>
-        <ProdutosTransfer data={data} />
+        <ProdutosTransfer data={data} selectedTarget={selectedTarget} />
       </Grid>
     </Grid>
   );

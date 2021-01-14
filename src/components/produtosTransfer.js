@@ -119,7 +119,7 @@ export default function ProdutosTransfer(props) {
   async function addItens() {
     right.map((item) => {
       fetch(
-        `http://localhost:2500/cadastrarOmie?key=758232&CODIGO=${item.CODIGO}&DESCRICAO=${item.DESCRICAO}&NCM=${item.NCM}&MEDIDA=${item.MEDIDA}`
+        `http://the-business-dogo.herokuapp.com/cadastrarOmie?key=758232&TARGET=${props.selectedTarget}&CODIGO=${item.CODIGO}&DESCRICAO=${item.DESCRICAO}&NCM=${item.NCM}&MEDIDA=${item.MEDIDA}`
       )
         .then((response) => response.json())
         .then((data) => {
@@ -224,13 +224,6 @@ export default function ProdutosTransfer(props) {
           }}
         >
           Go
-        </Button>
-        <Button
-          onClick={() => {
-            console.log(right);
-          }}
-        >
-          Amostra
         </Button>
       </Grid>
     </Grid>
