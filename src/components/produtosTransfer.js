@@ -119,7 +119,7 @@ export default function ProdutosTransfer(props) {
   async function addItens() {
     right.map((item) => {
       fetch(
-        `http://the-business-dogo.herokuapp.com/cadastrarOmie?key=758232&TARGET=${props.selectedTarget}&CODIGO=${item.CODIGO}&DESCRICAO=${item.DESCRICAO}&NCM=${item.NCM}&MEDIDA=${item.MEDIDA}`
+        `${process.env.REACT_APP_API_url}/cadastrarOmie?key=${process.env.REACT_APP_API_url}&TARGET=${props.selectedTarget}&CODIGO=${item.CODIGO}&DESCRICAO=${item.DESCRICAO}&NCM=${item.NCM}&MEDIDA=${item.MEDIDA}`
       )
         .then((response) => response.json())
         .then((data) => {

@@ -38,7 +38,7 @@ export default function ProdutosSearchOptions(props) {
 
   function requestMongoData() {
     fetch(
-      `http://the-business-dogo.herokuapp.com/mongo?key=758232&limit=50&data=produtos&source=${selectedSource}&search=${search}`
+      `${process.env.REACT_APP_API_url}/mongo?key=${process.env.REACT_APP_API_key}&limit=50&data=produtos&source=${selectedSource}&search=${search}`
     )
       .then((response) => response.json())
       .then((data) => {
