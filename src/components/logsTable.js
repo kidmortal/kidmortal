@@ -1,7 +1,7 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import Paper from "@material-ui/core/Paper";
 import Slide from "@material-ui/core/Slide";
+import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
@@ -11,8 +11,8 @@ import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
 
 const columns = [
-  { id: "nome", label: "NOME", minWidth: 300 },
-  { id: "cnpj", label: "CNPJ", minWidth: 100 },
+  { id: "hour", label: "Hora", minWidth: 60 },
+  { id: "message", label: "Log", minWidth: 200 },
 ];
 
 const useStyles = makeStyles({
@@ -20,12 +20,12 @@ const useStyles = makeStyles({
     width: "100%",
   },
   container: {
-    height: 440,
-    width: 550,
+    height: "100%",
+    width: 400,
   },
 });
 
-export default function ClientesTable(props) {
+export default function LogsTable(props) {
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -43,58 +43,30 @@ export default function ClientesTable(props) {
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
         <Table stickyHeader aria-label="sticky table">
-          <TableHead>
-            <TableRow>
-              {columns.map((column) => (
-                <TableCell
-                  key={column.id}
-                  align={column.align}
-                  style={{ minWidth: column.minWidth }}
-                >
-                  {column.label}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
           <TableBody>
-            {props.clientes
+            {props.logs
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row) => {
                 return (
-                  <Slide direction="right" in={true}>
-                    <TableRow
-                      hover
-                      role="checkbox"
-                      tabIndex={-1}
-                      key={row.code}
-                      className={classes.row}
-                    >
-                      {columns.map((column) => {
-                        const value = row[column.id];
-                        return (
+                  <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                    {columns.map((column) => {
+                      const value = row[column.id];
+                      return (
+                        <Slide direction="right" in={true}>
                           <TableCell key={column.id} align={column.align}>
                             {column.format && typeof value === "number"
                               ? column.format(value)
                               : value}
                           </TableCell>
-                        );
-                      })}
-                    </TableRow>
-                  </Slide>
+                        </Slide>
+                      );
+                    })}
+                  </TableRow>
                 );
               })}
           </TableBody>
         </Table>
       </TableContainer>
-      <TablePagination
-        rowsPerPageOptions={[10, 25, 100]}
-        component="div"
-        count={props.clientes.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onChangePage={handleChangePage}
-        onChangeRowsPerPage={handleChangeRowsPerPage}
-      />
     </Paper>
   );
 }

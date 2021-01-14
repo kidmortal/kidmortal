@@ -16,7 +16,7 @@ export default function Clientes() {
 
   function fetchClientes() {
     fetch(
-      `${process.env.REACT_APP_API_url}/mongoClientes?key=${process.env.REACT_APP_API_key}&type="list"`
+      `${process.env.REACT_APP_API_url}/mongoClientes?key=${process.env.REACT_APP_API_key}&type=list`
     )
       .then((response) => response.json())
       .then((data) => {
