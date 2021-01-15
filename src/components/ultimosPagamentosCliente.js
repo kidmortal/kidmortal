@@ -1,6 +1,5 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import Slide from "@material-ui/core/Slide";
 import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -12,11 +11,10 @@ import TableRow from "@material-ui/core/TableRow";
 
 const columns = [
   { id: "data", label: "Data", minWidth: 170 },
-  { id: "numero", label: "Numero", minWidth: 100 },
   {
-    id: "valor",
-    label: "Valor",
-    minWidth: 170,
+    id: "total",
+    label: "Total Pago",
+    minWidth: 100,
     align: "right",
     format: (value) => value.toLocaleString("pt-BR"),
   },
@@ -31,7 +29,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function ListaChequesCliente(props) {
+export default function UltimosPagamentosCliente(props) {
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -63,26 +61,19 @@ export default function ListaChequesCliente(props) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {props.cheques
+            {props.totalPagamentos
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row) => {
                 return (
-                  <TableRow
-                    hover
-                    role="checkbox"
-                    tabIndex={-1}
-                    key={row.numero}
-                  >
+                  <TableRow hover role="checkbox" tabIndex={-1} key={row.data}>
                     {columns.map((column) => {
                       const value = row[column.id];
                       return (
-                        <Slide direction="right" in={true}>
-                          <TableCell key={column.id} align={column.align}>
-                            {column.format && typeof value === "number"
-                              ? column.format(value)
-                              : value}
-                          </TableCell>
-                        </Slide>
+                        <TableCell key={column.id} align={column.align}>
+                          {column.format && typeof value === "number"
+                            ? column.format(value)
+                            : value}
+                        </TableCell>
                       );
                     })}
                   </TableRow>
@@ -94,7 +85,7 @@ export default function ListaChequesCliente(props) {
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         component="div"
-        count={props.cheques.length}
+        count={props.totalPagamentos.length}
         rowsPerPage={rowsPerPage}
         page={page}
         onChangePage={handleChangePage}
