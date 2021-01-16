@@ -87,11 +87,12 @@ export default function InserirChequeCliente(props) {
   }
 
   function insertCheque() {
+    let id = Date.now().valueOf();
     let insertData = validateData(data);
     let insertNumero = validateNumero(numero);
     let insertValor = validateValor(valor);
     if (insertData && insertNumero && insertValor) {
-      props.setCheques([...props.cheques, { data, numero, valor }]);
+      props.setCheques([{ id, data, numero, valor }, ...props.cheques]);
       setData("");
       setDataInputError({ error: false, message: "" });
       setNumero("");

@@ -20,9 +20,7 @@ export default function Cheques() {
     { nome: "Diamond King" },
     { nome: "Vilamar" },
   ]);
-  const [cheques, setCheques] = useState([
-    { data: "10/10/2021", numero: "SA-29237", valor: 34.25 },
-  ]);
+  const [cheques, setCheques] = useState([]);
   const [totalPagamentos, setTotalPagamentos] = useState([
     { data: "10/10/2020", total: 4823.25 },
   ]);

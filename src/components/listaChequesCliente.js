@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import SelectedRowMenu from "../components/selectedRowMenu";
+import EditSelectedCheque from "../components/editSelectedCheque";
 import Slide from "@material-ui/core/Slide";
 import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
@@ -33,8 +35,26 @@ const useStyles = makeStyles({
 
 export default function ListaChequesCliente(props) {
   const classes = useStyles();
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [openModal, setOpenModal] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  let array = [];
+
+  function editSelectedRow(id) {
+    let selectedCheque = props.cheques.filter(function (cheque) {
+      return cheque.id == id;
+    });
+    setOpenModal(true);
+
+    console.log(selectedCheque);
+  }
+  function deleteSelectedRow(id) {
+    let selectedCheque = props.cheques.filter(function (cheque) {
+      return cheque.id == id;
+    });
+    console.log(selectedCheque);
+  }
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -47,6 +67,12 @@ export default function ListaChequesCliente(props) {
 
   return (
     <Paper className={classes.root}>
+      <SelectedRowMenu
+        anchorEl={anchorEl}
+        setAnchorEl={setAnchorEl}
+        setOpenModal={setOpenModal}
+      />
+      <EditSelectedCheque openModal={openModal} setOpenModal={setOpenModal} />
       <TableContainer className={classes.container}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
@@ -77,7 +103,13 @@ export default function ListaChequesCliente(props) {
                       const value = row[column.id];
                       return (
                         <Slide direction="right" in={true}>
-                          <TableCell key={column.id} align={column.align}>
+                          <TableCell
+                            key={column.id}
+                            align={column.align}
+                            onClick={(e) => {
+                              setAnchorEl(e.currentTarget);
+                            }}
+                          >
                             {column.format && typeof value === "number"
                               ? column.format(value)
                               : value}
