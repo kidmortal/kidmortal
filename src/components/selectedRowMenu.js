@@ -66,7 +66,7 @@ export default function SelectedRowMenu(props) {
         <ListItemText primary="Edit" />
       </StyledMenuItem>
       <StyledMenuItem>
-        <ListItemIcon onClick>
+        <ListItemIcon>
           <DeleteIcon fontSize="small" />
         </ListItemIcon>
         <ListItemText primary="Delete" />

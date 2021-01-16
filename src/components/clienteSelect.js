@@ -20,11 +20,15 @@ export default function ClienteSelect(props) {
       <FormControl className={classes.formControl}>
         <InputLabel htmlFor="grouped-select">CLIENTE</InputLabel>
         <Select defaultValue="" id="grouped-select">
-          <MenuItem value="">
+          <MenuItem value="" key={0}>
             <em>Nenhum</em>
           </MenuItem>
           {props.clientes.map((cliente) => {
-            return <MenuItem value={cliente.nome}>{cliente.nome}</MenuItem>;
+            return (
+              <MenuItem key={cliente.id} value={cliente.nome}>
+                {cliente.nome}
+              </MenuItem>
+            );
           })}
         </Select>
       </FormControl>

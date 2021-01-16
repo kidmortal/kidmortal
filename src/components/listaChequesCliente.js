@@ -36,25 +36,16 @@ const useStyles = makeStyles({
 export default function ListaChequesCliente(props) {
   const classes = useStyles();
   const [page, setPage] = useState(0);
+  const [selectedRow, setSelectedRow] = useState({
+    id: 0,
+    data: 0,
+    numero: 0,
+    valor: 0,
+  });
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [openModal, setOpenModal] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   let array = [];
-
-  function editSelectedRow(id) {
-    let selectedCheque = props.cheques.filter(function (cheque) {
-      return cheque.id == id;
-    });
-    setOpenModal(true);
-
-    console.log(selectedCheque);
-  }
-  function deleteSelectedRow(id) {
-    let selectedCheque = props.cheques.filter(function (cheque) {
-      return cheque.id == id;
-    });
-    console.log(selectedCheque);
-  }
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -72,7 +63,11 @@ export default function ListaChequesCliente(props) {
         setAnchorEl={setAnchorEl}
         setOpenModal={setOpenModal}
       />
-      <EditSelectedCheque openModal={openModal} setOpenModal={setOpenModal} />
+      <EditSelectedCheque
+        openModal={openModal}
+        setOpenModal={setOpenModal}
+        selectedRow={selectedRow}
+      />
       <TableContainer className={classes.container}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
@@ -93,12 +88,7 @@ export default function ListaChequesCliente(props) {
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row) => {
                 return (
-                  <TableRow
-                    hover
-                    role="checkbox"
-                    tabIndex={-1}
-                    key={row.numero}
-                  >
+                  <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
                     {columns.map((column) => {
                       const value = row[column.id];
                       return (
@@ -108,6 +98,7 @@ export default function ListaChequesCliente(props) {
                             align={column.align}
                             onClick={(e) => {
                               setAnchorEl(e.currentTarget);
+                              setSelectedRow(row);
                             }}
                           >
                             {column.format && typeof value === "number"

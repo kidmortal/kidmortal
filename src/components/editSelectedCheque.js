@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import BusinessCenterIcon from "@material-ui/icons/BusinessCenter";
 import FormatListNumberedIcon from "@material-ui/icons/FormatListNumbered";
@@ -39,9 +39,18 @@ export default function EditSelectedCheque(props) {
     error: false,
     message: "",
   });
+  const [id, setId] = useState("");
   const [data, setData] = useState("");
   const [numero, setNumero] = useState("");
   const [valor, setValor] = useState("");
+
+  useEffect(() => {
+    let dados = props.selectedRow;
+    setId(dados.id);
+    setData(dados.data);
+    setNumero(dados.numero);
+    setValor(dados.valor);
+  }, [props.selectedRow]);
 
   function validateData(data) {
     if (!data) {
@@ -188,9 +197,6 @@ export default function EditSelectedCheque(props) {
         </Grid>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} color="primary">
-          Cancel
-        </Button>
         <Button onClick={handleClose} color="primary">
           Save
         </Button>

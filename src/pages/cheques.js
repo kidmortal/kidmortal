@@ -12,18 +12,70 @@ const useStyles = makeStyles({
   },
 });
 
+function groupBy(arr, property) {
+  return arr.reduce(function (memo, x) {
+    if (!memo[x[property]]) {
+      memo[x[property]] = [];
+    }
+    memo[x[property]].push(x);
+    return memo;
+  }, {});
+}
+
 export default function Cheques() {
   const classes = useStyles();
   const [clientes, setClientes] = useState([
-    { nome: "Wesley" },
-    { nome: "Bradisfer" },
-    { nome: "Diamond King" },
-    { nome: "Vilamar" },
+    { id: 1, nome: "Wesley" },
+    { id: 2, nome: "Bradisfer" },
+    { id: 3, nome: "Diamond King" },
+    { id: 4, nome: "Vilamar" },
   ]);
-  const [cheques, setCheques] = useState([]);
-  const [totalPagamentos, setTotalPagamentos] = useState([
-    { data: "10/10/2020", total: 4823.25 },
+  const [cheques, setCheques] = useState([
+    {
+      id: 2323232,
+      data: "10/10/2020",
+      numero: "SA-999",
+      valor: 42.25,
+    },
+    {
+      id: 2323233,
+      data: "10/10/2020",
+      numero: "SA-999",
+      valor: 45.25,
+    },
+    {
+      id: 2323234,
+      data: "13/10/2020",
+      numero: "SA-999",
+      valor: 49.25,
+    },
+    {
+      id: 2323235,
+      data: "13/10/2020",
+      numero: "SA-999",
+      valor: 52,
+    },
   ]);
+  const [totalPagamentos, setTotalPagamentos] = useState([]);
+
+  useEffect(() => {
+    setTotalPagamentos([]);
+    let dados = groupBy(cheques, "data");
+    let newTotalPagamentos = [];
+    Object.entries(dados).forEach(([key, value]) => {
+      let total = 0;
+      value.forEach((element) => {
+        total += parseFloat(element.valor);
+      });
+      newTotalPagamentos.push({
+        data: key,
+        total,
+        quantidade: value.length,
+        cheques: value,
+      });
+    });
+    setTotalPagamentos(newTotalPagamentos);
+  }, [cheques]);
 
   return (
     <Grid container className={classes.root}>
