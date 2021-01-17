@@ -59,6 +59,9 @@ export default function ListaChequesCliente(props) {
   return (
     <Paper className={classes.root}>
       <SelectedRowMenu
+        cheques={props.cheques}
+        setCheques={props.setCheques}
+        selectedRow={selectedRow}
         anchorEl={anchorEl}
         setAnchorEl={setAnchorEl}
         setOpenModal={setOpenModal}

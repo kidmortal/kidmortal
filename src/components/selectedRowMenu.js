@@ -42,6 +42,15 @@ const StyledMenuItem = withStyles((theme) => ({
 }))(MenuItem);
 
 export default function SelectedRowMenu(props) {
+  function deleteCheque() {
+    let cheques = props.cheques;
+    let selected = props.selectedRow;
+    let index = cheques.findIndex((e) => e.id === selected.id);
+    cheques.splice(index, 1);
+    props.setCheques(cheques);
+    props.setAnchorEl(null);
+  }
+
   const handleClose = () => {
     props.setAnchorEl(null);
   };
@@ -65,7 +74,11 @@ export default function SelectedRowMenu(props) {
         </ListItemIcon>
         <ListItemText primary="Edit" />
       </StyledMenuItem>
-      <StyledMenuItem>
+      <StyledMenuItem
+        onClick={() => {
+          deleteCheque();
+        }}
+      >
         <ListItemIcon>
           <DeleteIcon fontSize="small" />
         </ListItemIcon>

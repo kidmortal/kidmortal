@@ -13,10 +13,10 @@ import Select from "@material-ui/core/Select";
 const useStyles = makeStyles((theme) => ({
   formControl: {
     margin: theme.spacing(1),
-    minWidth: 200,
+    minWidth: 280,
   },
   dataSelect: {
-    width: 100,
+    width: 120,
   },
 }));
 
@@ -82,7 +82,13 @@ export default function ClienteSelect(props) {
             </MenuItem>
             {props.clientes.map((cliente) => {
               return (
-                <MenuItem key={cliente.id} value={cliente.nome}>
+                <MenuItem
+                  key={cliente.id}
+                  value={cliente.nome}
+                  onClick={() => {
+                    props.setSelectedCliente(cliente.id);
+                  }}
+                >
                   {cliente.nome}
                 </MenuItem>
               );
@@ -101,7 +107,7 @@ export default function ClienteSelect(props) {
               error={dataInputError.error}
               helperText={dataInputError.message}
               id="dataRecebimento"
-              label="DATA"
+              label="DATA LANÇAMENTO"
               value={props.dataRecebimento}
               onChange={(e) => props.setDataRecebimento(e.target.value)}
               onKeyDown={handleTab}

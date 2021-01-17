@@ -25,6 +25,8 @@ function groupBy(arr, property) {
 export default function Cheques() {
   const classes = useStyles();
   const [dataRecebimento, setDataRecebimento] = useState("");
+  const [selectedCliente, setSelectedCliente] = useState("");
+  const [lote, setLote] = useState("99/99/2020 SA-00005 50,25");
   const [clientes, setClientes] = useState([
     { id: 1, nome: "Wesley" },
     { id: 2, nome: "Bradisfer" },
@@ -80,6 +82,7 @@ export default function Cheques() {
       });
     });
     setTotalPagamentos(newTotalPagamentos);
+    console.log(cheques);
   }, [cheques]);
 
   return (
@@ -87,17 +90,21 @@ export default function Cheques() {
       <Grid item>
         <Grid container spacing={3}>
           <Grid item>
-            <ListaChequesCliente cheques={cheques} />
+            <ListaChequesCliente cheques={cheques} setCheques={setCheques} />
           </Grid>
           <Grid item>
             <ClienteSelect
               clientes={clientes}
+              setSelectedCliente={setSelectedCliente}
               dataRecebimento={dataRecebimento}
               setDataRecebimento={setDataRecebimento}
             />
             <InserirChequeCliente
               cheques={cheques}
+              lote={lote}
+              setLote={setLote}
               dataRecebimento={dataRecebimento}
+              selectedCliente={selectedCliente}
               setCheques={setCheques}
             />
           </Grid>
