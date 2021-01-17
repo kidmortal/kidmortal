@@ -10,13 +10,18 @@ import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
 
 const columns = [
-  { id: "data", label: "Data", minWidth: 170 },
+  { id: "dataRecebimento", label: "Data", minWidth: 170 },
   {
     id: "total",
     label: "Total Pago",
     minWidth: 100,
     align: "right",
     format: (value) => value.toLocaleString("pt-BR"),
+  },
+  {
+    id: "quantidade",
+    label: "Total Cheques",
+    minWidth: 100,
   },
 ];
 
@@ -65,7 +70,12 @@ export default function UltimosPagamentosCliente(props) {
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row) => {
                 return (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={row.data}>
+                  <TableRow
+                    hover
+                    role="checkbox"
+                    tabIndex={-1}
+                    key={row.dataRecebimento}
+                  >
                     {columns.map((column) => {
                       const value = row[column.id];
                       return (

@@ -24,6 +24,7 @@ function groupBy(arr, property) {
 
 export default function Cheques() {
   const classes = useStyles();
+  const [dataRecebimento, setDataRecebimento] = useState("");
   const [clientes, setClientes] = useState([
     { id: 1, nome: "Wesley" },
     { id: 2, nome: "Bradisfer" },
@@ -36,31 +37,35 @@ export default function Cheques() {
       data: "10/10/2020",
       numero: "SA-999",
       valor: 42.25,
+      dataRecebimento: "10/10/2020",
     },
     {
       id: 2323233,
       data: "10/10/2020",
       numero: "SA-999",
       valor: 45.25,
+      dataRecebimento: "10/10/2020",
     },
     {
       id: 2323234,
       data: "13/10/2020",
       numero: "SA-999",
       valor: 49.25,
+      dataRecebimento: "10/10/2020",
     },
     {
       id: 2323235,
       data: "13/10/2020",
       numero: "SA-999",
       valor: 52,
+      dataRecebimento: "10/10/2020",
     },
   ]);
   const [totalPagamentos, setTotalPagamentos] = useState([]);
 
   useEffect(() => {
     setTotalPagamentos([]);
-    let dados = groupBy(cheques, "data");
+    let dados = groupBy(cheques, "dataRecebimento");
     let newTotalPagamentos = [];
     Object.entries(dados).forEach(([key, value]) => {
       let total = 0;
@@ -68,7 +73,7 @@ export default function Cheques() {
         total += parseFloat(element.valor);
       });
       newTotalPagamentos.push({
-        data: key,
+        dataRecebimento: key,
         total,
         quantidade: value.length,
         cheques: value,
@@ -85,8 +90,16 @@ export default function Cheques() {
             <ListaChequesCliente cheques={cheques} />
           </Grid>
           <Grid item>
-            <ClienteSelect clientes={clientes} />
-            <InserirChequeCliente cheques={cheques} setCheques={setCheques} />
+            <ClienteSelect
+              clientes={clientes}
+              dataRecebimento={dataRecebimento}
+              setDataRecebimento={setDataRecebimento}
+            />
+            <InserirChequeCliente
+              cheques={cheques}
+              dataRecebimento={dataRecebimento}
+              setCheques={setCheques}
+            />
           </Grid>
           <Grid item>
             <UltimosPagamentosCliente totalPagamentos={totalPagamentos} />

@@ -50,11 +50,33 @@ export default function InserirChequeCliente(props) {
       });
       return null;
     }
-    setDataInputError({
-      error: false,
-      message: "",
-    });
+    let dataArray = data.split("/");
+    if (dataArray[0] && dataArray[1] && !dataArray[2]) {
+      let now = new Date();
+      data = data.concat(`/${now.getFullYear()}`);
+      dataArray[2] = now.getFullYear();
+    }
+    if (dataArray[0] && dataArray[1] && dataArray[2]) {
+      let [dia, mes, ano] = dataArray;
+      let dataValid = new Date(`${mes}/${dia}/${ano}`);
+      if (dataValid === "Invalid Date") {
+        setDataInputError({
+          error: true,
+          message: "Data invalida",
+        });
+        return null;
+      }
+      setDataInputError({
+        error: false,
+        message: "",
+      });
+      return data;
+    }
 
+    setDataInputError({
+      error: true,
+      message: "Data incompleta",
+    });
     return data;
   }
   function validateNumero(numero) {
@@ -62,6 +84,13 @@ export default function InserirChequeCliente(props) {
       setNumeroInputError({
         error: true,
         message: "tem que por o numero tambem tlgd?",
+      });
+      return null;
+    }
+    if (numero.length > 10) {
+      setNumeroInputError({
+        error: true,
+        message: "Numero grande demais",
       });
       return null;
     }
@@ -79,6 +108,14 @@ export default function InserirChequeCliente(props) {
       });
       return null;
     }
+    valor = valor.replace(",", ".");
+    if (isNaN(valor)) {
+      setValorInputError({
+        error: true,
+        message: "Precisa ser numerico",
+      });
+      return null;
+    }
     setValorInputError({
       error: false,
       message: "",
@@ -91,14 +128,19 @@ export default function InserirChequeCliente(props) {
     let insertData = validateData(data);
     let insertNumero = validateNumero(numero);
     let insertValor = validateValor(valor);
-    if (insertData && insertNumero && insertValor) {
-      props.setCheques([{ id, data, numero, valor }, ...props.cheques]);
+    let insertDataRecebimento = validateData(props.dataRecebimento);
+    if (insertData && insertNumero && insertValor && insertDataRecebimento) {
+      props.setCheques([
+        { id, data, numero, valor, dataRecebimento: insertDataRecebimento },
+        ...props.cheques,
+      ]);
       setData("");
       setDataInputError({ error: false, message: "" });
       setNumero("");
       setNumeroInputError({ error: false, message: "" });
       setValor("");
       setValorInputError({ error: false, message: "" });
+      document.getElementById("data").focus();
     }
   }
 
@@ -122,7 +164,6 @@ export default function InserirChequeCliente(props) {
     if (e.key === "Enter" && active === document.getElementById("save")) {
       e.preventDefault();
       insertCheque();
-      document.getElementById("data").focus();
     }
   }
 
@@ -214,7 +255,7 @@ export default function InserirChequeCliente(props) {
             className={classes.saveButton}
             startIcon={<SaveIcon />}
             onClick={() => {
-              addNewCliente();
+              insertCheque();
             }}
             onKeyDown={handleTab}
           >
