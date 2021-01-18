@@ -16,7 +16,7 @@ const columns = [
     label: "Total Pago",
     minWidth: 100,
     align: "right",
-    format: (value) => value.toLocaleString("pt-BR"),
+    format: (value) => `R$ ${value.toLocaleString("pt-BR")}`,
   },
   {
     id: "quantidade",
@@ -80,9 +80,7 @@ export default function UltimosPagamentosCliente(props) {
                       const value = row[column.id];
                       return (
                         <TableCell key={column.id} align={column.align}>
-                          {column.format && typeof value === "number"
-                            ? column.format(value)
-                            : value}
+                          {column.format ? column.format(value) : value}
                         </TableCell>
                       );
                     })}

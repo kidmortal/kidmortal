@@ -20,7 +20,7 @@ const columns = [
     label: "Valor",
     minWidth: 170,
     align: "right",
-    format: (value) => value.toLocaleString("pt-BR"),
+    format: (value) => `R$ ${value.toLocaleString("pt-BR")}`,
   },
 ];
 
@@ -104,9 +104,7 @@ export default function ListaChequesCliente(props) {
                               setSelectedRow(row);
                             }}
                           >
-                            {column.format && typeof value === "number"
-                              ? column.format(value)
-                              : value}
+                            {column.format ? column.format(value) : value}
                           </TableCell>
                         </Slide>
                       );

@@ -68,6 +68,10 @@ export default function InserirChequeCliente(props) {
       dataArray[2] = now.getFullYear();
     }
     if (dataArray[0] && dataArray[1] && dataArray[2]) {
+      if (dataArray[2].length === 2) {
+        data = data.replace(dataArray[2], `20${dataArray[2]}`);
+        dataArray[2] = `20${dataArray[2]}`;
+      }
       let [dia, mes, ano] = dataArray;
       let dataValid = new Date(`${mes}/${dia}/${ano}`);
       if (dataValid === "Invalid Date") {
@@ -185,10 +189,6 @@ export default function InserirChequeCliente(props) {
     }
   }
 
-  useEffect(() => {
-    verificarLote();
-  }, [props.lote]);
-
   function verificarLote() {
     if (props.lote === "") {
       setCorretos(0);
@@ -204,9 +204,17 @@ export default function InserirChequeCliente(props) {
     console.log(cheques);
     cheques.forEach((element) => {
       let split = element.split(" ");
-      let data = split[0].slice(0, 10);
-      let numero = split[0].slice(10, split[0].length);
-      let valor = split[1];
+      let data, numero, valor;
+      if (!split[2]) {
+        data = split[0].slice(0, 10);
+        numero = split[0].slice(10, split[0].length);
+        valor = split[1]?.replace("R$", "").replace(".", "").replace(",", ".");
+      } else {
+        data = split[0];
+        numero = split[1];
+        valor = split[2]?.replace("R$", "").replace(".", "").replace(",", ".");
+      }
+
       console.log(`${data} ${numero} ${valor}`);
       if (data && numero && valor) {
         newCorretos += 1;
@@ -233,6 +241,10 @@ export default function InserirChequeCliente(props) {
       }
     });
   }
+
+  useEffect(() => {
+    verificarLote();
+  }, [props.lote]);
 
   return (
     <Grid container direction="column" spacing={5}>
