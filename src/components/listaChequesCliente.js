@@ -13,10 +13,18 @@ import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
 
 const columns = [
-  { id: "data", label: "Data", minWidth: 170 },
-  { id: "numero", label: "Numero", minWidth: 100 },
   {
-    id: "valor",
+    id: "dataCheque",
+    label: "Data",
+    minWidth: 170,
+    format: (value) => {
+      let data = new Date(value);
+      return `${data.getDate()}/${data.getMonth() + 1}/${data.getFullYear()}`;
+    },
+  },
+  { id: "numeroCheque", label: "Numero", minWidth: 100 },
+  {
+    id: "valorCheque",
     label: "Valor",
     minWidth: 170,
     align: "right",
@@ -67,6 +75,8 @@ export default function ListaChequesCliente(props) {
         setOpenModal={setOpenModal}
       />
       <EditSelectedCheque
+        cheques={props.cheques}
+        setCheques={props.setCheques}
         openModal={openModal}
         setOpenModal={setOpenModal}
         selectedRow={selectedRow}

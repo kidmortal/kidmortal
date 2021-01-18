@@ -33,7 +33,9 @@ const useStyles = makeStyles((theme) => ({
 
 export default function InserirChequeCliente(props) {
   const classes = useStyles();
+  const [chequesLote, setChequesLote] = useState([]);
   const [saveDisabled, setSaveDisabled] = useState(false);
+  const [saveLoteDisabled, setSaveLoteDisabled] = useState(false);
   const [corretos, setCorretos] = useState(0);
   const [errados, setErrados] = useState(0);
   const [erradosToolTip, setErradosTooltip] = useState("");
@@ -59,6 +61,7 @@ export default function InserirChequeCliente(props) {
         error: true,
         message: "entao irmao, tem que por data",
       });
+      setSaveDisabled(true);
       return null;
     }
     let dataArray = data.split("/");
@@ -79,12 +82,14 @@ export default function InserirChequeCliente(props) {
           error: true,
           message: "Data invalida",
         });
+        setSaveDisabled(true);
         return null;
       }
       setDataInputError({
         error: false,
         message: "",
       });
+      setSaveDisabled(false);
       return data;
     }
 
@@ -92,7 +97,8 @@ export default function InserirChequeCliente(props) {
       error: true,
       message: "Data incompleta",
     });
-    return data;
+    setSaveDisabled(true);
+    return null;
   }
   function validateNumero(numero) {
     if (!numero) {
@@ -100,6 +106,7 @@ export default function InserirChequeCliente(props) {
         error: true,
         message: "tem que por o numero tambem tlgd?",
       });
+      setSaveDisabled(true);
       return null;
     }
     if (numero.length > 10) {
@@ -107,12 +114,14 @@ export default function InserirChequeCliente(props) {
         error: true,
         message: "Numero grande demais",
       });
+      setSaveDisabled(true);
       return null;
     }
     setNumeroInputError({
       error: false,
       message: "",
     });
+    setSaveDisabled(false);
     return numero;
   }
   function validateValor(valor) {
@@ -121,48 +130,60 @@ export default function InserirChequeCliente(props) {
         error: true,
         message: "amigo??? cheque ta sem valor por acaso?",
       });
+      setSaveDisabled(true);
       return null;
     }
-    valor = valor.replace(",", ".");
+    if (typeof valor === "string") valor = valor.replace(",", ".");
     if (isNaN(valor)) {
       setValorInputError({
         error: true,
         message: "Precisa ser numerico",
       });
+      setSaveDisabled(true);
       return null;
     }
     setValorInputError({
       error: false,
       message: "",
     });
+    setSaveDisabled(false);
     return valor;
   }
 
   function insertCheque() {
     let id = Date.now().valueOf();
+    let insertCliente = props.selectedCliente;
     let insertData = validateData(data);
     let insertNumero = validateNumero(numero);
     let insertValor = validateValor(valor);
     let insertDataRecebimento = validateData(props.dataRecebimento);
-    if (insertData && insertNumero && insertValor && insertDataRecebimento) {
-      props.setCheques([
-        {
-          id,
-          data,
-          numero,
-          valor,
-          dataRecebimento: insertDataRecebimento,
-          cliente: props.selectedCliente,
-        },
-        ...props.cheques,
-      ]);
-      setData("");
-      setDataInputError({ error: false, message: "" });
-      setNumero("");
-      setNumeroInputError({ error: false, message: "" });
-      setValor("");
-      setValorInputError({ error: false, message: "" });
-      document.getElementById("data").focus();
+    if (
+      insertData &&
+      insertNumero &&
+      insertValor &&
+      insertDataRecebimento &&
+      insertCliente
+    ) {
+      fetch(
+        `${process.env.REACT_APP_API_url}/mongoCheques?key=${process.env.REACT_APP_API_key}&type=add&data=${insertData}&numero=${insertNumero}&valor=${insertValor}&datarecebimento=${insertDataRecebimento}&cliente=${insertCliente}`
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data);
+          if (data._id) {
+            props.setCheques([data, ...props.cheques]);
+            setData("");
+            setDataInputError({ error: false, message: "" });
+            setNumero("");
+            setNumeroInputError({ error: false, message: "" });
+            setValor("");
+            setValorInputError({ error: false, message: "" });
+            document.getElementById("data").focus();
+          }
+          if (!data._id) {
+            toast.error("erro na conexao");
+          }
+        });
     }
   }
 
@@ -193,12 +214,13 @@ export default function InserirChequeCliente(props) {
     if (props.lote === "") {
       setCorretos(0);
       setErrados(0);
-      setSaveDisabled(true);
+      setSaveLoteDisabled(true);
       return;
     }
     let cheques = props.lote.split("\n");
     let newCorretos = 0;
     let newErrados = 0;
+    let newLote = [];
     let erradosToolTip = "";
     let contador = 1;
     console.log(cheques);
@@ -218,6 +240,12 @@ export default function InserirChequeCliente(props) {
       console.log(`${data} ${numero} ${valor}`);
       if (data && numero && valor) {
         newCorretos += 1;
+        newLote.push({
+          data,
+          numero,
+          valor,
+          dataRecebimento: props.dataRecebimento,
+        });
       } else {
         newErrados += 1;
         erradosToolTip += ` Erro na linha ${contador}\n`;
@@ -227,20 +255,11 @@ export default function InserirChequeCliente(props) {
     setErradosTooltip(erradosToolTip);
     setCorretos(newCorretos);
     setErrados(newErrados);
-    if (newErrados > 0) setSaveDisabled(true);
-    if (newErrados === 0) setSaveDisabled(false);
+    if (newErrados > 0) setSaveLoteDisabled(true);
+    if (newErrados === 0) setSaveLoteDisabled(false);
   }
 
-  function inserirChequeLote() {
-    let cheques = props.lote.split("\n");
-    let newCorretos = 0;
-    cheques.forEach((element) => {
-      let [data, numero, valor] = cheques.split("	");
-      if (data && numero && valor) {
-        setCorretos(corretos + 1);
-      }
-    });
-  }
+  function inserirChequeLote() {}
 
   useEffect(() => {
     verificarLote();
@@ -311,6 +330,7 @@ export default function InserirChequeCliente(props) {
           </Grid>
 
           <Button
+            disabled={saveDisabled}
             id="save"
             variant="contained"
             color="primary"
@@ -365,7 +385,7 @@ export default function InserirChequeCliente(props) {
           </Grid>
           <Grid item>
             <Button
-              disabled={saveDisabled}
+              disabled={saveLoteDisabled}
               variant="contained"
               color="primary"
               size="large"

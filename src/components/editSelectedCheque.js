@@ -12,6 +12,7 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import SaveIcon from "@material-ui/icons/Save";
 
 const useStyles = makeStyles((theme) => ({
   margin: {
@@ -50,6 +51,18 @@ export default function EditSelectedCheque(props) {
     setData(dados.data);
     setNumero(dados.numero);
     setValor(dados.valor);
+    setDataInputError({
+      error: false,
+      message: "",
+    });
+    setNumeroInputError({
+      error: false,
+      message: "",
+    });
+    setValorInputError({
+      error: false,
+      message: "",
+    });
   }, [props.selectedRow]);
 
   function validateData(data) {
@@ -58,14 +71,44 @@ export default function EditSelectedCheque(props) {
         error: true,
         message: "entao irmao, tem que por data",
       });
+
       return null;
     }
+    let dataArray = data.split("/");
+    if (dataArray[0] && dataArray[1] && !dataArray[2]) {
+      let now = new Date();
+      data = data.concat(`/${now.getFullYear()}`);
+      dataArray[2] = now.getFullYear();
+    }
+    if (dataArray[0] && dataArray[1] && dataArray[2]) {
+      if (dataArray[2].length === 2) {
+        data = data.replace(dataArray[2], `20${dataArray[2]}`);
+        dataArray[2] = `20${dataArray[2]}`;
+      }
+      let [dia, mes, ano] = dataArray;
+      let dataValid = new Date(`${mes}/${dia}/${ano}`);
+      if (dataValid === "Invalid Date") {
+        setDataInputError({
+          error: true,
+          message: "Data invalida",
+        });
+
+        return null;
+      }
+      setDataInputError({
+        error: false,
+        message: "",
+      });
+
+      return data;
+    }
+
     setDataInputError({
-      error: false,
-      message: "",
+      error: true,
+      message: "Data incompleta",
     });
 
-    return data;
+    return null;
   }
   function validateNumero(numero) {
     if (!numero) {
@@ -73,12 +116,22 @@ export default function EditSelectedCheque(props) {
         error: true,
         message: "tem que por o numero tambem tlgd?",
       });
+
+      return null;
+    }
+    if (numero.length > 10) {
+      setNumeroInputError({
+        error: true,
+        message: "Numero grande demais",
+      });
+
       return null;
     }
     setNumeroInputError({
       error: false,
       message: "",
     });
+
     return numero;
   }
   function validateValor(valor) {
@@ -87,28 +140,52 @@ export default function EditSelectedCheque(props) {
         error: true,
         message: "amigo??? cheque ta sem valor por acaso?",
       });
+
+      return null;
+    }
+    if (typeof valor === "string") valor = valor.replace(",", ".");
+
+    if (isNaN(valor)) {
+      setValorInputError({
+        error: true,
+        message: "Precisa ser numerico",
+      });
+
       return null;
     }
     setValorInputError({
       error: false,
       message: "",
     });
+
     return valor;
   }
 
-  function insertCheque() {
-    let id = Date.now().valueOf();
+  function alterarCheque() {
     let insertData = validateData(data);
     let insertNumero = validateNumero(numero);
     let insertValor = validateValor(valor);
+
     if (insertData && insertNumero && insertValor) {
-      props.setCheques([{ id, data, numero, valor }, ...props.cheques]);
-      setData("");
-      setDataInputError({ error: false, message: "" });
-      setNumero("");
-      setNumeroInputError({ error: false, message: "" });
-      setValor("");
-      setValorInputError({ error: false, message: "" });
+      setData(insertData);
+      setNumero(insertNumero);
+      setValor(insertValor);
+
+      let newCheques = props.cheques;
+
+      let index = newCheques.findIndex((cheque) => cheque.id === id);
+      let oldCheque = newCheques[index];
+      newCheques[index] = {
+        id,
+        data: insertData,
+        numero: insertNumero,
+        valor: insertValor,
+        dataRecebimento: oldCheque.dataRecebimento,
+      };
+      props.setCheques(newCheques);
+      props.setOpenModal(false);
+    } else {
+      return null;
     }
   }
 
@@ -197,7 +274,15 @@ export default function EditSelectedCheque(props) {
         </Grid>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} color="primary">
+        <Button
+          variant="contained"
+          color="primary"
+          size="large"
+          startIcon={<SaveIcon />}
+          onClick={() => {
+            alterarCheque();
+          }}
+        >
           Save
         </Button>
       </DialogActions>

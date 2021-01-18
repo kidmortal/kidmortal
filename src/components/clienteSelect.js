@@ -86,7 +86,7 @@ export default function ClienteSelect(props) {
                   key={cliente.id}
                   value={cliente.nome}
                   onClick={() => {
-                    props.setSelectedCliente(cliente.id);
+                    props.setSelectedCliente(cliente._id);
                   }}
                 >
                   {cliente.nome}

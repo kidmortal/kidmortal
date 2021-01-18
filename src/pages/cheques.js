@@ -27,55 +27,31 @@ export default function Cheques() {
   const [dataRecebimento, setDataRecebimento] = useState("");
   const [selectedCliente, setSelectedCliente] = useState("");
   const [lote, setLote] = useState("99/99/2020 SA-00005 50,25");
-  const [clientes, setClientes] = useState([
-    { id: 1, nome: "Wesley" },
-    { id: 2, nome: "Bradisfer" },
-    { id: 3, nome: "Diamond King" },
-    { id: 4, nome: "Vilamar" },
-  ]);
-  const [cheques, setCheques] = useState([
-    {
-      id: 2323232,
-      data: "10/10/2020",
-      numero: "SA-999",
-      valor: 42.25,
-      dataRecebimento: "10/10/2020",
-    },
-    {
-      id: 2323233,
-      data: "10/10/2020",
-      numero: "SA-999",
-      valor: 45.25,
-      dataRecebimento: "10/10/2020",
-    },
-    {
-      id: 2323234,
-      data: "13/10/2020",
-      numero: "SA-999",
-      valor: 49.25,
-      dataRecebimento: "10/10/2020",
-    },
-    {
-      id: 2323235,
-      data: "13/10/2020",
-      numero: "SA-999",
-      valor: 52,
-      dataRecebimento: "10/10/2020",
-    },
-  ]);
+  const [clientes, setClientes] = useState([]);
+  const [cheques, setCheques] = useState([]);
   const [totalPagamentos, setTotalPagamentos] = useState([]);
 
   useEffect(() => {
+    fetchChequesCliente();
+  }, [selectedCliente]);
+
+  useEffect(() => {
+    fetchClientes();
+  }, []);
+
+  useEffect(() => {
     setTotalPagamentos([]);
-    let dados = groupBy(cheques, "dataRecebimento");
+    let dados = groupBy(cheques, "recebidoEm");
     let newTotalPagamentos = [];
     Object.entries(dados).forEach(([key, value]) => {
       let total = 0;
       value.forEach((element) => {
-        total += parseFloat(element.valor);
+        total += parseFloat(element.valorCheque);
       });
+      let date = new Date(key);
+      date = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
       newTotalPagamentos.push({
-        dataRecebimento: key,
+        dataRecebimento: date,
         total,
         quantidade: value.length,
         cheques: value,
@@ -84,6 +60,26 @@ export default function Cheques() {
     setTotalPagamentos(newTotalPagamentos);
     console.log(cheques);
   }, [cheques]);
+
+  function fetchClientes() {
+    fetch(
+      `${process.env.REACT_APP_API_url}/mongoClientes?key=${process.env.REACT_APP_API_key}&type=list`
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        setClientes(data);
+      });
+  }
+
+  function fetchChequesCliente() {
+    fetch(
+      `${process.env.REACT_APP_API_url}/mongoCheques?key=${process.env.REACT_APP_API_key}&type=list&cliente=${selectedCliente}`
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        setCheques(data);
+      });
+  }
 
   return (
     <Grid container className={classes.root}>
