@@ -14,14 +14,49 @@ const useStyles = makeStyles({
   },
 });
 
+function formatDate(date) {
+  if (!date) return "";
+  date = new Date(date);
+  return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+}
+
 const columns = [
-  { field: "dataCheque", headerName: "Data", width: 150 },
+  {
+    field: "dataCheque",
+    headerName: "Data",
+    width: 150,
+    type: "date",
+    valueFormatter: (params) => formatDate(params.value),
+  },
   { field: "numeroCheque", headerName: "Numero", width: 130 },
-  { field: "valorCheque", headerName: "Valor", type: "number", width: 130 },
-  { field: "nomeCliente", headerName: "Cliente", width: 250 },
-  { field: "pagoEm", headerName: "Recebido em", width: 180, type: "date" },
+  {
+    field: "valorCheque",
+    headerName: "Valor",
+    type: "number",
+    width: 130,
+    valueFormatter: (params) => `R$ ${params.value}`,
+  },
+  {
+    field: "cliente",
+    headerName: "Cliente",
+    width: 250,
+    valueFormatter: (params) => params.value.nome,
+  },
+  {
+    field: "recebidoEm",
+    headerName: "Recebido em",
+    width: 180,
+    type: "date",
+    valueFormatter: (params) => formatDate(params.value),
+  },
   { field: "pagoPara", headerName: "Pago para", width: 250 },
-  { field: "pagoParaEm", headerName: "Pago em", width: 130, type: "date" },
+  {
+    field: "pagoEm",
+    headerName: "Pago em",
+    width: 130,
+    type: "date",
+    valueFormatter: (params) => formatDate(params.value),
+  },
   { field: "devolvido", headerName: "Devolvido", width: 130 },
   { field: "devolvidoMotivo", headerName: "Motivo Devolução", width: 180 },
 ];
@@ -43,29 +78,14 @@ export default function Cheques() {
 
   React.useEffect(() => {
     fetch(
-      "http://the-business-dogo.herokuapp.com/mongo?key=758232&from=01/05/2020&to=01/01/2021&limit=500"
+      `${process.env.REACT_APP_API_url}/mongoCheques?key=${process.env.REACT_APP_API_key}&type=list&from=01/05/2020&to=01/01/2021&limit=500`
     )
       .then((response) => response.json())
       .then((data) => {
-        let rows = [];
-        let object = {};
         data.forEach((element) => {
-          element.dataCheque = new Date(element.dataCheque)
-            .toLocaleString("pt-BR")
-            .split(" ")[0];
-          element.pagoEm = new Date(element.pagoEm)
-            .toLocaleString("pt-BR")
-            .split(" ")[0];
-          element.pagoParaEm = new Date(element.pagoParaEm)
-            .toLocaleString("pt-BR")
-            .split(" ")[0];
           element.id = element._id;
-          element._id = undefined;
-          object[element.id] = element;
-          rows.push(element);
         });
-        setData(rows);
-        setDataObject(object);
+        setData(data);
       });
   }, []);
 

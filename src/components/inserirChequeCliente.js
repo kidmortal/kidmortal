@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import FirebaseFunctions from "../firebase/firebaseFunctions";
 import Button from "@material-ui/core/Button";
 import SaveIcon from "@material-ui/icons/Save";
 import FormControl from "@material-ui/core/FormControl";
@@ -14,7 +15,7 @@ import FormatListNumberedIcon from "@material-ui/icons/FormatListNumbered";
 import TodayIcon from "@material-ui/icons/Today";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { InsertDriveFileTwoTone } from "@material-ui/icons";
+import { useSelector } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   margin: {
@@ -33,6 +34,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function InserirChequeCliente(props) {
   const classes = useStyles();
+  let player = useSelector((state) => state.player);
   const [chequesLote, setChequesLote] = useState([]);
   const [saveDisabled, setSaveDisabled] = useState(false);
   const [saveLoteDisabled, setSaveLoteDisabled] = useState(false);
@@ -179,6 +181,7 @@ export default function InserirChequeCliente(props) {
             setValor("");
             setValorInputError({ error: false, message: "" });
             document.getElementById("data").focus();
+            FirebaseFunctions.addCoins(2, player);
           }
           if (!data._id) {
             toast.error("erro na conexao");
@@ -225,16 +228,17 @@ export default function InserirChequeCliente(props) {
     let contador = 1;
     console.log(cheques);
     cheques.forEach((element) => {
+      element = element.replace("R$ ", "");
       let split = element.split(" ");
       let data, numero, valor;
       if (!split[2]) {
         data = split[0].slice(0, 10);
         numero = split[0].slice(10, split[0].length);
-        valor = split[1]?.replace("R$", "").replace(".", "").replace(",", ".");
+        valor = split[1]?.replace(".", "").replace(",", ".");
       } else {
         data = split[0];
         numero = split[1];
-        valor = split[2]?.replace("R$", "").replace(".", "").replace(",", ".");
+        valor = split[2]?.replace(".", "").replace(",", ".");
       }
 
       console.log(`${data} ${numero} ${valor}`);
@@ -245,6 +249,7 @@ export default function InserirChequeCliente(props) {
           numero,
           valor,
           dataRecebimento: props.dataRecebimento,
+          cliente: props.selectedCliente,
         });
       } else {
         newErrados += 1;
@@ -252,6 +257,7 @@ export default function InserirChequeCliente(props) {
       }
       contador += 1;
     });
+    setChequesLote(newLote);
     setErradosTooltip(erradosToolTip);
     setCorretos(newCorretos);
     setErrados(newErrados);
@@ -259,7 +265,30 @@ export default function InserirChequeCliente(props) {
     if (newErrados === 0) setSaveLoteDisabled(false);
   }
 
-  function inserirChequeLote() {}
+  async function inserirChequeLote() {
+    console.log(chequesLote);
+    let newCheques = [...props.cheques];
+    await chequesLote.forEach((element) => {
+      let { data, numero, valor, dataRecebimento, cliente } = element;
+      if (data && numero && valor && dataRecebimento && cliente) {
+        fetch(
+          `${process.env.REACT_APP_API_url}/mongoCheques?key=${process.env.REACT_APP_API_key}&type=add&data=${data}&numero=${numero}&valor=${valor}&datarecebimento=${dataRecebimento}&cliente=${cliente}`
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data);
+            if (data._id) {
+              newCheques.unshift(data);
+              FirebaseFunctions.addCoins(2, player);
+            }
+            if (!data._id) {
+              toast.error("erro na conexao");
+            }
+          });
+      }
+    });
+    props.setCheques(newCheques);
+  }
 
   useEffect(() => {
     verificarLote();

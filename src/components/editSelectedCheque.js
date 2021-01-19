@@ -13,6 +13,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import SaveIcon from "@material-ui/icons/Save";
+import { toast } from "react-toastify";
 
 const useStyles = makeStyles((theme) => ({
   margin: {
@@ -47,10 +48,13 @@ export default function EditSelectedCheque(props) {
 
   useEffect(() => {
     let dados = props.selectedRow;
-    setId(dados.id);
-    setData(dados.data);
-    setNumero(dados.numero);
-    setValor(dados.valor);
+    setId(dados._id);
+    let date = new Date(dados.dataCheque);
+    setData(
+      `${date.getDate() + 1}/${date.getMonth() + 1}/${date.getFullYear()}`
+    );
+    setNumero(dados.numeroCheque);
+    setValor(dados.valorCheque);
     setDataInputError({
       error: false,
       message: "",
@@ -173,17 +177,31 @@ export default function EditSelectedCheque(props) {
 
       let newCheques = props.cheques;
 
-      let index = newCheques.findIndex((cheque) => cheque.id === id);
+      let index = newCheques.findIndex((cheque) => cheque._id === id);
       let oldCheque = newCheques[index];
-      newCheques[index] = {
-        id,
-        data: insertData,
-        numero: insertNumero,
-        valor: insertValor,
-        dataRecebimento: oldCheque.dataRecebimento,
-      };
-      props.setCheques(newCheques);
-      props.setOpenModal(false);
+
+      fetch(
+        `${process.env.REACT_APP_API_url}/mongoCheques?key=${process.env.REACT_APP_API_key}&type=edit&id=${id}&data=${insertData}&numero=${insertNumero}&valor=${insertValor}`
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.response === "Success") {
+            toast.success(`Cheque Editado com Sucesso`);
+            newCheques[index] = {
+              _id: id,
+              dataCheque: insertData,
+              numeroCheque: insertNumero,
+              valorCheque: insertValor,
+              dataRecebimento: oldCheque.dataRecebimento,
+            };
+            props.setCheques(newCheques);
+            props.setOpenModal(false);
+          }
+          if (data.response === "Error") {
+            toast.error("Erro na edição");
+            props.setOpenModal(false);
+          }
+        });
     } else {
       return null;
     }

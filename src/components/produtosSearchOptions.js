@@ -38,7 +38,7 @@ export default function ProdutosSearchOptions(props) {
 
   function requestMongoData() {
     fetch(
-      `${process.env.REACT_APP_API_url}/mongo?key=${process.env.REACT_APP_API_key}&limit=50&data=produtos&source=${selectedSource}&search=${search}`
+      `${process.env.REACT_APP_API_url}/mongoProdutos?key=${process.env.REACT_APP_API_key}&limit=50&source=${selectedSource}&search=${search}`
     )
       .then((response) => response.json())
       .then((data) => {

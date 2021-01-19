@@ -9,6 +9,7 @@ import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import DraftsIcon from "@material-ui/icons/Drafts";
 import SendIcon from "@material-ui/icons/Send";
+import { toast } from "react-toastify";
 
 const StyledMenu = withStyles({
   paper: {
@@ -46,9 +47,23 @@ export default function SelectedRowMenu(props) {
     let cheques = props.cheques;
     let selected = props.selectedRow;
     let index = cheques.findIndex((e) => e.id === selected.id);
-    cheques.splice(index, 1);
-    props.setCheques(cheques);
-    props.setAnchorEl(null);
+    fetch(
+      `${process.env.REACT_APP_API_url}/mongoCheques?key=${process.env.REACT_APP_API_key}&type=delete&id=${selected._id}`
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.response === "Success") {
+          toast.success(
+            `Cheque ${cheques[index].numeroCheque} Excluido com Sucesso`
+          );
+          cheques.splice(index, 1);
+          props.setCheques(cheques);
+          props.setAnchorEl(null);
+        }
+        if (data.response === "Error") {
+          toast.error("Erro na exclusão");
+        }
+      });
   }
 
   const handleClose = () => {

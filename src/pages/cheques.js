@@ -49,7 +49,9 @@ export default function Cheques() {
         total += parseFloat(element.valorCheque);
       });
       let date = new Date(key);
-      date = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+      date = `${date.getDate() + 1}/${
+        date.getMonth() + 1
+      }/${date.getFullYear()}`;
       newTotalPagamentos.push({
         dataRecebimento: date,
         total,
@@ -72,13 +74,15 @@ export default function Cheques() {
   }
 
   function fetchChequesCliente() {
-    fetch(
-      `${process.env.REACT_APP_API_url}/mongoCheques?key=${process.env.REACT_APP_API_key}&type=list&cliente=${selectedCliente}`
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        setCheques(data);
-      });
+    if (selectedCliente) {
+      fetch(
+        `${process.env.REACT_APP_API_url}/mongoCheques?key=${process.env.REACT_APP_API_key}&type=list&cliente=${selectedCliente}`
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          setCheques(data);
+        });
+    }
   }
 
   return (
