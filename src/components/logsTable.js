@@ -9,6 +9,7 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
+import coin from "../assets/coin.svg";
 
 const columns = [
   { id: "hour", label: "Hora", minWidth: 60 },
@@ -22,6 +23,11 @@ const useStyles = makeStyles({
   container: {
     height: "100%",
     width: 400,
+  },
+  goldIcon: {
+    height: 30,
+    width: 30,
+    marginLeft: 10,
   },
 });
 
@@ -57,6 +63,15 @@ export default function LogsTable(props) {
                             {column.format && typeof value === "number"
                               ? column.format(value)
                               : value}
+                            {column.id === "message" ? (
+                              <img
+                                className={classes.goldIcon}
+                                alt="coin"
+                                src={coin}
+                              />
+                            ) : (
+                              ""
+                            )}
                           </TableCell>
                         </Slide>
                       );
