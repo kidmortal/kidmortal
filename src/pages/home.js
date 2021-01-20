@@ -17,12 +17,12 @@ const useStyles = makeStyles({
 
 export default function Home() {
   const classes = useStyles();
-  const [logs, setLogs] = useState([{ hour: "12:06", message: " teste" }]);
+  const [logs, setLogs] = useState([]);
 
   useEffect(() => {
     const socket = openSocket(process.env.REACT_APP_API_url);
     socket.on("FromAPI", (data) => {
-      console.log(data);
+      setLogs(data);
     });
   }, []);
 
