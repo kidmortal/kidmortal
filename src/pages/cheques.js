@@ -26,10 +26,10 @@ export default function Cheques() {
   const classes = useStyles();
   const [dataRecebimento, setDataRecebimento] = useState("");
   const [selectedCliente, setSelectedCliente] = useState("");
-  const [lote, setLote] = useState("99/99/2020 SA-00005 50,25");
+  const [lote, setLote] = useState("12/12/2020 SA-00005 50,25");
   const [clientes, setClientes] = useState([]);
   const [cheques, setCheques] = useState([]);
-  const [totalPagamentos, setTotalPagamentos] = useState([]);
+  const totalPagamentos = getTotal(cheques);
 
   useEffect(() => {
     fetchChequesCliente();
@@ -38,10 +38,8 @@ export default function Cheques() {
   useEffect(() => {
     fetchClientes();
   }, []);
-
-  useEffect(() => {
-    setTotalPagamentos([]);
-    let dados = groupBy(cheques, "recebidoEm");
+  function getTotal(newCheques) {
+    let dados = groupBy(newCheques, "recebidoEm");
     let newTotalPagamentos = [];
     Object.entries(dados).forEach(([key, value]) => {
       let total = 0;
@@ -59,9 +57,8 @@ export default function Cheques() {
         cheques: value,
       });
     });
-    setTotalPagamentos(newTotalPagamentos);
-    console.log(cheques);
-  }, [cheques]);
+    return newTotalPagamentos;
+  }
 
   function fetchClientes() {
     fetch(

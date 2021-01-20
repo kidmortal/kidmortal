@@ -1,8 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import openSocket from "socket.io-client";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import LogsTable from "../components/logsTable";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
 
 const useStyles = makeStyles({
   root: {
@@ -13,12 +17,20 @@ const useStyles = makeStyles({
 
 export default function Home() {
   const classes = useStyles();
-  const [logs, setLogs] = useState([]);
+  const [logs, setLogs] = useState([{ hour: "12:06", message: " teste" }]);
+
+  useEffect(() => {
+    const socket = openSocket(process.env.REACT_APP_API_url);
+    socket.on("FromAPI", (data) => {
+      console.log(data);
+    });
+  }, []);
 
   return (
-    <Grid container className={classes.root} justify="space-between">
-      <Grid item></Grid>
-      <Grid item></Grid>
+    <Grid container className={classes.root} justify="flex-end">
+      <Grid item>
+        <LogsTable logs={logs} />
+      </Grid>
     </Grid>
   );
 }
