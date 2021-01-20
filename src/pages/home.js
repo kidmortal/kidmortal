@@ -20,9 +20,10 @@ export default function Home() {
   const [logs, setLogs] = useState([]);
 
   useEffect(() => {
-    const socket = openSocket("http://the-business-dogo.herokuapp.com/");
+    const socket = openSocket(process.env.REACT_APP_API_url);
     socket.on("FromAPI", (data) => {
       setLogs(data);
+      console.log(data);
     });
   }, []);
 
