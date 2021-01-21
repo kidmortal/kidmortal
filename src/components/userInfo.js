@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Component, useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useDispatch, useSelector } from "react-redux";
+import openSocket from "socket.io-client";
 import * as Icons from "../assets/skins/";
 import GoldCoin from "../assets/coin.svg";
 import FireBase from "../firebase/firebase";
@@ -71,9 +72,23 @@ export default function UserInfo(props) {
   let character = useSelector((state) => state.character);
   let dispatch = useDispatch();
   let listener;
+  let socket;
 
   useEffect(() => {
-    getCharacterData().then(turnOnFirebaseListener());
+    socket = openSocket(process.env.REACT_APP_API_url);
+    if (player) {
+      socket.emit("playerOnline", player);
+    }
+
+    socket.on("playersOnline", (data) => {
+      console.log("recebido");
+      console.log(data);
+      dispatch({
+        type: "UPDATE_ONLINE_PLAYERS",
+        payload: data,
+      });
+    });
+    turnOnFirebaseListener();
 
     return () => {
       FireBase.database().ref("users").off("value", listener);
@@ -88,21 +103,6 @@ export default function UserInfo(props) {
         .on("value", (snapshot) => {
           let characterData = snapshot.val();
           animatedCoinChange(characterData.Dogecoin);
-          dispatch({
-            type: "UPDATE_CHARACTER",
-            characterData,
-          });
-        });
-    }
-  }
-
-  async function getCharacterData() {
-    if (player) {
-      listener = FireBase.database()
-        .ref("users")
-        .child(player)
-        .once("value", (snapshot) => {
-          let characterData = snapshot.val();
           dispatch({
             type: "UPDATE_CHARACTER",
             characterData,

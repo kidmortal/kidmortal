@@ -5,7 +5,7 @@ import rootReducer from "./modules/rootReducer";
 
 const persistConfig = {
   key: "root",
-  blacklist: ["character", "shopItems"],
+  blacklist: ["character", "shopItems", "onlinePlayers"],
   storage,
 };
 

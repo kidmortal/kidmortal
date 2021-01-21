@@ -60,6 +60,11 @@ export default function PlayerRanking(props) {
             <Typography>Level: {props.player.Level || 0}</Typography>
           </Grid>
           <Grid item>
+            <Typography>
+              Online: {props.player.online ? "yes" : "no"}
+            </Typography>
+          </Grid>
+          <Grid item>
             <Typography>Class: {props.player.Classe || "None"}</Typography>
           </Grid>
           <Grid item>

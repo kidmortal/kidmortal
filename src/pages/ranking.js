@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import FireBase from "../firebase/firebase";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
@@ -23,11 +24,17 @@ const useStyles = makeStyles((theme) => ({
 
 const Ranking = () => {
   const classes = useStyles();
+  const onlinePlayers = useSelector((state) => state.onlinePlayers);
   const [players, setPlayers] = useState([]);
   let array = [];
 
   function pushElements(e) {
-    array.push(e.val());
+    let element = e.val();
+    element.id = e.key;
+    if (onlinePlayers[element.id]) {
+      element.online = true;
+    }
+    array.push(element);
   }
 
   function sort(attribute, ASC = false) {
@@ -50,7 +57,7 @@ const Ranking = () => {
         console.log(array);
         setPlayers(array);
       });
-  }, []);
+  }, [onlinePlayers]);
 
   return (
     <>

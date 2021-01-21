@@ -6,6 +6,7 @@ import character from "./character/reducer";
 import shopItems from "./shopItems/reducer";
 import headerIndex from "./headerIndex/reducer";
 import currentMonster from "./currentMonster/reducer";
+import onlinePlayers from "./onlinePlayers/reducer";
 import battleLogs from "./battleLogs/reducer";
 
 export default combineReducers({
@@ -16,4 +17,5 @@ export default combineReducers({
   headerIndex,
   currentMonster,
   battleLogs,
+  onlinePlayers,
 });

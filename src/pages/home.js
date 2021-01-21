@@ -31,14 +31,14 @@ export default function Home() {
     div.appendChild(span);
   }
 
-  useEffect(() => {
+  /*  useEffect(() => {
     const socket = openSocket(process.env.REACT_APP_API_url);
     socket.on("FromAPI", (data) => {
       data = data.reverse();
       setLogs(data);
       console.log(data);
     });
-  }, []);
+  }, []); */
 
   return (
     <Grid container className={classes.root} justify="flex-end">
