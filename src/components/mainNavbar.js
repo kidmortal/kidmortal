@@ -12,8 +12,9 @@ import TransferWithinAStationIcon from "@material-ui/icons/TransferWithinAStatio
 import ComputerIcon from "@material-ui/icons/Computer";
 import EqualizerIcon from "@material-ui/icons/Equalizer";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import openSocket from "socket.io-client";
 import FireBase from "../firebase/firebase";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
@@ -70,6 +71,24 @@ export default function MainNavbar() {
   const classes = useStyles();
   let dispatch = useDispatch();
   const headerIndex = useSelector((state) => state.headerIndex);
+  let player = useSelector((state) => state.player);
+  let socket;
+
+  useEffect(() => {
+    socket = openSocket(process.env.REACT_APP_API_url);
+    if (player) {
+      socket.emit("playerOnline", player);
+    }
+
+    socket.on("playersOnline", (data) => {
+      console.log("recebido");
+      console.log(data);
+      dispatch({
+        type: "UPDATE_ONLINE_PLAYERS",
+        payload: data,
+      });
+    });
+  }, []);
 
   FireBase.auth().onAuthStateChanged((user) => {
     if (user) {

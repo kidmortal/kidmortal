@@ -7,6 +7,8 @@ import AddIcon from "@material-ui/icons/Add";
 import IconButton from "@material-ui/core/IconButton";
 import Fab from "@material-ui/core/Fab";
 import ToolTip from "@material-ui/core/Tooltip";
+import online from "../assets/online.png";
+import offline from "../assets/offline.png";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -23,6 +25,11 @@ const useStyles = makeStyles((theme) => ({
     minHeight: "100px",
     maxWidth: "150px",
     maxHeight: "150px",
+  },
+  status: {
+    height: 16,
+    width: 16,
+    marginRight: 6,
   },
   skillImage: {
     width: "50px",
@@ -50,7 +57,14 @@ export default function PlayerRanking(props) {
           justifyContent="center"
           alignItems="center"
         >
-          <Typography>{props.player.Name}</Typography>
+          <Typography>
+            <img
+              alt="status"
+              src={props.player.online ? online : offline}
+              className={classes.status}
+            />
+            {props.player.Name}
+          </Typography>
           <img
             alt="class skin"
             src={Icons[props.player.Skin]}
@@ -61,11 +75,8 @@ export default function PlayerRanking(props) {
           </Grid>
           <Grid item>
             <Typography>
-              Online: {props.player.online ? "yes" : "no"}
+              Class: {props.player.Classe.replace("_", " ") || "None"}
             </Typography>
-          </Grid>
-          <Grid item>
-            <Typography>Class: {props.player.Classe || "None"}</Typography>
           </Grid>
           <Grid item>
             <Typography>Hp: {props.player.MaxHealth || 0}</Typography>

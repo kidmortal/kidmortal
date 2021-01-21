@@ -72,22 +72,8 @@ export default function UserInfo(props) {
   let character = useSelector((state) => state.character);
   let dispatch = useDispatch();
   let listener;
-  let socket;
 
   useEffect(() => {
-    socket = openSocket(process.env.REACT_APP_API_url);
-    if (player) {
-      socket.emit("playerOnline", player);
-    }
-
-    socket.on("playersOnline", (data) => {
-      console.log("recebido");
-      console.log(data);
-      dispatch({
-        type: "UPDATE_ONLINE_PLAYERS",
-        payload: data,
-      });
-    });
     turnOnFirebaseListener();
 
     return () => {
