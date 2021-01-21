@@ -8,6 +8,8 @@ import headerIndex from "./headerIndex/reducer";
 import currentMonster from "./currentMonster/reducer";
 import onlinePlayers from "./onlinePlayers/reducer";
 import battleLogs from "./battleLogs/reducer";
+import logs from "./logs/reducer";
+import socket from "./socket/reducer";
 
 export default combineReducers({
   player,
@@ -18,4 +20,6 @@ export default combineReducers({
   currentMonster,
   battleLogs,
   onlinePlayers,
+  logs,
+  socket,
 });

@@ -13,16 +13,13 @@ import ComputerIcon from "@material-ui/icons/Computer";
 import EqualizerIcon from "@material-ui/icons/Equalizer";
 
 import React, { useEffect } from "react";
-import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
-import openSocket from "socket.io-client";
 import FireBase from "../firebase/firebase";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import Logo from "../assets/dragonlogo.svg";
 
 import UserInfo from "../components/userInfo";
-export let socket;
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -72,29 +69,15 @@ const useStyles = makeStyles((theme) => ({
 export default function MainNavbar() {
   const classes = useStyles();
   let dispatch = useDispatch();
+  const socket = useSelector((state) => state.socket);
   const headerIndex = useSelector((state) => state.headerIndex);
   let player = useSelector((state) => state.player);
 
-  function dispatchPlayersOnline(data) {
-    dispatch({
-      type: "UPDATE_ONLINE_PLAYERS",
-      payload: data,
-    });
-  }
-
   useEffect(() => {
-    socket = openSocket(process.env.REACT_APP_API_url);
-    if (player) {
+    if (player && socket && socket.emit) {
       socket.emit("playerOnline", player);
     }
-
-    socket.on("playersOnline", (data) => {
-      dispatchPlayersOnline(data);
-    });
-    socket.on("moneyReceived", (data) => {
-      toast.success(data);
-    });
-  }, []);
+  }, [player, socket]);
 
   FireBase.auth().onAuthStateChanged((user) => {
     if (user) {

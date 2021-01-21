@@ -11,7 +11,6 @@ import Fab from "@material-ui/core/Fab";
 import ToolTip from "@material-ui/core/Tooltip";
 import online from "../assets/online.png";
 import offline from "../assets/offline.png";
-import { socket } from "./mainNavbar";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -52,6 +51,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function PlayerRanking(props) {
   const classes = useStyles();
+  const socket = useSelector((state) => state.socket);
   const player = useSelector((state) => state.player);
   const character = useSelector((state) => state.character);
   const [disabled, setDisabled] = useState(false);

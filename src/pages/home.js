@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import openSocket from "socket.io-client";
 import Grid from "@material-ui/core/Grid";
@@ -20,7 +21,7 @@ const useStyles = makeStyles({
 
 export default function Home() {
   const classes = useStyles();
-  const [logs, setLogs] = useState([]);
+  const logs = useSelector((state) => state.logs);
 
   function addSpan() {
     let div = document.getElementById("dive");
@@ -30,15 +31,6 @@ export default function Home() {
     span.className = classes.animatedSpan;
     div.appendChild(span);
   }
-
-  /*  useEffect(() => {
-    const socket = openSocket(process.env.REACT_APP_API_url);
-    socket.on("FromAPI", (data) => {
-      data = data.reverse();
-      setLogs(data);
-      console.log(data);
-    });
-  }, []); */
 
   return (
     <Grid container className={classes.root} justify="flex-end">
