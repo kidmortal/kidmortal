@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 import { Component, useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useDispatch, useSelector } from "react-redux";
-import openSocket from "socket.io-client";
 import * as Icons from "../assets/skins/";
 import GoldCoin from "../assets/coin.svg";
 import FireBase from "../firebase/firebase";

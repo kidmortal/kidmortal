@@ -1,3 +1,5 @@
+import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import * as Icons from "../assets/skins";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
@@ -9,6 +11,7 @@ import Fab from "@material-ui/core/Fab";
 import ToolTip from "@material-ui/core/Tooltip";
 import online from "../assets/online.png";
 import offline from "../assets/offline.png";
+import { socket } from "./mainNavbar";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -38,10 +41,37 @@ const useStyles = makeStyles((theme) => ({
     border: "1px solid black",
     borderRadius: "50px 50px",
   },
+  moneyButton: {
+    color: "red",
+  },
+  addButon: {
+    color: "green",
+  },
+  disabledButton: {},
 }));
 
 export default function PlayerRanking(props) {
   const classes = useStyles();
+  const player = useSelector((state) => state.player);
+  const character = useSelector((state) => state.character);
+  const [disabled, setDisabled] = useState(false);
+
+  useEffect(() => {
+    if (player) {
+      setDisabled(false);
+    }
+    if (!player) {
+      setDisabled(true);
+    }
+  }, [player]);
+
+  function sendMoney() {
+    socket.emit("sendMoney", {
+      sender: character.Name,
+      target: props.player.id,
+      value: 50,
+    });
+  }
 
   return (
     <Grid
@@ -92,27 +122,37 @@ export default function PlayerRanking(props) {
         </Grid>
       </Grid>
       <Grid item>
-        <Grid
-          container
-          direction="column"
-          justifyContent="center"
-          alignItems="center"
-        >
-          <ToolTip title="Send Money">
-            <IconButton size="small" aria-label="Send Money">
-              <Fab color="primary">
-                <AttachMoneyIcon />
-              </Fab>
-            </IconButton>
-          </ToolTip>
-          <ToolTip title="Send invite to party">
-            <IconButton size="small" aria-label="Send Money">
-              <Fab color="secondary">
-                <AddIcon />
-              </Fab>
-            </IconButton>
-          </ToolTip>
-        </Grid>
+        {disabled ? (
+          ""
+        ) : (
+          <Grid
+            container
+            direction="column"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <ToolTip title="Send Money">
+              <IconButton
+                size="small"
+                aria-label="Send Money"
+                onClick={() => {
+                  sendMoney();
+                }}
+              >
+                <Fab color="primary">
+                  <AttachMoneyIcon />
+                </Fab>
+              </IconButton>
+            </ToolTip>
+            <ToolTip title="Send invite to party">
+              <IconButton size="small" aria-label="Send Money">
+                <Fab color="secondary">
+                  <AddIcon />
+                </Fab>
+              </IconButton>
+            </ToolTip>
+          </Grid>
+        )}
       </Grid>
     </Grid>
   );

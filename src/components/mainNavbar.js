@@ -13,6 +13,7 @@ import ComputerIcon from "@material-ui/icons/Computer";
 import EqualizerIcon from "@material-ui/icons/Equalizer";
 
 import React, { useEffect } from "react";
+import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import openSocket from "socket.io-client";
 import FireBase from "../firebase/firebase";
@@ -21,6 +22,7 @@ import PropTypes from "prop-types";
 import Logo from "../assets/dragonlogo.svg";
 
 import UserInfo from "../components/userInfo";
+export let socket;
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -72,7 +74,13 @@ export default function MainNavbar() {
   let dispatch = useDispatch();
   const headerIndex = useSelector((state) => state.headerIndex);
   let player = useSelector((state) => state.player);
-  let socket;
+
+  function dispatchPlayersOnline(data) {
+    dispatch({
+      type: "UPDATE_ONLINE_PLAYERS",
+      payload: data,
+    });
+  }
 
   useEffect(() => {
     socket = openSocket(process.env.REACT_APP_API_url);
@@ -81,12 +89,10 @@ export default function MainNavbar() {
     }
 
     socket.on("playersOnline", (data) => {
-      console.log("recebido");
-      console.log(data);
-      dispatch({
-        type: "UPDATE_ONLINE_PLAYERS",
-        payload: data,
-      });
+      dispatchPlayersOnline(data);
+    });
+    socket.on("moneyReceived", (data) => {
+      toast.success(data);
     });
   }, []);
 
