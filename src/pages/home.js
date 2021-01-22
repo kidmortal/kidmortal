@@ -37,18 +37,6 @@ export default function Home() {
       <Grid item>
         <LogsTable logs={logs} />
       </Grid>
-      <Grid item>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => {
-            addSpan();
-          }}
-        >
-          Add span
-        </Button>
-        <div id="dive"></div>
-      </Grid>
     </Grid>
   );
 }
