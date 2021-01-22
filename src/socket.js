@@ -54,7 +54,7 @@ export default function Socket() {
   }
 
   useEffect(() => {
-    let getSocket = openSocket(process.env.REACT_APP_API_url);
+    let getSocket = openSocket("http://the-business-dogo.herokuapp.com");
     dispatch({
       type: "UPDATE_SOCKET",
       payload: getSocket,

@@ -12,12 +12,12 @@ import TableRow from "@material-ui/core/TableRow";
 import coin from "../assets/coin.svg";
 
 const columns = [
-  { id: "hour", label: "Hora", minWidth: 60 },
-  { id: "message", label: "Log", minWidth: 200 },
+  { id: "hour", label: "Hora", minWidth: 40 },
+  { id: "message", label: "Log", minWidth: 400 },
   {
     id: "coinReward",
     label: "Reward",
-    minWidth: 60,
+    minWidth: 80,
     format: (value) => `+${value}`,
   },
 ];
@@ -28,7 +28,7 @@ const useStyles = makeStyles({
   },
   container: {
     height: "100%",
-    width: 400,
+    width: 600,
   },
   goldIcon: {
     height: 30,
