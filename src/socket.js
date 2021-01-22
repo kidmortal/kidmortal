@@ -18,17 +18,25 @@ export default function Socket() {
     socket.on("playersOnline", (data) => {
       dispatchPlayersOnline(data);
     });
+    socket.on("logs", (data) => {
+      if (data && data.reverse) {
+        dispatchLogs(data.reverse());
+      }
+    });
     socket.on("moneyReceived", (data) => {
       toast.success(data);
-    });
-    socket.on("FromAPI", (data) => {
-      data = data.reverse();
-      console.log(data);
     });
   }
   function dispatchPlayersOnline(data) {
     dispatch({
       type: "UPDATE_ONLINE_PLAYERS",
+      payload: data,
+    });
+  }
+
+  function dispatchLogs(data) {
+    dispatch({
+      type: "UPDATE_LOGS",
       payload: data,
     });
   }

@@ -16,11 +16,6 @@ const useStyles = makeStyles((theme) => ({
   root: {
     maxWidth: 345,
   },
-  card: {
-    alignItems: "center",
-    justifyContent: " center",
-    minHeight: 300,
-  },
   classImage: {
     height: "auto",
     width: "auto",
@@ -74,19 +69,9 @@ export default function PlayerRanking(props) {
   }
 
   return (
-    <Grid
-      container
-      direction="row"
-      justify="center"
-      className={classes.charContainer}
-    >
+    <Grid container direction="row" className={classes.charContainer}>
       <Grid item>
-        <Grid
-          container
-          direction="column"
-          justifyContent="center"
-          alignItems="center"
-        >
+        <Grid container direction="column" alignItems="center">
           <Typography>
             <img
               alt="status"
@@ -125,31 +110,23 @@ export default function PlayerRanking(props) {
         {disabled ? (
           ""
         ) : (
-          <Grid
-            container
-            direction="column"
-            justifyContent="center"
-            alignItems="center"
-          >
+          <Grid container direction="column" alignItems="center">
             <ToolTip title="Send Money">
-              <IconButton
+              <Fab
+                color="primary"
                 size="small"
                 aria-label="Send Money"
                 onClick={() => {
                   sendMoney();
                 }}
               >
-                <Fab color="primary">
-                  <AttachMoneyIcon />
-                </Fab>
-              </IconButton>
+                <AttachMoneyIcon />
+              </Fab>
             </ToolTip>
             <ToolTip title="Send invite to party">
-              <IconButton size="small" aria-label="Send Money">
-                <Fab color="secondary">
-                  <AddIcon />
-                </Fab>
-              </IconButton>
+              <Fab color="secondary" size="small" aria-label="Send Money">
+                <AddIcon />
+              </Fab>
             </ToolTip>
           </Grid>
         )}

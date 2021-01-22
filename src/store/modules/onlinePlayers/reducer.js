@@ -1,4 +1,4 @@
-export default function onlinePlayers(state = {}, action) {
+export default function onlinePlayers(state = { none: true }, action) {
   switch (action.type) {
     case "UPDATE_ONLINE_PLAYERS":
       state = action.payload;

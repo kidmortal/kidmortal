@@ -54,10 +54,20 @@ const Ranking = () => {
       .once("value", (snapshot) => {
         snapshot.forEach(pushElements);
         array.sort((a, b) => b.Dogecoin - a.Dogecoin);
-        console.log(array);
-        setPlayers(array);
+        setPlayers(setPlayersOnline(array));
+        console.log(onlinePlayers);
       });
   }, [onlinePlayers]);
+
+  function setPlayersOnline(players) {
+    let newPlayers = players;
+    newPlayers.forEach((player) => {
+      if (onlinePlayers[player.id]) {
+        player.online = true;
+      }
+    });
+    return newPlayers;
+  }
 
   return (
     <>
