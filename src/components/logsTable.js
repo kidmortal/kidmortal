@@ -12,11 +12,11 @@ import coin from "../assets/coin.svg";
 
 const columns = [
   { id: "hour", label: "Hora", minWidth: 40 },
-  { id: "message", label: "Log", minWidth: 400 },
+  { id: "message", label: "Log", minWidth: 550 },
   {
     id: "coinReward",
     label: "Reward",
-    minWidth: 80,
+    minWidth: 200,
     format: (value) => `+${value}`,
   },
 ];
@@ -27,7 +27,7 @@ const useStyles = makeStyles({
   },
   container: {
     height: "100%",
-    width: 800,
+    width: 1000,
   },
   tableCell: {
     padding: 5,
