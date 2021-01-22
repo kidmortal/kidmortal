@@ -4,6 +4,10 @@ export default function logs(state = [], action) {
       state = action.payload;
       return state;
 
+    case "INSERT_NEW_LOG":
+      state = [action.payload, ...state];
+      return state;
+
     default:
       return state;
   }

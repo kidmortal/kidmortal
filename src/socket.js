@@ -18,10 +18,15 @@ export default function Socket() {
     socket.on("playersOnline", (data) => {
       dispatchPlayersOnline(data);
     });
-    socket.on("logs", (data) => {
+    socket.on("allLogs", (data) => {
       if (data && data.reverse) {
-        dispatchLogs(data.reverse());
+        let dataReverse = data.reverse();
+        console.log(dataReverse);
+        dispatchLogs(dataReverse);
       }
+    });
+    socket.on("newLog", (data) => {
+      dispatchNewLog(data);
     });
     socket.on("moneyReceived", (data) => {
       toast.success(data);
@@ -37,6 +42,13 @@ export default function Socket() {
   function dispatchLogs(data) {
     dispatch({
       type: "UPDATE_LOGS",
+      payload: data,
+    });
+  }
+
+  function dispatchNewLog(data) {
+    dispatch({
+      type: "INSERT_NEW_LOG",
       payload: data,
     });
   }

@@ -7,10 +7,12 @@ import Typography from "@material-ui/core/Typography";
 import AttachMoneyIcon from "@material-ui/icons/AttachMoney";
 import AddIcon from "@material-ui/icons/Add";
 import IconButton from "@material-ui/core/IconButton";
+import { toast } from "react-toastify";
 import Fab from "@material-ui/core/Fab";
 import ToolTip from "@material-ui/core/Tooltip";
 import online from "../assets/online.png";
 import offline from "../assets/offline.png";
+import SendMoney from "../components/sendMoney";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -46,6 +48,8 @@ const useStyles = makeStyles((theme) => ({
 
 export default function PlayerRanking(props) {
   const classes = useStyles();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [sendAmount, setSendAmount] = useState(100);
   const socket = useSelector((state) => state.socket);
   const player = useSelector((state) => state.player);
   const character = useSelector((state) => state.character);
@@ -61,15 +65,27 @@ export default function PlayerRanking(props) {
   }, [player]);
 
   function sendMoney() {
-    socket.emit("sendMoney", {
-      sender: character.Name,
-      target: props.player.id,
-      value: 50,
-    });
+    if (sendAmount >= 100) {
+      socket.emit("sendMoney", {
+        sender: character.Name,
+        target: props.player.id,
+        value: sendAmount,
+      });
+      toast.success(
+        `Enviado ${sendAmount} Dogecoins para ${props.player.Name}`
+      );
+    }
   }
 
   return (
     <Grid container direction="row" className={classes.charContainer}>
+      <SendMoney
+        anchorEl={anchorEl}
+        setAnchorEl={setAnchorEl}
+        sendAmount={sendAmount}
+        setSendAmount={setSendAmount}
+        sendMoney={sendMoney}
+      />
       <Grid item>
         <Grid container direction="column" alignItems="center">
           <Typography>
@@ -116,9 +132,7 @@ export default function PlayerRanking(props) {
                 color="primary"
                 size="small"
                 aria-label="Send Money"
-                onClick={() => {
-                  sendMoney();
-                }}
+                onClick={(e) => setAnchorEl(e.currentTarget)}
               >
                 <AttachMoneyIcon />
               </Fab>
