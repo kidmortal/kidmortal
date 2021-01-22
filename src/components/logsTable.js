@@ -28,7 +28,10 @@ const useStyles = makeStyles({
   },
   container: {
     height: "100%",
-    width: 600,
+    width: 800,
+  },
+  tableCell: {
+    padding: 5,
   },
   goldIcon: {
     height: 30,
@@ -36,6 +39,7 @@ const useStyles = makeStyles({
     marginLeft: 10,
   },
   bigText: {
+    padding: 5,
     fontSize: 25,
   },
 });
@@ -70,7 +74,9 @@ export default function LogsTable(props) {
                         <Slide direction="right" in={true}>
                           <TableCell
                             className={
-                              column.id === "coinReward" ? classes.bigText : ""
+                              column.id === "coinReward"
+                                ? classes.bigText
+                                : classes.tableCell
                             }
                             key={column.id}
                             align="center"
