@@ -13,6 +13,7 @@ import Routes from "./routes";
 export default function Socket() {
   let dispatch = useDispatch();
   let socket = useSelector((state) => state.socket);
+  let player = useSelector((state) => state.player);
 
   function socketListeners(socket) {
     socket.on("playersOnline", (data) => {
@@ -66,6 +67,17 @@ export default function Socket() {
       socketListeners(socket);
     }
   }, [socket]);
+
+  useEffect(() => {
+    if (socket && socket.emit) {
+      if (!player) {
+        socket.emit("logout", "");
+      }
+      if (player) {
+        socket.emit("login", player);
+      }
+    }
+  }, [player]);
 
   return <></>;
 }

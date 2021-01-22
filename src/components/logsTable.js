@@ -1,6 +1,5 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import Slide from "@material-ui/core/Slide";
 import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -71,30 +70,28 @@ export default function LogsTable(props) {
                     {columns.map((column) => {
                       const value = row[column.id];
                       return (
-                        <Slide direction="right" in={true}>
-                          <TableCell
-                            className={
-                              column.id === "coinReward"
-                                ? classes.bigText
-                                : classes.tableCell
-                            }
-                            key={column.id}
-                            align="center"
-                          >
-                            {column.format && typeof value === "number"
-                              ? column.format(value)
-                              : value}
-                            {column.id === "coinReward" ? (
-                              <img
-                                className={classes.goldIcon}
-                                alt="coin"
-                                src={coin}
-                              />
-                            ) : (
-                              ""
-                            )}
-                          </TableCell>
-                        </Slide>
+                        <TableCell
+                          className={
+                            column.id === "coinReward"
+                              ? classes.bigText
+                              : classes.tableCell
+                          }
+                          key={column.id}
+                          align="center"
+                        >
+                          {column.format && typeof value === "number"
+                            ? column.format(value)
+                            : value}
+                          {column.id === "coinReward" ? (
+                            <img
+                              className={classes.goldIcon}
+                              alt="coin"
+                              src={coin}
+                            />
+                          ) : (
+                            ""
+                          )}
+                        </TableCell>
                       );
                     })}
                   </TableRow>
