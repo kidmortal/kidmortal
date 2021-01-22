@@ -14,6 +14,12 @@ import coin from "../assets/coin.svg";
 const columns = [
   { id: "hour", label: "Hora", minWidth: 60 },
   { id: "message", label: "Log", minWidth: 200 },
+  {
+    id: "coinReward",
+    label: "Reward",
+    minWidth: 60,
+    format: (value) => `+${value}`,
+  },
 ];
 
 const useStyles = makeStyles({
@@ -28,6 +34,9 @@ const useStyles = makeStyles({
     height: 30,
     width: 30,
     marginLeft: 10,
+  },
+  bigText: {
+    fontSize: 25,
   },
 });
 
@@ -59,11 +68,17 @@ export default function LogsTable(props) {
                       const value = row[column.id];
                       return (
                         <Slide direction="right" in={true}>
-                          <TableCell key={column.id} align={column.align}>
+                          <TableCell
+                            className={
+                              column.id === "coinReward" ? classes.bigText : ""
+                            }
+                            key={column.id}
+                            align="center"
+                          >
                             {column.format && typeof value === "number"
                               ? column.format(value)
                               : value}
-                            {column.id === "message" ? (
+                            {column.id === "coinReward" ? (
                               <img
                                 className={classes.goldIcon}
                                 alt="coin"
