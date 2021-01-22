@@ -43,7 +43,18 @@ const useStyles = makeStyles((theme) => ({
   addButon: {
     color: "green",
   },
-  disabledButton: {},
+  challengeBattle: {
+    backgroundColor: "#ec4646",
+    "&:hover": {
+      backgroundColor: "#ec4646",
+    },
+  },
+  challengeDice: {
+    backgroundColor: "#9dad7f",
+    "&:hover": {
+      backgroundColor: "#9dad7f",
+    },
+  },
 }));
 
 export default function PlayerRanking(props) {
@@ -77,6 +88,13 @@ export default function PlayerRanking(props) {
     }
   }
 
+  function challengeBattle() {
+    toast.error("Não disponivel ainda");
+  }
+
+  function challengeDice() {
+    toast.error("Não disponivel ainda");
+  }
   return (
     <Grid container direction="row" className={classes.charContainer}>
       <SendMoney
@@ -132,7 +150,12 @@ export default function PlayerRanking(props) {
                 color="primary"
                 size="small"
                 aria-label="Send Money"
-                onClick={(e) => setAnchorEl(e.currentTarget)}
+                onClick={(e) => {
+                  if (props.player.id === player) {
+                    return toast.error("Nâo pode doar dinheiro para si mesmo");
+                  }
+                  setAnchorEl(e.currentTarget);
+                }}
               >
                 <AttachMoneyIcon />
               </Fab>
@@ -140,6 +163,32 @@ export default function PlayerRanking(props) {
             <ToolTip title="Send invite to party">
               <Fab color="secondary" size="small" aria-label="Send Money">
                 <AddIcon />
+              </Fab>
+            </ToolTip>
+            <ToolTip title="Challenge to Battle">
+              <Fab
+                size="small"
+                className={classes.challengeBattle}
+                aria-label="Challenge BAttle"
+                disabled={props.player.online ? false : true}
+                onClick={() => {
+                  challengeBattle();
+                }}
+              >
+                ⚔️
+              </Fab>
+            </ToolTip>
+            <ToolTip title="Challenge to Throw Dice">
+              <Fab
+                size="small"
+                className={classes.challengeDice}
+                aria-label="Challenge Dice"
+                disabled={props.player.online ? false : true}
+                onClick={() => {
+                  challengeDice();
+                }}
+              >
+                🎲
               </Fab>
             </ToolTip>
           </Grid>
