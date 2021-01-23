@@ -8,18 +8,7 @@ import LinearProgress from "@material-ui/core/LinearProgress";
 import { makeStyles, withStyles } from "@material-ui/core";
 import { useSelector } from "react-redux";
 import ground from "../assets/ground.png";
-
-const BorderLinearProgress = withStyles((theme) => ({
-  root: {
-    height: 10,
-    width: 100,
-    borderRadius: 5,
-  },
-  colorPrimary: {
-    backgroundColor:
-      theme.palette.grey[theme.palette.type === "light" ? 200 : 700],
-  },
-}))(LinearProgress);
+import StatusBar from "./statusBar";
 
 const relativeGround = {
   defaut: {
@@ -52,14 +41,6 @@ const useStyles = makeStyles((theme) => ({
   battleContainer: {
     paddingTop: "15em",
   },
-  hpBar: {
-    borderRadius: 5,
-    backgroundColor: "#ff4646",
-  },
-  mpBar: {
-    borderRadius: 5,
-    backgroundColor: "#0e49b5",
-  },
   skillImage: {
     width: "50px",
     height: "50px",
@@ -80,33 +61,62 @@ const useStyles = makeStyles((theme) => ({
 export default function CharacterBattle(props) {
   const classes = useStyles();
   const character = useSelector((state) => state.character);
+  const socket = useSelector((state) => state.socket);
   const groundStyle = relativeGround[character.Skin] || relativeGround.defaut;
+
+  function attack() {
+    let {
+      Int,
+      Str,
+      CurrentHealth,
+      MaxHealth,
+      CurrentMana,
+      MaxMana,
+      Classe,
+    } = character;
+    let data = {
+      Int,
+      Str,
+      CurrentHealth,
+      MaxHealth,
+      CurrentMana,
+      MaxMana,
+      Classe,
+    };
+    socket.emit("attackMonster", data);
+  }
 
   return (
     <Grid item>
       <Grid container direction="column" alignItems="center" justify="center">
         <Grid item>
-          <Typography variant="subtitle1">{props.character.Name}</Typography>
-          <Typography variant="caption">
-            {props.character.CurrentHealth}\{props.character.MaxHealth}
-          </Typography>
-          <BorderLinearProgress
-            variant="determinate"
-            classes={{ bar: classes.hpBar }}
-            value={Math.round(
-              (props.character.CurrentHealth / props.character.MaxHealth) * 100
-            )}
-          />
-          <Typography variant="caption">
-            {props.character.CurrentMana}\{props.character.MaxMana}
-          </Typography>
-          <BorderLinearProgress
-            variant="determinate"
-            classes={{ bar: classes.mpBar }}
-            value={Math.round(
-              (props.character.CurrentMana / props.character.MaxMana) * 100
-            )}
-          />
+          <Grid
+            container
+            direction="column"
+            alignItems="center"
+            justify="center"
+            spacing={1}
+          >
+            <Grid item>
+              <Typography variant="subtitle1">
+                {props.character.Name}
+              </Typography>
+            </Grid>
+            <Grid item>
+              <StatusBar
+                bar={"hpBar"}
+                currentValue={props.character.CurrentHealth}
+                maxValue={props.character.MaxHealth}
+              />
+            </Grid>
+            <Grid item>
+              <StatusBar
+                bar={"mpBar"}
+                currentValue={props.character.CurrentMana}
+                maxValue={props.character.MaxMana}
+              />
+            </Grid>
+          </Grid>
         </Grid>
         <Grid item style={groundStyle}>
           <img alt="class skin" src={ground} />
@@ -127,7 +137,13 @@ export default function CharacterBattle(props) {
             alignItems="flex-start"
           >
             <Grid item>
-              <Button className={classes.button} disableRipple={true}>
+              <Button
+                className={classes.button}
+                disableRipple={true}
+                onClick={() => {
+                  attack();
+                }}
+              >
                 <img
                   alt="skill1"
                   src={Skills.Powerful_Swing}

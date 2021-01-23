@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import openSocket from "socket.io-client";
 import theme from "./theme";
 import Routes from "./routes";
+import firebaseFunctions from "./firebase/firebaseFunctions";
 
 export default function Socket() {
   let dispatch = useDispatch();
@@ -32,6 +33,15 @@ export default function Socket() {
     socket.on("moneyReceived", (data) => {
       toast.success(data);
     });
+    socket.on("summonMonster", (data) => {
+      dispatchNewMonster(data);
+    });
+    socket.on("statusChangeMonster", (data) => {
+      let { character, monster, logs } = data;
+      dispatchNewMonster(monster);
+      updatePlayerStatus(character);
+      dispatchBattleLog(logs);
+    });
   }
   function dispatchPlayersOnline(data) {
     dispatch({
@@ -47,11 +57,40 @@ export default function Socket() {
     });
   }
 
+  function dispatchBattleLog(data) {
+    data.forEach((log) => {
+      dispatch({
+        type: "ADD_BATTLE_LOG",
+        payload: log,
+      });
+    });
+  }
+
   function dispatchNewLog(data) {
     dispatch({
       type: "INSERT_NEW_LOG",
       payload: data,
     });
+  }
+
+  function dispatchNewMonster(data) {
+    dispatch({
+      type: "UPDATE_CURRENT_MONSTER",
+      payload: data,
+    });
+  }
+
+  function updatePlayerStatus(data) {
+    let { CurrentHealth, MaxHealth, CurrentMana, MaxMana } = data;
+    firebaseFunctions.updateStats(
+      {
+        CurrentHealth,
+        MaxHealth,
+        CurrentMana,
+        MaxMana,
+      },
+      player
+    );
   }
 
   useEffect(() => {

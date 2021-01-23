@@ -8,18 +8,7 @@ import LinearProgress from "@material-ui/core/LinearProgress";
 import { makeStyles, withStyles } from "@material-ui/core";
 import { useSelector } from "react-redux";
 import ground from "../assets/ground.png";
-
-const BorderLinearProgress = withStyles((theme) => ({
-  root: {
-    height: 10,
-    width: 100,
-    borderRadius: 5,
-  },
-  colorPrimary: {
-    backgroundColor:
-      theme.palette.grey[theme.palette.type === "light" ? 200 : 700],
-  },
-}))(LinearProgress);
+import StatusBar from "./statusBar";
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -28,14 +17,6 @@ const useStyles = makeStyles((theme) => ({
   },
   battleContainer: {
     paddingTop: "15em",
-  },
-  hpBar: {
-    borderRadius: 5,
-    backgroundColor: "#ff4646",
-  },
-  mpBar: {
-    borderRadius: 5,
-    backgroundColor: "#0e49b5",
   },
   monster: {
     paddingTop: "10px",
@@ -50,17 +31,25 @@ export default function MonsterBattle(props) {
     <Grid item>
       <Grid container direction="column" alignItems="center" justify="center">
         <Grid item>
-          <Typography variant="subtitle1">{props.monster.Nickname}</Typography>
-          <Typography variant="caption">
-            {props.monster.CurrentHealth}\{props.monster.MaxHealth}
-          </Typography>
-          <BorderLinearProgress
-            variant="determinate"
-            classes={{ bar: classes.hpBar }}
-            value={Math.round(
-              (props.monster.CurrentHealth / props.monster.MaxHealth) * 100
-            )}
-          />
+          <Grid
+            container
+            direction="column"
+            alignItems="center"
+            justify="center"
+          >
+            <Grid item>
+              <Typography variant="subtitle1">
+                {props.monster.Nickname}
+              </Typography>
+            </Grid>
+            <Grid item>
+              <StatusBar
+                bar={"hpBar"}
+                currentValue={props.monster.CurrentHealth}
+                maxValue={props.monster.MaxHealth}
+              />
+            </Grid>
+          </Grid>
         </Grid>
         <Grid item className={classes.ground}>
           <img alt="class skin" src={ground} />

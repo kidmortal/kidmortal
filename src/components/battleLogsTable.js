@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
@@ -10,23 +11,14 @@ import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
 import coin from "../assets/coin.svg";
 
-const columns = [
-  { id: "hour", label: "Hora", minWidth: 40 },
-  { id: "message", label: "Log", minWidth: 550 },
-  {
-    id: "coinReward",
-    label: "Reward",
-    minWidth: 200,
-    format: (value) => `+${value}`,
-  },
-];
+const columns = [{ id: "message", label: "Log", minWidth: 550 }];
 
 const useStyles = makeStyles({
   root: {
     width: "100%",
   },
   container: {
-    height: "100%",
+    minHeight: 200,
     width: 1000,
   },
   tableCell: {
@@ -43,17 +35,22 @@ const useStyles = makeStyles({
   },
 });
 
-export default function LogsTable(props) {
+export default function BattleLogsTable() {
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(15);
+  const logs = useSelector((state) => state.battleLogs);
+
+  useEffect(() => {
+    console.log(logs);
+  }, [logs]);
 
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
         <Table stickyHeader aria-label="sticky table">
           <TableBody>
-            {props.logs
+            {logs
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row) => {
                 return (
@@ -70,18 +67,7 @@ export default function LogsTable(props) {
                           key={column.id}
                           align="center"
                         >
-                          {column.format && typeof value === "number"
-                            ? column.format(value)
-                            : value}
-                          {column.id === "coinReward" ? (
-                            <img
-                              className={classes.goldIcon}
-                              alt="coin"
-                              src={coin}
-                            />
-                          ) : (
-                            ""
-                          )}
+                          {value}
                         </TableCell>
                       );
                     })}

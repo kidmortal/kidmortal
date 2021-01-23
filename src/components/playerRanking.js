@@ -13,6 +13,8 @@ import ToolTip from "@material-ui/core/Tooltip";
 import online from "../assets/online.png";
 import offline from "../assets/offline.png";
 import SendMoney from "../components/sendMoney";
+import ChallengeDice from "./challengeDice";
+import firebaseFunctions from "../firebase/firebaseFunctions";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -59,8 +61,10 @@ const useStyles = makeStyles((theme) => ({
 
 export default function PlayerRanking(props) {
   const classes = useStyles();
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [moneyAnchor, setMoneyAnchor] = useState(null);
   const [sendAmount, setSendAmount] = useState(100);
+  const [diceAnchor, setDiceAnchor] = useState(null);
+  const [bet, setBet] = useState(100);
   const socket = useSelector((state) => state.socket);
   const player = useSelector((state) => state.player);
   const character = useSelector((state) => state.character);
@@ -77,14 +81,24 @@ export default function PlayerRanking(props) {
 
   function sendMoney() {
     if (sendAmount >= 100) {
+      if (character.Dogecoins < sendAmount) {
+        return toast.error(`Você não possui ${sendAmount} moedas`);
+      }
       socket.emit("sendMoney", {
         sender: character.Name,
         target: props.player.id,
         value: sendAmount,
       });
+      firebaseFunctions.removeCoins(sendAmount, player);
+      firebaseFunctions.addCoins(sendAmount, props.player.id);
+      setMoneyAnchor(null);
+
       toast.success(
         `Enviado ${sendAmount} Dogecoins para ${props.player.Name}`
       );
+    }
+    if (sendAmount < 100) {
+      toast.error(`Quantidade minima de 100 Dogecoins`);
     }
   }
 
@@ -98,11 +112,18 @@ export default function PlayerRanking(props) {
   return (
     <Grid container direction="row" className={classes.charContainer}>
       <SendMoney
-        anchorEl={anchorEl}
-        setAnchorEl={setAnchorEl}
+        anchorEl={moneyAnchor}
+        setAnchorEl={setMoneyAnchor}
         sendAmount={sendAmount}
         setSendAmount={setSendAmount}
         sendMoney={sendMoney}
+      />
+      <ChallengeDice
+        anchorEl={diceAnchor}
+        setAnchorEl={setDiceAnchor}
+        bet={bet}
+        setBet={setBet}
+        challengeDice={challengeDice}
       />
       <Grid item>
         <Grid container direction="column" alignItems="center">
@@ -154,7 +175,7 @@ export default function PlayerRanking(props) {
                   if (props.player.id === player) {
                     return toast.error("Nâo pode doar dinheiro para si mesmo");
                   }
-                  setAnchorEl(e.currentTarget);
+                  setMoneyAnchor(e.currentTarget);
                 }}
               >
                 <AttachMoneyIcon />
@@ -184,8 +205,8 @@ export default function PlayerRanking(props) {
                 className={classes.challengeDice}
                 aria-label="Challenge Dice"
                 disabled={props.player.online ? false : true}
-                onClick={() => {
-                  challengeDice();
+                onClick={(e) => {
+                  setDiceAnchor(e.currentTarget);
                 }}
               >
                 🎲
