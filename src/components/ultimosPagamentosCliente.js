@@ -8,6 +8,7 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
+import SelectedChequeLoteMenu from "./selectedChequeLoteMenu";
 
 const columns = [
   { id: "dataRecebimento", label: "Data", minWidth: 170 },
@@ -38,6 +39,8 @@ export default function UltimosPagamentosCliente(props) {
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [selectedLote, setSelectedLote] = React.useState({});
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -50,6 +53,12 @@ export default function UltimosPagamentosCliente(props) {
 
   return (
     <Paper className={classes.root}>
+      <SelectedChequeLoteMenu
+        anchorEl={anchorEl}
+        setAnchorEl={setAnchorEl}
+        selectedLote={selectedLote}
+        fetchChequesCliente={props.fetchChequesCliente}
+      />
       <TableContainer className={classes.container}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
@@ -79,7 +88,14 @@ export default function UltimosPagamentosCliente(props) {
                     {columns.map((column) => {
                       const value = row[column.id];
                       return (
-                        <TableCell key={column.id} align={column.align}>
+                        <TableCell
+                          key={column.id}
+                          align={column.align}
+                          onClick={(e) => {
+                            setAnchorEl(e.currentTarget);
+                            setSelectedLote(row);
+                          }}
+                        >
                           {column.format ? column.format(value) : value}
                         </TableCell>
                       );

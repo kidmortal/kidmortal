@@ -1,11 +1,4 @@
-export default function battleLogs(
-  state = [
-    { message: "coe carai" },
-    { message: "coe carai" },
-    { message: "coe carai" },
-  ],
-  action
-) {
+export default function battleLogs(state = [], action) {
   switch (action.type) {
     case "ADD_BATTLE_LOG": {
       if (state.length >= 7) {

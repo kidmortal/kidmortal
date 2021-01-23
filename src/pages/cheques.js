@@ -30,6 +30,7 @@ export default function Cheques() {
   const [clientes, setClientes] = useState([]);
   const [cheques, setCheques] = useState([]);
   const totalPagamentos = getTotal(cheques);
+  const selectedCheques = getCurrentSelection(cheques, dataRecebimento);
 
   useEffect(() => {
     fetchChequesCliente();
@@ -60,6 +61,30 @@ export default function Cheques() {
     return newTotalPagamentos;
   }
 
+  function getCurrentSelection(cheques, dataRecebimento) {
+    let selection = [];
+
+    for (let index = 0; index < cheques.length; index++) {
+      const element = cheques[index];
+      let split = dataRecebimento.split("/");
+      let day = parseInt(split[0]);
+      let month = parseInt(split[1]);
+      let year = parseInt(split[2]);
+      let elementDate = new Date(element.recebidoEm);
+      let elementDay = elementDate.getDate() + 1;
+      let elementMonth = elementDate.getMonth() + 1;
+      let elementYear = elementDate.getFullYear();
+      if (
+        day === elementDay &&
+        month === elementMonth &&
+        year === elementYear
+      ) {
+        selection.push(element);
+      }
+    }
+    return selection;
+  }
+
   function fetchClientes() {
     fetch(
       `${process.env.REACT_APP_API_url}/mongoClientes?key=${process.env.REACT_APP_API_key}&type=list`
@@ -87,7 +112,10 @@ export default function Cheques() {
       <Grid item>
         <Grid container spacing={3}>
           <Grid item>
-            <ListaChequesCliente cheques={cheques} setCheques={setCheques} />
+            <ListaChequesCliente
+              cheques={selectedCheques}
+              setCheques={setCheques}
+            />
           </Grid>
           <Grid item>
             <ClienteSelect
@@ -106,7 +134,10 @@ export default function Cheques() {
             />
           </Grid>
           <Grid item>
-            <UltimosPagamentosCliente totalPagamentos={totalPagamentos} />
+            <UltimosPagamentosCliente
+              totalPagamentos={totalPagamentos}
+              fetchChequesCliente={fetchChequesCliente}
+            />
           </Grid>
         </Grid>
       </Grid>

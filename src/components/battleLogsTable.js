@@ -19,19 +19,19 @@ const useStyles = makeStyles({
   },
   container: {
     minHeight: 200,
-    width: 1000,
+    width: 800,
+    backgroundColor: "green",
+  },
+  table: {
+    backgroundColor: "green",
   },
   tableCell: {
     padding: 5,
+    fontSize: 15,
+    fontWeight: "bold",
   },
-  goldIcon: {
-    height: 30,
-    width: 30,
-    marginLeft: 10,
-  },
-  bigText: {
-    padding: 5,
-    fontSize: 25,
+  tableRow: {
+    backgroundColor: "green",
   },
 });
 
@@ -48,13 +48,19 @@ export default function BattleLogsTable() {
   return (
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
-        <Table stickyHeader aria-label="sticky table">
+        <Table stickyHeader aria-label="sticky table" className={classes.table}>
           <TableBody>
             {logs
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row) => {
                 return (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                  <TableRow
+                    hover
+                    role="checkbox"
+                    tabIndex={-1}
+                    key={row.code}
+                    className={classes.tableRow}
+                  >
                     {columns.map((column) => {
                       const value = row[column.id];
                       return (
