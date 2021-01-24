@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Grid from "@material-ui/core/Grid";
 import * as Icons from "../assets/skins";
 import Typography from "@material-ui/core/Typography";
@@ -46,6 +46,7 @@ const useStyles = makeStyles((theme) => ({
 
 function Battle() {
   const classes = useStyles();
+  let [attackAnimation, setAttackAnimation] = useState(false);
   let player = useSelector((state) => state.player);
   let character = useSelector((state) => state.character);
   let monster = useSelector((state) => state.currentMonster);
@@ -96,11 +97,21 @@ function Battle() {
                 >
                   Summon new monster
                 </Button>
-                {monster.Name ? <MonsterBattle monster={monster} /> : ""}
+                {monster.Name ? (
+                  <MonsterBattle
+                    monster={monster}
+                    attackAnimation={attackAnimation}
+                  />
+                ) : (
+                  ""
+                )}
               </Grid>
             </Grid>
             <Grid item>
-              <CharacterBattle character={character} />
+              <CharacterBattle
+                character={character}
+                setAttackAnimation={setAttackAnimation}
+              />
             </Grid>
           </Grid>
         ) : (

@@ -7,6 +7,7 @@ import Alert from "@material-ui/lab/Alert";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import { makeStyles, withStyles } from "@material-ui/core";
 import { useSelector } from "react-redux";
+import darkVortex from "../assets/vortex.gif";
 import ground from "../assets/ground.png";
 import StatusBar from "./statusBar";
 
@@ -20,6 +21,14 @@ const useStyles = makeStyles((theme) => ({
   },
   monster: {
     paddingTop: "10px",
+  },
+  attackEffect: {
+    position: "absolute",
+    marginLeft: -80,
+    marginTop: -50,
+  },
+  attackEffectEnd: {
+    display: "none",
   },
   ground: { paddingTop: 70, marginBottom: -80 },
 }));
@@ -51,11 +60,23 @@ export default function MonsterBattle(props) {
             </Grid>
           </Grid>
         </Grid>
+
         <Grid item className={classes.ground}>
           <img alt="class skin" src={ground} />
         </Grid>
         <Grid item className={classes.monster}>
           <img alt="class skin" src={Monsters[props.monster.Name]} />
+          <img
+            alt="la"
+            src={darkVortex}
+            width={150}
+            height={150}
+            className={
+              props.attackAnimation
+                ? classes.attackEffect
+                : classes.attackEffectEnd
+            }
+          />
         </Grid>
       </Grid>
     </Grid>

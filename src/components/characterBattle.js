@@ -84,6 +84,10 @@ export default function CharacterBattle(props) {
       Classe,
     };
     socket.emit("attackMonster", data);
+    props.setAttackAnimation(true);
+    setTimeout(() => {
+      props.setAttackAnimation(false);
+    }, 2000);
   }
 
   return (

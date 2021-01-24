@@ -14,10 +14,10 @@ import Routes from "./routes";
 export default function App() {
   return (
     <ThemeProvider theme={theme}>
+      <ToastContainer position="top-left" />
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
           <Routes />
-          <ToastContainer position="top-left" />
           <Socket />
         </PersistGate>
       </Provider>
