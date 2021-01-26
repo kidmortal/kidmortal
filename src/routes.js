@@ -14,6 +14,7 @@ import Pagamentos from "./pages/pagamentos";
 import Configuracoes from "./pages/configuracoes";
 import Produtos from "./pages/produtos";
 import Clientes from "./pages/clientes";
+import Consultas from "./pages/consultas";
 import ContaCorrente from "./pages/contaCorrente";
 import MainNavbar from "./components/mainNavbar";
 import Footer from "./components/copyrightFooter";
@@ -36,12 +37,14 @@ const AuthRouteSystemAccess = (props) => {
     return <Redirect to="/sistemas" />;
   if (system === "pagamentos" && !character.Pagamentos)
     return <Redirect to="/sistemas" />;
+  if (system === "consultas" && !character.Consultas)
+    return <Redirect to="/sistemas" />;
   if (system === "configuracoes" && !character.Config)
-    return <Redirect to="/configuracoes" />;
+    return <Redirect to="/sistemas" />;
   if (system === "produtos" && !character.Config)
-    return <Redirect to="/produtos" />;
+    return <Redirect to="/sistemas" />;
   if (system === "clientes" && !character.Config)
-    return <Redirect to="/clientes" />;
+    return <Redirect to="/sistemas" />;
 
   return <Route {...props} />;
 };
@@ -87,6 +90,12 @@ const Routes = () => {
           path="/pagamentos"
           system="pagamentos"
           component={Pagamentos}
+        />
+        <AuthRouteSystemAccess
+          exact
+          path="/consultas"
+          system="consultas"
+          component={Consultas}
         />
         <AuthRouteSystemAccess
           exact

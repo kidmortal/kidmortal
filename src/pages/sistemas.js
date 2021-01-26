@@ -139,15 +139,12 @@ const Sistemas = () => {
                   Buscar pedido, produto, cheque ou nota fiscal
                 </Typography>
               </CardContent>
-              {character.Cheques === true ? (
+              {character.Consultas === true ? (
                 <Button
                   variant="contained"
                   color="primary"
                   component={Link}
-                  to="/sistemas"
-                  onClick={() => {
-                    toast.error("Ainda nao fiz nao bixo, calma ai");
-                  }}
+                  to="/consultas"
                 >
                   Da uma clicadinha ak no pai
                 </Button>
