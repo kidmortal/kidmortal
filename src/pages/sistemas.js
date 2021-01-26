@@ -10,9 +10,11 @@ import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
 import Typography from "@material-ui/core/Typography";
 import cheques from "../assets/cheques.svg";
+import search from "../assets/search.svg";
 import contaCorrente from "../assets/contacorrente.svg";
 import pagamento from "../assets/pagamento.svg";
 import configuracoes from "../assets/configuracoes.svg";
+import { toast } from "react-toastify";
 
 const useStyles = makeStyles({
   root: {
@@ -114,6 +116,38 @@ const Sistemas = () => {
                   color="primary"
                   component={Link}
                   to="/pagamentos"
+                >
+                  Da uma clicadinha ak no pai
+                </Button>
+              ) : (
+                <Button variant="contained" color="primary" disabled>
+                  You don't have access to this application.
+                </Button>
+              )}
+            </CardActionArea>
+          </Card>
+        </Grid>
+        <Grid item xs={2}>
+          <Card className={classes.root}>
+            <CardActionArea>
+              <CardMedia className={classes.media} image={search} />
+              <CardContent>
+                <Typography gutterBottom variant="h5" component="h2">
+                  Consultas
+                </Typography>
+                <Typography variant="body2" color="textSecondary" component="p">
+                  Buscar pedido, produto, cheque ou nota fiscal
+                </Typography>
+              </CardContent>
+              {character.Cheques === true ? (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  component={Link}
+                  to="/sistemas"
+                  onClick={() => {
+                    toast.error("Ainda nao fiz nao bixo, calma ai");
+                  }}
                 >
                   Da uma clicadinha ak no pai
                 </Button>

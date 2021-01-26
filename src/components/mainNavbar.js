@@ -1,5 +1,6 @@
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
+import Grid from "@material-ui/core/Grid";
 import ToolBar from "@material-ui/core/Toolbar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
@@ -54,11 +55,15 @@ const useStyles = makeStyles((theme) => ({
   },
   logoTitle: {
     color: "black",
-    fontSize: "2rem",
+    fontSize: "1.5rem",
     marginLeft: "20px",
   },
   headerTabs: {
     marginLeft: "auto",
+  },
+  tab: {
+    minWidth: 120, // a number of your choice
+    width: 120, // a number of your choice
   },
   button: {
     margin: "auto",
@@ -100,50 +105,57 @@ export default function MainNavbar() {
     <div className={classes.root}>
       <AppBar position="static">
         <ToolBar>
-          <Link to="/">
-            <img alt="Dragon Logo" src={Logo} width="100px" />
-          </Link>
-          <Typography className={classes.logoTitle}>
-            Kidmortal Test Zone
-          </Typography>
-          <Tabs
-            className={classes.headerTabs}
-            value={headerIndex}
-            onChange={handleChange}
-            aria-label="simple tabs example"
-          >
-            <Tab
-              label="Sistemas"
-              component={Link}
-              to="/sistemas"
-              icon={<ComputerIcon />}
-            />
-            <Tab
-              label="Loja"
-              component={Link}
-              to="/loja"
-              icon={<ShoppingCartIcon />}
-            />
-            <Tab
-              label="Batalha"
-              component={Link}
-              to="/batalha"
-              icon={<TransferWithinAStationIcon />}
-            />
-            <Tab
-              label="Rankings"
-              component={Link}
-              to="/ranking"
-              icon={<EqualizerIcon />}
-            />
-            <Tab
-              label="Informaçoes"
-              component={Link}
-              to="/informacoes"
-              icon={<ImportContactsIcon />}
-            />
-            <UserInfo classes={classes} />
-          </Tabs>
+          <Grid container justify="space-between" alignItems="center">
+            <Grid item>
+              <Link to="/">
+                <img alt="Dragon Logo" src={Logo} width="50px" />
+              </Link>
+            </Grid>
+            <Grid item>
+              <Tabs
+                value={headerIndex}
+                onChange={handleChange}
+                aria-label="simple tabs example"
+              >
+                <Tab
+                  classes={{ root: classes.tab }}
+                  label="Sistemas"
+                  component={Link}
+                  to="/sistemas"
+                  icon={<ComputerIcon />}
+                />
+                <Tab
+                  classes={{ root: classes.tab }}
+                  label="Loja"
+                  component={Link}
+                  to="/loja"
+                  icon={<ShoppingCartIcon />}
+                />
+                <Tab
+                  classes={{ root: classes.tab }}
+                  label="Batalha"
+                  component={Link}
+                  to="/batalha"
+                  icon={<TransferWithinAStationIcon />}
+                />
+                <Tab
+                  classes={{ root: classes.tab }}
+                  label="Rankings"
+                  component={Link}
+                  to="/ranking"
+                  icon={<EqualizerIcon />}
+                />
+                <Tab
+                  classes={{ root: classes.tab }}
+                  label="Informaçoes"
+                  component={Link}
+                  to="/informacoes"
+                  icon={<ImportContactsIcon />}
+                />
+                <UserInfo classes={classes} />
+              </Tabs>
+            </Grid>
+          </Grid>
         </ToolBar>
       </AppBar>
     </div>
