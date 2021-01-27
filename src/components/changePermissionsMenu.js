@@ -83,7 +83,7 @@ export default function ChangePermissionsMenu(props) {
       aria-labelledby="draggable-dialog-title"
     >
       <DialogTitle style={{ cursor: "move" }} id="draggable-dialog-title">
-        Permissions
+        {`${props.player.Name}'s Permissions`}
       </DialogTitle>
       <Grid
         container
