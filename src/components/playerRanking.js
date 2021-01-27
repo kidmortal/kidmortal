@@ -13,6 +13,7 @@ import ToolTip from "@material-ui/core/Tooltip";
 import online from "../assets/online.png";
 import offline from "../assets/offline.png";
 import SendMoney from "../components/sendMoney";
+import ChangePermissionsMenu from "../components/changePermissionsMenu";
 import ChallengeDice from "./challengeDice";
 import firebaseFunctions from "../firebase/firebaseFunctions";
 
@@ -46,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
     color: "green",
   },
   challengeBattle: {
-    backgroundColor: "#ec4646",
+    backgroundColor: "#ff7b54",
     "&:hover": {
       backgroundColor: "#ec4646",
     },
@@ -54,7 +55,13 @@ const useStyles = makeStyles((theme) => ({
   challengeDice: {
     backgroundColor: "#9dad7f",
     "&:hover": {
-      backgroundColor: "#9dad7f",
+      backgroundColor: "#16c79a",
+    },
+  },
+  changePermissions: {
+    backgroundColor: "#1687a7",
+    "&:hover": {
+      backgroundColor: "#276678",
     },
   },
 }));
@@ -62,6 +69,7 @@ const useStyles = makeStyles((theme) => ({
 export default function PlayerRanking(props) {
   const classes = useStyles();
   const [moneyAnchor, setMoneyAnchor] = useState(null);
+  const [permissionOpen, setPermissionOpen] = useState(null);
   const [sendAmount, setSendAmount] = useState(100);
   const [diceAnchor, setDiceAnchor] = useState(null);
   const [bet, setBet] = useState(100);
@@ -109,6 +117,10 @@ export default function PlayerRanking(props) {
   function challengeDice() {
     toast.error("Não disponivel ainda");
   }
+  function changePermissions() {
+    setPermissionOpen(true);
+    console.log(props.player);
+  }
   return (
     <Grid container direction="row" className={classes.charContainer}>
       <SendMoney
@@ -124,6 +136,11 @@ export default function PlayerRanking(props) {
         bet={bet}
         setBet={setBet}
         challengeDice={challengeDice}
+      />
+      <ChangePermissionsMenu
+        open={permissionOpen}
+        setOpen={setPermissionOpen}
+        player={props.player}
       />
       <Grid item>
         <Grid container direction="column" alignItems="center">
@@ -212,6 +229,22 @@ export default function PlayerRanking(props) {
                 🎲
               </Fab>
             </ToolTip>
+            {character.Config ? (
+              <ToolTip title="Change Permissions">
+                <Fab
+                  size="small"
+                  className={classes.changePermissions}
+                  aria-label="Change Permissions"
+                  onClick={(e) => {
+                    changePermissions();
+                  }}
+                >
+                  ⚙️
+                </Fab>
+              </ToolTip>
+            ) : (
+              ""
+            )}
           </Grid>
         )}
       </Grid>
