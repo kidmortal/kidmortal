@@ -19,8 +19,11 @@ import FireBase from "../firebase/firebase";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import Logo from "../assets/dragonlogo.svg";
+import online from "../assets/online.png";
+import offline from "../assets/offline.png";
 
 import UserInfo from "../components/userInfo";
+import { Tooltip } from "@material-ui/core";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -107,9 +110,25 @@ export default function MainNavbar() {
         <ToolBar>
           <Grid container justify="space-between" alignItems="center">
             <Grid item>
-              <Link to="/">
-                <img alt="Dragon Logo" src={Logo} width="50px" />
-              </Link>
+              <Grid container alignItems="center" spacing={1}>
+                <Grid item>
+                  <Link to="/">
+                    <img alt="Dragon Logo" src={Logo} width="50px" />
+                  </Link>
+                </Grid>
+                <Grid item>
+                  <Typography> API </Typography>
+                </Grid>
+                <Grid item>
+                  <Tooltip title={socket ? `API is Online` : `API is Offline`}>
+                    <img
+                      alt="Api Status"
+                      src={socket ? online : offline}
+                      width="20px"
+                    />
+                  </Tooltip>
+                </Grid>
+              </Grid>
             </Grid>
             <Grid item>
               <Tabs

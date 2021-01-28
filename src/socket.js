@@ -11,6 +11,8 @@ import theme from "./theme";
 import Routes from "./routes";
 import firebaseFunctions from "./firebase/firebaseFunctions";
 
+let getSocket;
+
 export default function Socket() {
   let dispatch = useDispatch();
   let socket = useSelector((state) => state.socket);
@@ -19,6 +21,20 @@ export default function Socket() {
   function socketListeners(socket) {
     socket.on("playersOnline", (data) => {
       dispatchPlayersOnline(data);
+    });
+    socket.on("disconnect", () => {
+      console.log("api caiu");
+      dispatch({
+        type: "UPDATE_SOCKET",
+        payload: null,
+      });
+    });
+    socket.on("connect", () => {
+      console.log("api voltou");
+      dispatch({
+        type: "UPDATE_SOCKET",
+        payload: getSocket,
+      });
     });
     socket.on("allLogs", (data) => {
       if (data && data.reverse) {
@@ -94,7 +110,7 @@ export default function Socket() {
   }
 
   useEffect(() => {
-    let getSocket = openSocket(process.env.REACT_APP_API_url);
+    getSocket = openSocket(process.env.REACT_APP_API_url);
     dispatch({
       type: "UPDATE_SOCKET",
       payload: getSocket,
