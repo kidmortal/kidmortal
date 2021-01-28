@@ -402,7 +402,7 @@ export default function InserirChequeCliente(props) {
               id="lote"
               label="Inserir em lote"
               multiline
-              rows={10}
+              rows={8}
               variant="outlined"
               value={props.lote}
               onChange={(e) => {

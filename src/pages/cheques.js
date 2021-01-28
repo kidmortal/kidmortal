@@ -5,10 +5,14 @@ import ListaChequesCliente from "../components/listaChequesCliente";
 import InserirChequeCliente from "../components/inserirChequeCliente";
 import UltimosPagamentosCliente from "../components/ultimosPagamentosCliente";
 import ClienteSelect from "../components/clienteSelect";
+import { Button } from "@material-ui/core";
 
 const useStyles = makeStyles({
   root: {
     marginTop: 10,
+  },
+  lastContainer: {
+    height: 600,
   },
 });
 

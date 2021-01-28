@@ -12,6 +12,7 @@ import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import TransferWithinAStationIcon from "@material-ui/icons/TransferWithinAStation";
 import ComputerIcon from "@material-ui/icons/Computer";
 import EqualizerIcon from "@material-ui/icons/Equalizer";
+import ListIcon from "@material-ui/icons/List";
 
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -150,7 +151,7 @@ export default function MainNavbar() {
                   label="Pedidos"
                   component={Link}
                   to="/pedidos"
-                  icon={<ComputerIcon />}
+                  icon={<ListIcon />}
                 />
                 <Tab
                   classes={{ root: classes.tab }}
