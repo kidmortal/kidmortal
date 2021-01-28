@@ -15,6 +15,7 @@ import Configuracoes from "./pages/configuracoes";
 import Produtos from "./pages/produtos";
 import Clientes from "./pages/clientes";
 import Consultas from "./pages/consultas";
+import Pedidos from "./pages/pedidos";
 import ContaCorrente from "./pages/contaCorrente";
 import MainNavbar from "./components/mainNavbar";
 import Footer from "./components/copyrightFooter";
@@ -56,6 +57,7 @@ const Routes = () => {
       <Switch>
         <Route exact path="/" component={Home} />
         <Route exact path="/sistemas" component={Sistemas} />
+        <Route exact path="/pedidos" component={Pedidos} />
         <Route exact path="/loja" component={Shop} />
         <Route exact path="/batalha" component={Battle} />
         <Route exact path="/informacoes" component={Home} />

@@ -147,6 +147,13 @@ export default function MainNavbar() {
                 />
                 <Tab
                   classes={{ root: classes.tab }}
+                  label="Pedidos"
+                  component={Link}
+                  to="/pedidos"
+                  icon={<ComputerIcon />}
+                />
+                <Tab
+                  classes={{ root: classes.tab }}
                   label="Loja"
                   component={Link}
                   to="/loja"

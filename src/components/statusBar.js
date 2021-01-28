@@ -3,7 +3,7 @@ import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles, withStyles } from "@material-ui/core";
 
-const BorderLinearProgress = withStyles((theme) => ({
+const HealthBar = withStyles((theme) => ({
   root: {
     height: 10,
     width: 100,
@@ -12,6 +12,26 @@ const BorderLinearProgress = withStyles((theme) => ({
   colorPrimary: {
     backgroundColor:
       theme.palette.grey[theme.palette.type === "light" ? 200 : 700],
+  },
+  bar: {
+    borderRadius: 5,
+    backgroundColor: "#ff4646",
+  },
+}))(LinearProgress);
+
+const ManaBar = withStyles((theme) => ({
+  root: {
+    height: 10,
+    width: 100,
+    borderRadius: 5,
+  },
+  colorPrimary: {
+    backgroundColor:
+      theme.palette.grey[theme.palette.type === "light" ? 200 : 700],
+  },
+  bar: {
+    borderRadius: 5,
+    backgroundColor: "#0e49b5",
   },
 }))(LinearProgress);
 
@@ -60,12 +80,19 @@ export default function StatusBar(props) {
         </span>
       </Grid>
       <Grid item>
-        <BorderLinearProgress
-          variant="determinate"
-          className={classes.progressBar}
-          classes={{ bar: classes[props.bar] }}
-          value={Math.round((props.currentValue / props.maxValue) * 100)}
-        />
+        {props.bar === "hpBar" ? (
+          <HealthBar
+            variant="determinate"
+            className={classes.progressBar}
+            value={Math.round((props.currentValue / props.maxValue) * 100)}
+          />
+        ) : (
+          <ManaBar
+            variant="determinate"
+            className={classes.progressBar}
+            value={Math.round((props.currentValue / props.maxValue) * 100)}
+          />
+        )}
       </Grid>
     </Grid>
   );
