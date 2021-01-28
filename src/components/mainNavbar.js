@@ -120,13 +120,15 @@ export default function MainNavbar() {
                   <Typography> API </Typography>
                 </Grid>
                 <Grid item>
-                  <Tooltip title={socket ? `API is Online` : `API is Offline`}>
-                    <img
-                      alt="Api Status"
-                      src={socket ? online : offline}
-                      width="20px"
-                    />
-                  </Tooltip>
+                  {socket && socket.connected ? (
+                    <Tooltip title="Api is Online">
+                      <img alt="Api Status" src={online} width="20px" />
+                    </Tooltip>
+                  ) : (
+                    <Tooltip title="Api is Offline">
+                      <img alt="Api Status" src={offline} width="20px" />
+                    </Tooltip>
+                  )}
                 </Grid>
               </Grid>
             </Grid>
