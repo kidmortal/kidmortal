@@ -41,7 +41,7 @@ export default function ClientesTable(props) {
   const classes = useStyles();
   const [page, setPage] = useState(0);
   const [editOpen, setEditOpen] = useState(false);
-  const [currentCliente, setCurrentClient] = useState();
+  const [currentCliente, setCurrentClient] = useState({ nome: "", cnpj: "" });
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const handleChangePage = (event, newPage) => {
@@ -65,6 +65,8 @@ export default function ClientesTable(props) {
         open={editOpen}
         setOpen={setEditOpen}
         currentCliente={currentCliente}
+        clientes={props.clientes}
+        setClientes={props.setClientes}
       />
       <TableContainer className={classes.container}>
         <Table stickyHeader aria-label="sticky table">

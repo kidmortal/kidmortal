@@ -36,7 +36,7 @@ export default function Clientes() {
       spacing={10}
     >
       <Grid item className={classes.table}>
-        <ClientesTable clientes={clientes} />
+        <ClientesTable clientes={clientes} setClientes={setClientes} />
       </Grid>
       <Grid item>
         <ClientesInput fetchClientes={fetchClientes} />

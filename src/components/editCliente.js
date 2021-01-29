@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import FireBase from "../firebase/firebase";
 import Button from "@material-ui/core/Button";
+import SaveIcon from "@material-ui/icons/Save";
 import { makeStyles } from "@material-ui/core/styles";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -16,7 +17,7 @@ import { TextField } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: 300,
+    width: 350,
     height: 250,
   },
 }));
@@ -34,6 +35,55 @@ function PaperComponent(props) {
 
 export default function EditCliente(props) {
   const classes = useStyles();
+  const [clienteName, setClienteName] = useState("");
+  const [clienteCnpj, setClienteCnpj] = useState("");
+
+  useEffect(() => {
+    let cnpjString = "";
+    if (props.currentCliente.cnpj) {
+      props.currentCliente.cnpj.forEach((cnpj) => {
+        cnpjString += `${cnpj}\n`;
+      });
+    }
+    setClienteCnpj(cnpjString);
+    setClienteName(props.currentCliente.nome);
+  }, [props.currentCliente]);
+
+  function updateClienteData() {
+    let cnpjArray = clienteCnpj.split("\n");
+    fetch(
+      `${process.env.REACT_APP_API_url}/mongoClientes?key=${process.env.REACT_APP_API_key}&type=update`,
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          cliente: props.currentCliente._id,
+          name: clienteName,
+          cnpj: cnpjArray,
+        }),
+      }
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        if (data === "okay") {
+          let currentCliente = props.currentCliente;
+          currentCliente.nome = clienteName;
+          currentCliente.cnpj = cnpjArray;
+          let updateClientes = props.clientes;
+          let clienteIndex = updateClientes.findIndex(
+            (cliente) => cliente._id === props.currentCliente._id
+          );
+          updateClientes[clienteIndex] = currentCliente;
+          props.setClientes(updateClientes);
+          props.setOpen(false);
+        }
+      });
+
+    console.log(cnpjArray);
+  }
 
   const handleClose = () => {
     props.setOpen(false);
@@ -62,7 +112,7 @@ export default function EditCliente(props) {
             id="standard-search"
             label="Nome Cliente"
             type="search"
-            value={props.currentCliente.nome}
+            value={clienteName}
           />
         </Grid>
         <Grid item>
@@ -73,7 +123,24 @@ export default function EditCliente(props) {
             rows={5}
             defaultValue="Default Value"
             variant="outlined"
+            value={clienteCnpj}
+            onChange={(e) => {
+              setClienteCnpj(e.target.value);
+            }}
           />
+        </Grid>
+        <Grid item>
+          <Button
+            variant="contained"
+            color="primary"
+            size="large"
+            startIcon={<SaveIcon />}
+            onClick={() => {
+              updateClienteData();
+            }}
+          >
+            Save
+          </Button>
         </Grid>
       </Grid>
     </Dialog>
