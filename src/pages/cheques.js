@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
+import SaveIcon from "@material-ui/icons/Save";
 import ListaChequesCliente from "../components/listaChequesCliente";
 import InserirChequeCliente from "../components/inserirChequeCliente";
 import UltimosPagamentosCliente from "../components/ultimosPagamentosCliente";
+import UltimosLancamentosCliente from "../components/ultimosLancamentosCliente";
 import ClienteSelect from "../components/clienteSelect";
 import { Button } from "@material-ui/core";
 
@@ -33,6 +35,9 @@ export default function Cheques() {
   const [lote, setLote] = useState("12/12/2020 SA-00005 50,25");
   const [clientes, setClientes] = useState([]);
   const [cheques, setCheques] = useState([]);
+  const [lancamentos, setLancamentos] = useState([
+    { data: "10/10/10", descricao: "3 kilos de picanha fresca", valor: 145 },
+  ]);
   const totalPagamentos = getTotal(cheques);
   const selectedCheques = getCurrentSelection(cheques, dataRecebimento);
 
@@ -138,10 +143,28 @@ export default function Cheques() {
             />
           </Grid>
           <Grid item>
-            <UltimosPagamentosCliente
-              totalPagamentos={totalPagamentos}
-              fetchChequesCliente={fetchChequesCliente}
-            />
+            <Grid container direction="column" alignItems="center" spacing={2}>
+              <Grid item>
+                <UltimosPagamentosCliente
+                  totalPagamentos={totalPagamentos}
+                  fetchChequesCliente={fetchChequesCliente}
+                />
+              </Grid>
+              <Grid item>
+                <UltimosLancamentosCliente lancamentos={lancamentos} />
+              </Grid>
+              <Grid item>
+                <Button
+                  id="save"
+                  variant="contained"
+                  color="primary"
+                  size="large"
+                  startIcon={<SaveIcon />}
+                >
+                  Inserir Lancamento
+                </Button>
+              </Grid>
+            </Grid>
           </Grid>
         </Grid>
       </Grid>

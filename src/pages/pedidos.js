@@ -3,13 +3,18 @@ import { DataGrid } from "@material-ui/data-grid";
 import { Grid } from "@material-ui/core";
 
 const columns = [
-  { field: "id", headerName: "Numero", width: 100 },
+  { field: "id", headerName: "Numero", width: 150 },
   { field: "cliente", headerName: "Cliente", width: 330 },
   { field: "valor", headerName: "Valor", width: 130 },
   {
     field: "status",
     headerName: "Status",
     width: 450,
+  },
+  {
+    field: "data",
+    headerName: "Data",
+    width: 150,
   },
 ];
 
@@ -44,7 +49,8 @@ export default function Pedidos() {
 
           pedidos.push({
             id: pedido.numero,
-            cliente: pedido.cliente.nome,
+            data: pedido.data,
+            cliente: pedido.nome,
             valor: pedido.valor,
             status: `${pedido.status} ${timeStamp}`,
           });

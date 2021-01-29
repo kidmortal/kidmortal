@@ -11,18 +11,18 @@ import TableRow from "@material-ui/core/TableRow";
 import SelectedChequeLoteMenu from "./selectedChequeLoteMenu";
 
 const columns = [
-  { id: "dataRecebimento", label: "Data", minWidth: 170 },
+  { id: "data", label: "Data", minWidth: 40 },
   {
-    id: "total",
-    label: "Total Pago",
-    minWidth: 100,
-    align: "right",
-    format: (value) => `R$ ${value.toLocaleString("pt-BR")}`,
+    id: "descricao",
+    label: "Descrição",
+    minWidth: 300,
   },
   {
-    id: "quantidade",
-    label: "Total Cheques",
-    minWidth: 100,
+    id: "valor",
+    label: "Valor",
+    minWidth: 80,
+    align: "right",
+    format: (value) => `R$ ${value.toLocaleString("pt-BR")}`,
   },
 ];
 
@@ -36,12 +36,10 @@ const useStyles = makeStyles({
   },
 });
 
-export default function UltimosPagamentosCliente(props) {
+export default function UltimosLancamentosCliente(props) {
   const classes = useStyles();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(4);
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [selectedLote, setSelectedLote] = React.useState({});
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -54,12 +52,6 @@ export default function UltimosPagamentosCliente(props) {
 
   return (
     <Paper className={classes.root}>
-      <SelectedChequeLoteMenu
-        anchorEl={anchorEl}
-        setAnchorEl={setAnchorEl}
-        selectedLote={selectedLote}
-        fetchChequesCliente={props.fetchChequesCliente}
-      />
       <TableContainer className={classes.container}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
@@ -76,7 +68,7 @@ export default function UltimosPagamentosCliente(props) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {props.totalPagamentos
+            {props.lancamentos
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row) => {
                 return (
@@ -89,14 +81,7 @@ export default function UltimosPagamentosCliente(props) {
                     {columns.map((column) => {
                       const value = row[column.id];
                       return (
-                        <TableCell
-                          key={column.id}
-                          align={column.align}
-                          onClick={(e) => {
-                            setAnchorEl(e.currentTarget);
-                            setSelectedLote(row);
-                          }}
-                        >
+                        <TableCell key={column.id} align={column.align}>
                           {column.format ? column.format(value) : value}
                         </TableCell>
                       );
@@ -110,7 +95,7 @@ export default function UltimosPagamentosCliente(props) {
       <TablePagination
         rowsPerPageOptions={[4]}
         component="div"
-        count={props.totalPagamentos.length}
+        count={props.lancamentos.length}
         rowsPerPage={rowsPerPage}
         page={page}
         onChangePage={handleChangePage}

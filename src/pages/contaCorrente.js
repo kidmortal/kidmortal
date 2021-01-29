@@ -26,8 +26,74 @@ export default function ContaCorrente() {
   let [cheques, setCheques] = useState([]);
   let [pedidos, setPedidos] = useState([]);
   let [notas, setNotas] = useState([]);
-  let [entradas, setEntradas] = useState([]);
+  let [lancamentos, setLancamentos] = useState([]);
   let [selectedCliente, setSelectedCliente] = useState();
+
+  function fetchClientes() {
+    fetch(
+      `${process.env.REACT_APP_API_url}/mongoClientes?key=${process.env.REACT_APP_API_key}&type=list`
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        setClientes(data);
+      });
+  }
+  function fetchChequesCliente() {
+    if (selectedCliente) {
+      fetch(
+        `${process.env.REACT_APP_API_url}/mongoCheques?key=${process.env.REACT_APP_API_key}&type=list&cliente=${selectedCliente._id}`
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          setCheques(data);
+          console.log(data);
+        });
+    }
+  }
+  function fetchNotas() {
+    fetch(
+      `${process.env.REACT_APP_API_url}/mongoNotas?key=${process.env.REACT_APP_API_key}&type=list`
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        setPedidos(data);
+      });
+  }
+  function fetchPedidos() {
+    fetch(
+      `${process.env.REACT_APP_API_url}/mongoPedidos?key=${process.env.REACT_APP_API_key}&type=list`
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        setPedidos(data);
+      });
+  }
+  function fetchLancamentos() {
+    fetch(
+      `${process.env.REACT_APP_API_url}/mongoLancamentos?key=${process.env.REACT_APP_API_key}&type=list`
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        setLancamentos(data);
+      });
+  }
+
+  useEffect(() => {
+    fetchClientes();
+    fetchNotas();
+    fetchPedidos();
+    fetchLancamentos();
+  }, []);
+
+  useEffect(() => {
+    console.log(selectedCliente);
+    fetchChequesCliente();
+  }, [selectedCliente]);
+
   return (
     <Grid container>
       <Grid item xs={4}></Grid>
@@ -44,7 +110,7 @@ export default function ContaCorrente() {
                   key={cliente.id}
                   value={cliente.nome}
                   onClick={() => {
-                    setSelectedCliente(cliente._id);
+                    setSelectedCliente(cliente);
                   }}
                 >
                   {cliente.nome}
