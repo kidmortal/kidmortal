@@ -1,29 +1,125 @@
 import React, { useState, useEffect } from "react";
 import { DataGrid } from "@material-ui/data-grid";
 import { Grid } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+import Tabela from "../components/tabela";
 
-const columns = [
-  { field: "id", headerName: "Numero", width: 150 },
-  { field: "cliente", headerName: "Cliente", width: 330 },
-  { field: "valor", headerName: "Valor", width: 130 },
+const useStyles = makeStyles({
+  root: { paddingTop: 40 },
+  notas: {
+    right: 0,
+  },
+});
+
+const pedidosColumns = [
+  { id: "id", label: "Pedido" },
+  { id: "status", label: "Status" },
   {
-    field: "status",
-    headerName: "Status",
-    width: 450,
+    id: "cliente",
+    label: "Cliente",
+    format: (value) => (value.length > 30 ? value.slice(0, 30) : value),
   },
   {
-    field: "data",
-    headerName: "Data",
-    width: 150,
+    id: "valor",
+    label: "Valor",
+    align: "right",
+    format: (value) => `R$ ${value.toLocaleString("en-US")}`,
+  },
+  {
+    id: "data",
+    label: "Data",
+    format: (value) => {
+      let d = new Date(value);
+      return `${d.getDate()}/ ${d.getMonth() + 1}/${d.getFullYear()}`;
+    },
+  },
+];
+
+const notasColumn = [
+  { id: "id", label: "NF" },
+  {
+    id: "nome",
+    label: "Nome",
+    format: (value) => (value.length > 30 ? value.slice(0, 30) : value),
+  },
+  {
+    id: "boleto",
+    label: "Boleto",
+    format: (value) => (value ? "Sim" : "Não"),
+  },
+  {
+    id: "valor",
+    label: "Valor",
+    align: "right",
+    format: (value) => `R$ ${value.toLocaleString("en-US")}`,
+  },
+  {
+    id: "danfe",
+    label: "Danfe",
+    format: (value) => (
+      <a href={value} target="_blank" style={{ textDecoration: "none" }}>
+        🔍
+      </a>
+    ),
   },
 ];
 
 export default function Pedidos() {
+  const classes = useStyles();
   const [pedidos, setPedidos] = useState([
     { id: 1, cliente: "Carregando", valor: 0, status: "Carregando" },
   ]);
+  const [notas, setNotas] = useState([
+    {
+      id: 1,
+      nome: "Carregando",
+      valor: 0,
+      boleto: false,
+      danfe: "url",
+    },
+    {
+      id: 1,
+      nome: "Carregando",
+      valor: 0,
+      boleto: false,
+      danfe: "url",
+    },
+    {
+      id: 1,
+      nome: "Carregando",
+      valor: 0,
+      boleto: false,
+      danfe: "url",
+    },
+    {
+      id: 1,
+      nome: "Carregando",
+      valor: 0,
+      boleto: false,
+      danfe: "url",
+    },
+  ]);
 
   useEffect(() => {
+    fetch(
+      `${process.env.REACT_APP_API_url}/mongoNotas?key=${process.env.REACT_APP_API_key}&type=list`
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        let newNotas = [];
+        data.forEach((nota) => {
+          newNotas.push({
+            id: nota.numero,
+            nome: nota.cliente,
+            valor: nota.valorTotal,
+            boleto: nota.boleto,
+            danfe: nota.nfUrl,
+          });
+        });
+        newNotas = newNotas.reverse();
+        setNotas(newNotas);
+      });
+
     fetch(
       `${process.env.REACT_APP_API_url}/mongoPedidos?key=${process.env.REACT_APP_API_key}&type=list`
     )
@@ -55,18 +151,19 @@ export default function Pedidos() {
             status: `${pedido.status} ${timeStamp}`,
           });
         });
+        pedidos = pedidos.reverse();
         setPedidos(pedidos);
       });
   }, []);
 
   return (
-    <div style={{ height: 600, width: "100%" }}>
-      <DataGrid
-        rows={pedidos}
-        columns={columns}
-        pageSize={10}
-        checkboxSelection
-      />
-    </div>
+    <Grid container justify="space-around" className={classes.root}>
+      <Grid item>
+        <Tabela rows={notas} columns={notasColumn} />
+      </Grid>
+      <Grid item>
+        <Tabela rows={pedidos} columns={pedidosColumns} />
+      </Grid>
+    </Grid>
   );
 }
