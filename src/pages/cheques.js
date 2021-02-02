@@ -116,6 +116,8 @@ export default function Cheques() {
     }
   }
 
+  function inserirModal() {}
+
   return (
     <Grid container className={classes.root}>
       <Grid item>
@@ -160,6 +162,9 @@ export default function Cheques() {
                   color="primary"
                   size="large"
                   startIcon={<SaveIcon />}
+                  onClick={() => {
+                    inserirModal();
+                  }}
                 >
                   Inserir Lancamento
                 </Button>
