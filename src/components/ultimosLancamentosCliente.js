@@ -11,7 +11,15 @@ import TableRow from "@material-ui/core/TableRow";
 import SelectedChequeLoteMenu from "./selectedChequeLoteMenu";
 
 const columns = [
-  { id: "data", label: "Data", minWidth: 40 },
+  {
+    id: "data",
+    label: "Data",
+    minWidth: 40,
+    format: (value) => {
+      let d = new Date(value);
+      return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
+    },
+  },
   {
     id: "descricao",
     label: "Descrição",

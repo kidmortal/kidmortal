@@ -6,8 +6,10 @@ import ListaChequesCliente from "../components/listaChequesCliente";
 import InserirChequeCliente from "../components/inserirChequeCliente";
 import UltimosPagamentosCliente from "../components/ultimosPagamentosCliente";
 import UltimosLancamentosCliente from "../components/ultimosLancamentosCliente";
+import InsertUpdateLancamento from "../components/insertUpdateLancamento";
 import ClienteSelect from "../components/clienteSelect";
 import { Button } from "@material-ui/core";
+import { toast } from "react-toastify";
 
 const useStyles = makeStyles({
   root: {
@@ -32,6 +34,7 @@ export default function Cheques() {
   const classes = useStyles();
   const [dataRecebimento, setDataRecebimento] = useState("");
   const [selectedCliente, setSelectedCliente] = useState("");
+  const [lancamentoModal, setLancamentoModal] = useState(false);
   const [lote, setLote] = useState("12/12/2020 SA-00005 50,25");
   const [clientes, setClientes] = useState([]);
   const [cheques, setCheques] = useState([]);
@@ -43,6 +46,7 @@ export default function Cheques() {
 
   useEffect(() => {
     fetchChequesCliente();
+    fetchLancamentosCliente();
   }, [selectedCliente]);
 
   useEffect(() => {
@@ -116,10 +120,37 @@ export default function Cheques() {
     }
   }
 
-  function inserirModal() {}
+  function fetchLancamentosCliente() {
+    if (selectedCliente) {
+      fetch(
+        `${process.env.REACT_APP_API_url}/mongoLancamentos?key=${process.env.REACT_APP_API_key}&type=list`
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data);
+          setLancamentos(data);
+        });
+    }
+  }
+
+  function insertLancamento(lancamento) {
+    let newLancamentos = [...lancamentos, lancamento];
+    setLancamentos(newLancamentos);
+  }
+
+  function inserirModal() {
+    if (!selectedCliente) return toast.error("Escolha um cliente antes");
+    setLancamentoModal(true);
+  }
 
   return (
     <Grid container className={classes.root}>
+      <InsertUpdateLancamento
+        selectedCliente={selectedCliente}
+        open={lancamentoModal}
+        setOpen={setLancamentoModal}
+        insertLancamento={insertLancamento}
+      />
       <Grid item>
         <Grid container spacing={3}>
           <Grid item>

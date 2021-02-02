@@ -27,193 +27,54 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function EditSelectedCheque(props) {
+export default function InsertLancamento(props) {
   const classes = useStyles();
-  const [dataInputError, setDataInputError] = useState({
-    error: false,
-    message: "",
-  });
-  const [numeroInputError, setNumeroInputError] = useState({
-    error: false,
-    message: "",
-  });
-  const [valorInputError, setValorInputError] = useState({
-    error: false,
-    message: "",
-  });
-  const [id, setId] = useState("");
   const [data, setData] = useState("");
-  const [numero, setNumero] = useState("");
+  const [descricao, setDescricao] = useState("");
   const [valor, setValor] = useState("");
 
-  useEffect(() => {
-    let dados = props.selectedRow;
-    setId(dados._id);
-    let date = new Date(dados.dataCheque);
-    setData(
-      `${date.getDate() + 1}/${date.getMonth() + 1}/${date.getFullYear()}`
-    );
-    setNumero(dados.numeroCheque);
-    setValor(dados.valorCheque);
-    setDataInputError({
-      error: false,
-      message: "",
-    });
-    setNumeroInputError({
-      error: false,
-      message: "",
-    });
-    setValorInputError({
-      error: false,
-      message: "",
-    });
-  }, [props.selectedRow]);
-
-  function validateData(data) {
-    if (!data) {
-      setDataInputError({
-        error: true,
-        message: "entao irmao, tem que por data",
-      });
-
-      return null;
-    }
-    let dataArray = data.split("/");
-    if (dataArray[0] && dataArray[1] && !dataArray[2]) {
-      let now = new Date();
-      data = data.concat(`/${now.getFullYear()}`);
-      dataArray[2] = now.getFullYear();
-    }
-    if (dataArray[0] && dataArray[1] && dataArray[2]) {
-      if (dataArray[2].length === 2) {
-        data = data.replace(dataArray[2], `20${dataArray[2]}`);
-        dataArray[2] = `20${dataArray[2]}`;
-      }
-      let [dia, mes, ano] = dataArray;
-      let dataValid = new Date(`${mes}/${dia}/${ano}`);
-      if (dataValid === "Invalid Date") {
-        setDataInputError({
-          error: true,
-          message: "Data invalida",
-        });
-
-        return null;
-      }
-      setDataInputError({
-        error: false,
-        message: "",
-      });
-
-      return data;
-    }
-
-    setDataInputError({
-      error: true,
-      message: "Data incompleta",
-    });
-
-    return null;
-  }
-  function validateNumero(numero) {
-    if (!numero) {
-      setNumeroInputError({
-        error: true,
-        message: "tem que por o numero tambem tlgd?",
-      });
-
-      return null;
-    }
-    if (numero.length > 10) {
-      setNumeroInputError({
-        error: true,
-        message: "Numero grande demais",
-      });
-
-      return null;
-    }
-    setNumeroInputError({
-      error: false,
-      message: "",
-    });
-
-    return numero;
-  }
-  function validateValor(valor) {
-    if (!valor) {
-      setValorInputError({
-        error: true,
-        message: "amigo??? cheque ta sem valor por acaso?",
-      });
-
-      return null;
-    }
-    if (typeof valor === "string") valor = valor.replace(",", ".");
-
-    if (isNaN(valor)) {
-      setValorInputError({
-        error: true,
-        message: "Precisa ser numerico",
-      });
-
-      return null;
-    }
-    setValorInputError({
-      error: false,
-      message: "",
-    });
-
-    return valor;
-  }
-
-  function alterarCheque() {
-    let insertData = validateData(data);
-    let insertNumero = validateNumero(numero);
-    let insertValor = validateValor(valor);
-
-    if (insertData && insertNumero && insertValor) {
-      setData(insertData);
-      setNumero(insertNumero);
-      setValor(insertValor);
-
-      let newCheques = props.cheques;
-
-      let index = newCheques.findIndex((cheque) => cheque._id === id);
-      let oldCheque = newCheques[index];
-
-      fetch(
-        `${process.env.REACT_APP_API_url}/mongoCheques?key=${process.env.REACT_APP_API_key}&type=edit&id=${id}&data=${insertData}&numero=${insertNumero}&valor=${insertValor}`
-      )
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.response === "Success") {
-            toast.success(`Cheque Editado com Sucesso`);
-            newCheques[index] = {
-              _id: id,
-              dataCheque: insertData,
-              numeroCheque: insertNumero,
-              valorCheque: insertValor,
-              dataRecebimento: oldCheque.dataRecebimento,
-            };
-            props.setCheques(newCheques);
-            props.setOpenModal(false);
-          }
-          if (data.response === "Error") {
-            toast.error("Erro na edição");
-            props.setOpenModal(false);
-          }
-        });
-    } else {
-      return null;
-    }
-  }
-
   const handleClose = () => {
-    props.setOpenModal(false);
+    props.setOpen(false);
   };
+
+  function insertLancamento() {
+    let d = data.split("/");
+    d = new Date(`${d[1]}/${d[0]}/${d[2]}`);
+    fetch(
+      `${process.env.REACT_APP_API_url}/mongoLancamentos?key=${process.env.REACT_APP_API_key}&type=add`,
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          data: d,
+          descricao,
+          valor,
+          cliente: props.selectedCliente,
+        }),
+      }
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        toast.info(data.response);
+        let lancamento = {
+          CC: false,
+          data: d,
+          descricao,
+          valor,
+          cliente: props.selectedCliente,
+          _id: data.id,
+        };
+        props.insertLancamento(lancamento);
+        props.setOpen(false);
+      });
+  }
 
   return (
     <Dialog
-      open={props.openModal}
+      open={props.open}
       onClose={handleClose}
       aria-labelledby="form-dialog-title"
     >
@@ -222,7 +83,7 @@ export default function EditSelectedCheque(props) {
           <EditIcon />
         </Grid>
         <Grid item>
-          <DialogTitle id="form-dialog-title">Cheque Edit</DialogTitle>
+          <DialogTitle id="form-dialog-title">Inserir Lancamento</DialogTitle>
         </Grid>
       </Grid>
 
@@ -234,7 +95,6 @@ export default function EditSelectedCheque(props) {
           justify="center"
           alignItems="center"
         >
-          <DialogContentText>Alterar dados do cheque</DialogContentText>
           <Grid item>
             <Grid container spacing={1} alignItems="flex-end">
               <Grid item>
@@ -243,8 +103,6 @@ export default function EditSelectedCheque(props) {
               <Grid item>
                 <TextField
                   className={classes.input}
-                  error={dataInputError.error}
-                  helperText={dataInputError.message}
                   id="data"
                   label="DATA"
                   value={data}
@@ -261,12 +119,10 @@ export default function EditSelectedCheque(props) {
               <Grid item>
                 <TextField
                   className={classes.input}
-                  error={numeroInputError.error}
-                  helperText={numeroInputError.message}
-                  id="numero"
-                  label="NUMERO"
-                  value={numero}
-                  onChange={(e) => setNumero(e.target.value)}
+                  id="descricao"
+                  label="DESCRICAO"
+                  value={descricao}
+                  onChange={(e) => setDescricao(e.target.value)}
                 />
               </Grid>
             </Grid>
@@ -279,8 +135,6 @@ export default function EditSelectedCheque(props) {
               <Grid item>
                 <TextField
                   className={classes.input}
-                  error={valorInputError.error}
-                  helperText={valorInputError.message}
                   id="valor"
                   label="VALOR"
                   value={valor}
@@ -298,7 +152,7 @@ export default function EditSelectedCheque(props) {
           size="large"
           startIcon={<SaveIcon />}
           onClick={() => {
-            alterarCheque();
+            insertLancamento();
           }}
         >
           Save
