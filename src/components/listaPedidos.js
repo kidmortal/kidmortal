@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Grid } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import Tabela from "./tabela";
 
 const useStyles = makeStyles({
@@ -65,45 +66,8 @@ const notasColumn = [
 
 export default function Pedidos() {
   const classes = useStyles();
-  const [pedidos, setPedidos] = useState([
-    {
-      id: 1,
-      cliente: "Carregando",
-      valor: 0,
-      status: "Carregando",
-      data: "01/01/1990",
-    },
-  ]);
-  const [notas, setNotas] = useState([
-    {
-      id: 1,
-      nome: "Carregando",
-      valor: 0,
-      boleto: false,
-      danfe: "url",
-    },
-    {
-      id: 1,
-      nome: "Carregando",
-      valor: 0,
-      boleto: false,
-      danfe: "url",
-    },
-    {
-      id: 1,
-      nome: "Carregando",
-      valor: 0,
-      boleto: false,
-      danfe: "url",
-    },
-    {
-      id: 1,
-      nome: "Carregando",
-      valor: 0,
-      boleto: false,
-      danfe: "url",
-    },
-  ]);
+  const [pedidos, setPedidos] = useState([]);
+  const [notas, setNotas] = useState([]);
 
   useEffect(() => {
     fetch(
@@ -164,10 +128,18 @@ export default function Pedidos() {
   return (
     <Grid container justify="space-around" className={classes.root}>
       <Grid item>
-        <Tabela rows={notas} columns={notasColumn} />
+        {notas.length > 0 ? (
+          <Tabela rows={notas} columns={notasColumn} />
+        ) : (
+          <CircularProgress />
+        )}
       </Grid>
       <Grid item>
-        <Tabela rows={pedidos} columns={pedidosColumns} />
+        {pedidos.length > 0 ? (
+          <Tabela rows={pedidos} columns={pedidosColumns} />
+        ) : (
+          <CircularProgress />
+        )}
       </Grid>
     </Grid>
   );
