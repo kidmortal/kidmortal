@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import * as Icons from "../assets/skins/";
 import GoldCoin from "../assets/coin.svg";
 import FireBase from "../firebase/firebase";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
@@ -35,6 +36,10 @@ import StatusBar from "./statusBar";
 const useStyles = makeStyles({
   root: {
     marginRight: 20,
+  },
+  loading: {
+    marginTop: 20,
+    marginRight: 50,
   },
   buttonContainer: { marginTop: 10 },
   animatedSpan: {
@@ -118,103 +123,117 @@ export default function UserInfo(props) {
   }
 
   if (player && character) {
-    return (
-      <Grid container className={classes.root} spacing={3}>
-        <Grid item>
-          <img
-            className={classes.userAvatar}
-            alt="user avatar"
-            src={Icons[character.Skin]}
-          />
-        </Grid>
-        <Grid item>
-          <Grid container direction="column">
-            <Grid item>
-              <Typography variant="subtitle2">{character.Name}</Typography>
-            </Grid>
-            <Grid item>
-              <Typography variant="subtitle2">
-                Level: {character.Level}
-              </Typography>
-            </Grid>
-            <Grid item>
-              <Typography variant="subtitle2">
-                Exp: {character.Experiencia} / 100
-              </Typography>
-            </Grid>
-            <Grid item>
-              <Grid container direction="column" spacing={1}>
-                <Grid item>
-                  <StatusBar
-                    bar={"hpBar"}
-                    currentValue={character.CurrentHealth}
-                    maxValue={character.MaxHealth}
-                  />
-                </Grid>
-                <Grid item>
-                  <StatusBar
-                    bar={"mpBar"}
-                    currentValue={character.CurrentMana}
-                    maxValue={character.MaxMana}
-                  />
+    if (character.Classe) {
+      return (
+        <Grid container className={classes.root} spacing={3}>
+          <Grid item>
+            <img
+              className={classes.userAvatar}
+              alt="user avatar"
+              src={Icons[character.Skin]}
+            />
+          </Grid>
+          <Grid item>
+            <Grid container direction="column">
+              <Grid item>
+                <Typography variant="subtitle2">{character.Name}</Typography>
+              </Grid>
+              <Grid item>
+                <Typography variant="subtitle2">
+                  Level: {character.Level}
+                </Typography>
+              </Grid>
+              <Grid item>
+                <Typography variant="subtitle2">
+                  Exp: {character.Experiencia} / 100
+                </Typography>
+              </Grid>
+              <Grid item>
+                <Grid container direction="column" spacing={1}>
+                  <Grid item>
+                    <StatusBar
+                      bar={"hpBar"}
+                      currentValue={character.CurrentHealth}
+                      maxValue={character.MaxHealth}
+                    />
+                  </Grid>
+                  <Grid item>
+                    <StatusBar
+                      bar={"mpBar"}
+                      currentValue={character.CurrentMana}
+                      maxValue={character.MaxMana}
+                    />
+                  </Grid>
                 </Grid>
               </Grid>
             </Grid>
           </Grid>
-        </Grid>
-        <Grid item>
-          <Grid
-            container
-            direction="column"
-            alignItems="center"
-            className={classes.buttonContainer}
-          >
-            <Grid item>
-              <Grid container direction="row" spacing={1}>
-                <Grid item>
-                  <img
-                    alt="gold coins"
-                    src={GoldCoin}
-                    width="20px"
-                    height="20px"
-                  />
-                </Grid>
-                <Grid item>
-                  <Typography variant="subtitle2">
-                    {character.Dogecoin}
-                  </Typography>
-                </Grid>
-                <Grid item>
-                  <Badge badgeContent={4} color="error">
-                    <MailIcon />
-                  </Badge>
+          <Grid item>
+            <Grid
+              container
+              direction="column"
+              alignItems="center"
+              className={classes.buttonContainer}
+            >
+              <Grid item>
+                <Grid container direction="row" spacing={1}>
+                  <Grid item>
+                    <img
+                      alt="gold coins"
+                      src={GoldCoin}
+                      width="20px"
+                      height="20px"
+                    />
+                  </Grid>
+                  <Grid item>
+                    <Typography variant="subtitle2">
+                      {character.Dogecoin}
+                    </Typography>
+                  </Grid>
+                  <Grid item>
+                    <Badge badgeContent={4} color="error">
+                      <MailIcon />
+                    </Badge>
+                  </Grid>
                 </Grid>
               </Grid>
-            </Grid>
-            <Grid item>
-              <Button
-                className={props.classes.button}
-                startIcon={<PersonIcon />}
-                component={Link}
-                to="/profile"
-              >
-                Perfil
-              </Button>
-            </Grid>
+              <Grid item>
+                <Button
+                  className={props.classes.button}
+                  startIcon={<PersonIcon />}
+                  component={Link}
+                  to="/profile"
+                >
+                  Perfil
+                </Button>
+              </Grid>
 
-            <Grid item>
-              <Button
-                className={props.classes.button}
-                startIcon={<ExitToAppIcon />}
-                onClick={deslogar}
-              >
-                Sair
-              </Button>
+              <Grid item>
+                <Button
+                  className={props.classes.button}
+                  startIcon={<ExitToAppIcon />}
+                  onClick={deslogar}
+                >
+                  Sair
+                </Button>
+              </Grid>
             </Grid>
           </Grid>
         </Grid>
-      </Grid>
-    );
+      );
+    }
+    if (!character.Classe) {
+      return (
+        <Grid container className={classes.loading} spacing={2}>
+          <Grid item>
+            <Typography>Loading</Typography>
+          </Grid>
+          <Grid item>
+            <CircularProgress color="secondary" />
+          </Grid>
+        </Grid>
+      );
+    }
   } else {
     return (
       <>
