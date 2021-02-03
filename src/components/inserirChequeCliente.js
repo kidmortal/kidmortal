@@ -229,6 +229,7 @@ export default function InserirChequeCliente(props) {
     console.log(cheques);
     cheques.forEach((element) => {
       element = element.replace("R$ ", "");
+      element = element.replace("R$", "");
       let split = element.split(" ");
       let data, numero, valor;
       if (!split[2]) {

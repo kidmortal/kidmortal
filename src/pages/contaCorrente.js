@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import TextField from "@material-ui/core/TextField";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import Grid from "@material-ui/core/Grid";
 import TodayIcon from "@material-ui/icons/Today";
 import Button from "@material-ui/core/Button";
@@ -9,8 +9,12 @@ import MenuItem from "@material-ui/core/MenuItem";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
+import { Typography } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
+  text: {
+    width: 200,
+  },
   formControl: {
     margin: theme.spacing(1),
     minWidth: 280,
@@ -23,11 +27,37 @@ const useStyles = makeStyles((theme) => ({
 export default function ContaCorrente() {
   const classes = useStyles();
   let [clientes, setClientes] = useState([]);
+  let [total, setTotal] = useState([]);
+  let [selectedCliente, setSelectedCliente] = useState({
+    nome: "none",
+    cnpj: ["0000000"],
+  });
+
   let [cheques, setCheques] = useState([]);
   let [pedidos, setPedidos] = useState([]);
   let [notas, setNotas] = useState([]);
   let [lancamentos, setLancamentos] = useState([]);
-  let [selectedCliente, setSelectedCliente] = useState();
+
+  let chequesSelected = cheques.filter(
+    (cheque) => cheque.cliente._id === selectedCliente._id
+  );
+  let pedidosSelected = pedidos.filter((pedido) =>
+    selectedCliente.cnpj.includes(pedido.cnpj)
+  );
+  let notasSelected = notas.filter((nota) =>
+    selectedCliente.cnpj.includes(nota.cnpj)
+  );
+  let lancamentosSelected = lancamentos.filter(
+    (lancamento) => lancamento.cliente === selectedCliente._id
+  );
+
+  useEffect(() => {
+    fetchCheques();
+    fetchClientes();
+    fetchNotas();
+    fetchPedidos();
+    fetchLancamentos();
+  }, []);
 
   function fetchClientes() {
     fetch(
@@ -39,10 +69,10 @@ export default function ContaCorrente() {
         setClientes(data);
       });
   }
-  function fetchChequesCliente() {
+  function fetchCheques() {
     if (selectedCliente) {
       fetch(
-        `${process.env.REACT_APP_API_url}/mongoCheques?key=${process.env.REACT_APP_API_key}&type=list&cliente=${selectedCliente._id}`
+        `${process.env.REACT_APP_API_url}/mongoCheques?key=${process.env.REACT_APP_API_key}&type=list`
       )
         .then((response) => response.json())
         .then((data) => {
@@ -58,7 +88,7 @@ export default function ContaCorrente() {
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
-        setPedidos(data);
+        setNotas(data);
       });
   }
   function fetchPedidos() {
@@ -83,44 +113,54 @@ export default function ContaCorrente() {
   }
 
   useEffect(() => {
-    fetchClientes();
-    fetchNotas();
-    fetchPedidos();
-    fetchLancamentos();
-  }, []);
-
-  useEffect(() => {
     console.log(selectedCliente);
-    fetchChequesCliente();
+    let newTotal = [];
+    newTotal.push(`${chequesSelected.length} Cheques`);
+    newTotal.push(`${pedidosSelected.length} Pedidos`);
+    newTotal.push(`${notasSelected.length} Notas`);
+    newTotal.push(`${lancamentosSelected.length} Lanca`);
+    setTotal(newTotal);
   }, [selectedCliente]);
-
   return (
-    <Grid container>
-      <Grid item xs={4}></Grid>
-      <Grid item xs={4}>
-        <FormControl className={classes.formControl}>
-          <InputLabel htmlFor="grouped-select">CLIENTE</InputLabel>
-          <Select defaultValue="" id="grouped-select">
-            <MenuItem value="" key={0}>
-              <em>Nenhum</em>
-            </MenuItem>
-            {clientes.map((cliente) => {
-              return (
-                <MenuItem
-                  key={cliente.id}
-                  value={cliente.nome}
-                  onClick={() => {
-                    setSelectedCliente(cliente);
-                  }}
-                >
-                  {cliente.nome}
-                </MenuItem>
-              );
+    <Grid container justify="center" alignItems="center" direction="column">
+      {pedidos.length > 0 ? (
+        <div>
+          <Grid item xs={4}>
+            {total.map((item) => {
+              return <Typography>{item}</Typography>;
             })}
-          </Select>
-        </FormControl>
-      </Grid>
-      <Grid item xs={4}></Grid>
+          </Grid>
+          <Grid item xs={4}>
+            <FormControl className={classes.formControl}>
+              <InputLabel htmlFor="grouped-select">CLIENTE</InputLabel>
+              <Select defaultValue="" id="grouped-select">
+                <MenuItem value="" key={0}>
+                  <em>Nenhum</em>
+                </MenuItem>
+                {clientes.map((cliente) => {
+                  return (
+                    <MenuItem
+                      key={cliente.id}
+                      value={cliente.nome}
+                      onClick={() => {
+                        setSelectedCliente(cliente);
+                      }}
+                    >
+                      {cliente.nome}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={4}></Grid>
+        </div>
+      ) : (
+        <Grid item xs={4}>
+          <Typography>Loading data</Typography>
+          <CircularProgress />
+        </Grid>
+      )}
     </Grid>
   );
 }

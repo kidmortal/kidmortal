@@ -123,7 +123,7 @@ export default function Cheques() {
   function fetchLancamentosCliente() {
     if (selectedCliente) {
       fetch(
-        `${process.env.REACT_APP_API_url}/mongoLancamentos?key=${process.env.REACT_APP_API_key}&type=list`
+        `${process.env.REACT_APP_API_url}/mongoLancamentos?key=${process.env.REACT_APP_API_key}&type=list&cliente=${selectedCliente}`
       )
         .then((response) => response.json())
         .then((data) => {
