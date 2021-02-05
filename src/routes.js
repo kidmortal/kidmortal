@@ -16,6 +16,8 @@ import Produtos from "./pages/produtos";
 import Clientes from "./pages/clientes";
 import Consultas from "./pages/consultas";
 import Pedidos from "./pages/pedidos";
+import PedidosNotas from "./pages/pedidosNotas";
+import GerarNf from "./pages/gerarNf";
 import ContaCorrente from "./pages/contaCorrente";
 import MainNavbar from "./components/mainNavbar";
 import Footer from "./components/copyrightFooter";
@@ -46,6 +48,8 @@ const AuthRouteSystemAccess = (props) => {
     return <Redirect to="/sistemas" />;
   if (system === "clientes" && !character.Config)
     return <Redirect to="/sistemas" />;
+  if (system === "pedidosnotas" && !character.Consultas)
+    return <Redirect to="/pedidos" />;
 
   return <Route {...props} />;
 };
@@ -117,10 +121,25 @@ const Routes = () => {
           system="produtos"
           component={Produtos}
         />
+        <AuthRouteSystemAccess
+          exact
+          path="/produtos"
+          system="produtos"
+          component={Produtos}
+        />
+        <AuthRouteSystemAccess
+          exact
+          path="/pedidosnotas"
+          system="pedidosnotas"
+          component={PedidosNotas}
+        />
+        <AuthRouteSystemAccess
+          exact
+          path="/gerarnf"
+          system="gerarnf"
+          component={GerarNf}
+        />
       </Switch>
-      {
-        //  <Footer />
-      }
     </BrowserRouter>
   );
 };

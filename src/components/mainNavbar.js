@@ -148,7 +148,7 @@ export default function MainNavbar() {
                 />
                 <Tab
                   classes={{ root: classes.tab }}
-                  label="Pedidos"
+                  label="Pedidos/NF"
                   component={Link}
                   to="/pedidos"
                   icon={<ListIcon />}
