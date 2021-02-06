@@ -27,18 +27,9 @@ const useStyles = makeStyles({
   },
 });
 
-export default function Sistemas() {
+export default function Pedidos() {
   const classes = useStyles();
   let character = useSelector((state) => state.character);
-
-  function syncPedidos() {
-    fetch(`${process.env.REACT_APP_API_url}/syncPedidos`)
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        toast.info(data.message);
-      });
-  }
 
   return (
     <>

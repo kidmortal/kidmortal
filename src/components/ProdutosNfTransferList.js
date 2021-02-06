@@ -10,17 +10,25 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import Checkbox from "@material-ui/core/Checkbox";
 import Button from "@material-ui/core/Button";
 import Divider from "@material-ui/core/Divider";
+import { Chip, CircularProgress, Tooltip } from "@material-ui/core";
+import DoneIcon from "@material-ui/icons/Done";
+import WarningIcon from "@material-ui/icons/Warning";
+import ForwardIcon from "@material-ui/icons/Forward";
+import Avatar from "@material-ui/core/Avatar";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     margin: "auto",
   },
+  selecionados: {
+    marginTop: 50,
+  },
   cardHeader: {
     padding: theme.spacing(1, 2),
   },
   list: {
-    width: 200,
-    height: 230,
+    width: 600,
+    height: 430,
     backgroundColor: theme.palette.background.paper,
     overflow: "auto",
   },
@@ -41,11 +49,9 @@ function union(a, b) {
   return [...a, ...not(b, a)];
 }
 
-export default function ProdutosNfTransferList() {
+export default function ProdutosNfTransferList(props) {
   const classes = useStyles();
-  const [checked, setChecked] = React.useState([]);
-  const [left, setLeft] = React.useState([0, 1, 2, 3]);
-  const [right, setRight] = React.useState([4, 5, 6, 7]);
+  const { checked, setChecked, left, setLeft, right, setRight } = props;
 
   const leftChecked = intersection(checked, left);
   const rightChecked = intersection(checked, right);
@@ -74,7 +80,15 @@ export default function ProdutosNfTransferList() {
   };
 
   const handleCheckedRight = () => {
-    setRight(right.concat(leftChecked));
+    let newRight = [...right];
+
+    leftChecked.forEach((e) => {
+      let index = newRight.findIndex((item) => item.codigo === e.codigo);
+      if (index > 0) newRight[index].quantidade += e.quantidade;
+      if (index < 0) newRight.push(e);
+    });
+
+    setRight(newRight);
     setLeft(not(left, leftChecked));
     setChecked(not(checked, leftChecked));
   };
@@ -84,6 +98,47 @@ export default function ProdutosNfTransferList() {
     setRight(not(right, rightChecked));
     setChecked(not(checked, rightChecked));
   };
+
+  function getTotal() {
+    let total = 0;
+    right.forEach((e) => {
+      total += parseFloat(e.valor * e.quantidade);
+    });
+    total = parseFloat(total).toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+    return total;
+  }
+
+  function renderStatus(status, message) {
+    switch (status) {
+      case "idle":
+        return;
+      case "pending":
+        return (
+          <Tooltip title={message}>
+            <CircularProgress />
+          </Tooltip>
+        );
+      case "success":
+        return (
+          <Tooltip title={message}>
+            <DoneIcon style={{ color: "green" }} />
+          </Tooltip>
+        );
+
+      case "error":
+        return (
+          <Tooltip title={message}>
+            <WarningIcon style={{ color: "red" }} />
+          </Tooltip>
+        );
+
+      default:
+        break;
+    }
+  }
 
   const customList = (title, items) => (
     <Card>
@@ -113,7 +168,7 @@ export default function ProdutosNfTransferList() {
 
           return (
             <ListItem
-              key={value}
+              key={value.codigo}
               role="listitem"
               button
               onClick={handleToggle(value)}
@@ -126,7 +181,13 @@ export default function ProdutosNfTransferList() {
                   inputProps={{ "aria-labelledby": labelId }}
                 />
               </ListItemIcon>
-              <ListItemText id={labelId} primary={`List item ${value + 1}`} />
+              <ListItemText
+                id={labelId}
+                primary={`${value.quantidade} ${value.codigo} ${value.descricao} R$ ${value.valor}`}
+              />
+              <ListItemIcon>
+                {renderStatus(value.status, value.message)}
+              </ListItemIcon>
             </ListItem>
           );
         })}
@@ -143,7 +204,7 @@ export default function ProdutosNfTransferList() {
       alignItems="center"
       className={classes.root}
     >
-      <Grid item>{customList("Choices", left)}</Grid>
+      <Grid item>{customList("Escolhas", left)}</Grid>
       <Grid item>
         <Grid container direction="column" alignItems="center">
           <Button
@@ -168,7 +229,41 @@ export default function ProdutosNfTransferList() {
           </Button>
         </Grid>
       </Grid>
-      <Grid item>{customList("Chosen", right)}</Grid>
+      <Grid item>
+        <Grid
+          container
+          direction="column"
+          justify="center"
+          alignItems="center"
+          spacing={3}
+        >
+          <Grid item className={classes.selecionados}>
+            {customList("Selecionados", right)}
+          </Grid>
+          <Grid item>
+            <Grid container spacing={3}>
+              <Grid item>
+                <Chip
+                  size="medium"
+                  avatar={<Avatar>R$</Avatar>}
+                  label={getTotal()}
+                  color="primary"
+                />
+              </Grid>
+              <Grid item>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  startIcon={<ForwardIcon style={{ color: "#1a508b" }} />}
+                  onClick={() => {}}
+                >
+                  Go
+                </Button>
+              </Grid>
+            </Grid>
+          </Grid>
+        </Grid>
+      </Grid>
     </Grid>
   );
 }
