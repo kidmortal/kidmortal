@@ -319,7 +319,7 @@ export default function ProdutosNfTransferList(props) {
                   onChange={(event) => {
                     setRight((right) =>
                       right.map((e) =>
-                        e.codigoOmie === select.codigoOmie
+                        e.codigo === value.codigo
                           ? { ...e, quantidade: event.target.value }
                           : e
                       )
@@ -334,15 +334,7 @@ export default function ProdutosNfTransferList(props) {
                   id="codigo"
                   label="CODIGO"
                   value={value.codigo}
-                  onChange={(event) => {
-                    setRight((right) =>
-                      right.map((e) =>
-                        e.codigoOmie === select.codigoOmie
-                          ? { ...e, codigo: event.target.value }
-                          : e
-                      )
-                    );
-                  }}
+                  disabled
                 />
               </ListItemText>
               <ListItemText>
@@ -355,7 +347,7 @@ export default function ProdutosNfTransferList(props) {
                   onChange={(event) => {
                     setRight((right) =>
                       right.map((e) =>
-                        e.codigoOmie === select.codigoOmie
+                        e.codigo === value.codigo
                           ? { ...e, valor: event.target.value }
                           : e
                       )
