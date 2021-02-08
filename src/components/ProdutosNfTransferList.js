@@ -10,13 +10,20 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import Checkbox from "@material-ui/core/Checkbox";
 import Button from "@material-ui/core/Button";
 import Divider from "@material-ui/core/Divider";
-import { Chip, CircularProgress, IconButton, Tooltip } from "@material-ui/core";
+import {
+  Chip,
+  CircularProgress,
+  IconButton,
+  TextField,
+  Tooltip,
+} from "@material-ui/core";
 import DoneIcon from "@material-ui/icons/Done";
 import WarningIcon from "@material-ui/icons/Warning";
 import ForwardIcon from "@material-ui/icons/Forward";
 import EditIcon from "@material-ui/icons/Edit";
 import Avatar from "@material-ui/core/Avatar";
 import { toast } from "react-toastify";
+import EditProdutoNf from "./editProdutoNf";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -68,6 +75,8 @@ export default function ProdutosNfTransferList(props) {
   const leftChecked = intersection(checked, left);
   const rightChecked = intersection(checked, right);
   const [loading, setLoading] = useState(false);
+  const [select, setSelect] = useState({});
+  const [editOpen, setEditOpen] = useState(false);
 
   const handleToggle = (value) => () => {
     const currentIndex = checked.indexOf(value);
@@ -299,23 +308,64 @@ export default function ProdutosNfTransferList(props) {
                   inputProps={{ "aria-labelledby": labelId }}
                 />
               </ListItemIcon>
-              <ListItemText
-                id={labelId}
-                primary={`${value.quantidade} ${value.codigo} ${value.descricao} R$ ${value.valor}`}
-              />
+              <ListItemText id={labelId} primary={``} />
+              <ListItemText>
+                <TextField
+                  autoComplete="off"
+                  className={classes.input}
+                  id="quantidade"
+                  label="QUANTIDADE"
+                  value={value.quantidade}
+                  onChange={(event) => {
+                    setRight((right) =>
+                      right.map((e) =>
+                        e.codigoOmie === select.codigoOmie
+                          ? { ...e, quantidade: event.target.value }
+                          : e
+                      )
+                    );
+                  }}
+                />
+              </ListItemText>
+              <ListItemText>
+                <TextField
+                  autoComplete="off"
+                  className={classes.input}
+                  id="codigo"
+                  label="CODIGO"
+                  value={value.codigo}
+                  onChange={(event) => {
+                    setRight((right) =>
+                      right.map((e) =>
+                        e.codigoOmie === select.codigoOmie
+                          ? { ...e, codigo: event.target.value }
+                          : e
+                      )
+                    );
+                  }}
+                />
+              </ListItemText>
+              <ListItemText>
+                <TextField
+                  autoComplete="off"
+                  className={classes.input}
+                  id="valor"
+                  label="VALOR"
+                  value={value.valor}
+                  onChange={(event) => {
+                    setRight((right) =>
+                      right.map((e) =>
+                        e.codigoOmie === select.codigoOmie
+                          ? { ...e, valor: event.target.value }
+                          : e
+                      )
+                    );
+                  }}
+                />
+              </ListItemText>
+
               <ListItemIcon>
                 {renderStatus(value.status, value.message)}
-              </ListItemIcon>
-              <ListItemIcon>
-                <IconButton
-                  aria-label="delete"
-                  className={classes.margin}
-                  onClick={() => {
-                    toast.info("Ainda nao fiz isso, to com preguiça");
-                  }}
-                >
-                  <EditIcon fontSize="medium" />
-                </IconButton>
               </ListItemIcon>
             </ListItem>
           );
@@ -333,6 +383,13 @@ export default function ProdutosNfTransferList(props) {
       alignItems="center"
       className={classes.root}
     >
+      <EditProdutoNf
+        open={editOpen}
+        setOpen={setEditOpen}
+        select={select}
+        right={right}
+        setRight={setRight}
+      />
       <Grid item>{customList("Escolhas", left)}</Grid>
       <Grid item>
         <Grid container direction="column" alignItems="center">
