@@ -147,6 +147,7 @@ export default function Cheques() {
     <Grid container className={classes.root}>
       <InsertUpdateLancamento
         selectedCliente={selectedCliente}
+        dataRecebimento={dataRecebimento}
         open={lancamentoModal}
         setOpen={setLancamentoModal}
         insertLancamento={insertLancamento}

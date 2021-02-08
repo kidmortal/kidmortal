@@ -3,16 +3,28 @@ import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import ProdutosNfTransferList from "../components/ProdutosNfTransferList";
 import { AccountCircle } from "@material-ui/icons";
-import { IconButton, TextField } from "@material-ui/core";
+import {
+  CircularProgress,
+  IconButton,
+  TextField,
+  Tooltip,
+} from "@material-ui/core";
 import { SearchIcon } from "@material-ui/data-grid";
 import { toast } from "react-toastify";
+import OmiePyramid from "../assets/omiepyramid.png";
+import OmieDix from "../assets/omiedix.png";
+import WarningIcon from "@material-ui/icons/Warning";
+import DoneIcon from "@material-ui/icons/Done";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     marginTop: 20,
   },
   pedidoBling: {
-    marginRight: 450,
+    marginRight: 300,
+  },
+  selected: {
+    border: "2px solid #555",
   },
   cliente: {
     width: 350,
@@ -24,10 +36,15 @@ const useStyles = makeStyles((theme) => ({
 
 export default function GerarNf() {
   const classes = useStyles();
+  const [target, setTarget] = useState("PYRAMID");
   const [checked, setChecked] = useState([]);
   const [pedido, setPedido] = useState("");
-  const [cliente, setCliente] = useState("");
-  const [cnpj, setCnpj] = useState("");
+  const [cliente, setCliente] = useState({
+    nome: "",
+    cnpj: "",
+    status: "",
+    message: "",
+  });
   const [left, setLeft] = useState([]);
   const [right, setRight] = useState([]);
 
@@ -59,10 +76,43 @@ export default function GerarNf() {
             });
           });
           setLeft(newItens);
-          setCliente(cliente.nome);
-          setCnpj(cliente.cnpj);
+          setCliente({
+            nome: cliente.nome,
+            cnpj: cliente.cnpj,
+            status: "idle",
+            message: "none",
+          });
         }
       });
+  }
+
+  function renderStatus(status, message) {
+    switch (status) {
+      case "idle":
+        return;
+      case "pending":
+        return (
+          <Tooltip title={message}>
+            <CircularProgress />
+          </Tooltip>
+        );
+      case "success":
+        return (
+          <Tooltip title={message}>
+            <DoneIcon style={{ color: "green" }} />
+          </Tooltip>
+        );
+
+      case "error":
+        return (
+          <Tooltip title={message}>
+            <WarningIcon style={{ color: "red" }} />
+          </Tooltip>
+        );
+
+      default:
+        break;
+    }
   }
 
   return (
@@ -107,20 +157,46 @@ export default function GerarNf() {
                   <SearchIcon style={{ color: "blue" }} />
                 </IconButton>
               </Grid>
+              <Grid item>
+                <Grid container className={classes.buttons} spacing={4}>
+                  <Grid item>
+                    <img
+                      alt="source"
+                      src={OmiePyramid}
+                      width={50}
+                      height={50}
+                      className={target === "PYRAMID" ? classes.selected : ""}
+                      onClick={() => {
+                        setTarget("PYRAMID");
+                      }}
+                    />
+                  </Grid>
+                  <Grid item>
+                    <img
+                      alt="source"
+                      src={OmieDix}
+                      width={50}
+                      height={50}
+                      className={target === "DIX" ? classes.selected : ""}
+                      onClick={() => {
+                        setTarget("DIX");
+                      }}
+                    />
+                  </Grid>
+                </Grid>
+              </Grid>
             </Grid>
           </Grid>
+
           <Grid item>
-            <Grid container spacing={3}>
+            <Grid container spacing={3} alignItems="center">
               <Grid item>
                 <TextField
                   id="standard-search"
                   label="Razão Social"
                   type="search"
-                  value={cliente}
+                  value={cliente.nome}
                   className={classes.cliente}
-                  onChange={(e) => {
-                    setCliente(e.target.value);
-                  }}
                 />
               </Grid>
               <Grid item>
@@ -128,13 +204,11 @@ export default function GerarNf() {
                   id="standard-search"
                   label="CNPJ"
                   type="search"
-                  value={cnpj}
+                  value={cliente.cnpj}
                   className={classes.cnpj}
-                  onChange={(e) => {
-                    setCnpj(e.target.value);
-                  }}
                 />
               </Grid>
+              <Grid item>{renderStatus(cliente.status, cliente.message)}</Grid>
             </Grid>
           </Grid>
         </Grid>
@@ -147,6 +221,9 @@ export default function GerarNf() {
           setLeft={setLeft}
           right={right}
           setRight={setRight}
+          target={target}
+          cliente={cliente}
+          setCliente={setCliente}
         />
       </Grid>
     </Grid>

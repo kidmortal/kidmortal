@@ -10,11 +10,13 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import Checkbox from "@material-ui/core/Checkbox";
 import Button from "@material-ui/core/Button";
 import Divider from "@material-ui/core/Divider";
-import { Chip, CircularProgress, Tooltip } from "@material-ui/core";
+import { Chip, CircularProgress, IconButton, Tooltip } from "@material-ui/core";
 import DoneIcon from "@material-ui/icons/Done";
 import WarningIcon from "@material-ui/icons/Warning";
 import ForwardIcon from "@material-ui/icons/Forward";
+import EditIcon from "@material-ui/icons/Edit";
 import Avatar from "@material-ui/core/Avatar";
+import { toast } from "react-toastify";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -51,7 +53,17 @@ function union(a, b) {
 
 export default function ProdutosNfTransferList(props) {
   const classes = useStyles();
-  const { checked, setChecked, left, setLeft, right, setRight } = props;
+  const {
+    checked,
+    setChecked,
+    left,
+    setLeft,
+    right,
+    setRight,
+    target,
+    cliente,
+    setCliente,
+  } = props;
 
   const leftChecked = intersection(checked, left);
   const rightChecked = intersection(checked, right);
@@ -109,6 +121,105 @@ export default function ProdutosNfTransferList(props) {
       maximumFractionDigits: 2,
     });
     return total;
+  }
+  function changeStatus(data) {
+    setRight((right) =>
+      right.map((e) =>
+        e.codigo === data.codigo
+          ? { ...e, status: data.status, message: data.message }
+          : e
+      )
+    );
+  }
+
+  async function gerarNF() {
+    conferirCliente().then(() => {
+      conferirProdutos();
+    });
+  }
+
+  async function conferirProduto(e) {
+    let response = await fetch(
+      `${process.env.REACT_APP_API_url}/omieConsultar?key=${process.env.REACT_APP_API_key}&type=produto&empresa=${target}&codigo=${e.codigo}`
+    );
+    response = await response.json();
+    if (response.codigo_produto) {
+      e.status = "success";
+      e.message = `Codigo Encontrado: ${response.codigo_produto}`;
+      e.codigoOmie = response.codigo_produto;
+      changeStatus(e);
+    } else {
+      e.status = "error";
+      e.message = `Codigo Não encontrado`;
+      changeStatus(e);
+    }
+  }
+
+  async function conferirProdutos() {
+    let ctr = 0;
+    await right.forEach(async (e) => {
+      await conferirProduto(e);
+      ctr++;
+      if (ctr >= right.length) {
+        console.log("Todos produtos conferidos");
+      }
+    });
+  }
+
+  async function conferirCliente() {
+    let response = await fetch(
+      `${process.env.REACT_APP_API_url}/omieConsultar?key=${process.env.REACT_APP_API_key}&type=cliente&empresa=${target}`,
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ cliente }),
+      }
+    );
+    response = await response.json();
+    console.log("cliente conferido");
+    if (response.codigo_cliente) {
+      return setCliente({
+        nome: cliente.nome,
+        cnpj: cliente.cnpj,
+        status: "success",
+        message: `Cliente encontrado: ${response.codigo_cliente}`,
+        codigo: response.codigo_cliente,
+      });
+    } else {
+      return setCliente({
+        nome: cliente.nome,
+        cnpj: cliente.cnpj,
+        status: "error",
+        message: `Cliente não encontrado`,
+      });
+    }
+  }
+
+  async function enviarPedido() {
+    let pedido = {
+      cliente,
+      produtos: right,
+    };
+    let response = await fetch(
+      `${process.env.REACT_APP_API_url}/omieCadastrar?key=${process.env.REACT_APP_API_key}&type=nf`,
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(pedido),
+      }
+    );
+    response = await response.json();
+    if (response.numero_pedido) {
+      return toast.success("Pedido Cadastrado com Successo!");
+    } else {
+      return toast.error("Ocorreu um erro");
+    }
   }
 
   function renderStatus(status, message) {
@@ -188,6 +299,17 @@ export default function ProdutosNfTransferList(props) {
               <ListItemIcon>
                 {renderStatus(value.status, value.message)}
               </ListItemIcon>
+              <ListItemIcon>
+                <IconButton
+                  aria-label="delete"
+                  className={classes.margin}
+                  onClick={() => {
+                    toast.info("Ainda nao fiz isso, to com preguiça");
+                  }}
+                >
+                  <EditIcon fontSize="medium" />
+                </IconButton>
+              </ListItemIcon>
             </ListItem>
           );
         })}
@@ -254,10 +376,24 @@ export default function ProdutosNfTransferList(props) {
                 <Button
                   variant="contained"
                   color="secondary"
-                  startIcon={<ForwardIcon style={{ color: "#1a508b" }} />}
-                  onClick={() => {}}
+                  startIcon={<DoneIcon style={{ color: "#1a508b" }} />}
+                  onClick={() => {
+                    gerarNF();
+                  }}
                 >
-                  Go
+                  Verificar
+                </Button>
+              </Grid>
+              <Grid item>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  startIcon={<ForwardIcon style={{ color: "#1a508b" }} />}
+                  onClick={() => {
+                    enviarPedido();
+                  }}
+                >
+                  Enviar Pedido
                 </Button>
               </Grid>
             </Grid>

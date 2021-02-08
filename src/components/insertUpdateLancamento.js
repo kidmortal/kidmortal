@@ -72,6 +72,10 @@ export default function InsertLancamento(props) {
       });
   }
 
+  useEffect(() => {
+    setData(props.dataRecebimento);
+  }, [props.dataRecebimento]);
+
   return (
     <Dialog
       open={props.open}
