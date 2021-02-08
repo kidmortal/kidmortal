@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: 20,
   },
   pedidoBling: {
-    marginRight: 300,
+    marginRight: 250,
   },
   selected: {
     border: "2px solid #555",
@@ -115,6 +115,14 @@ export default function GerarNf() {
     }
   }
 
+  function changeTarget(oldPrefix, newPrefix) {
+    let newProdutos = [...right];
+    newProdutos.forEach((e) => {
+      e.codigo = e.codigo.replace(oldPrefix, newPrefix);
+    });
+    setRight(newProdutos);
+  }
+
   return (
     <Grid
       container
@@ -168,6 +176,7 @@ export default function GerarNf() {
                       className={target === "PYRAMID" ? classes.selected : ""}
                       onClick={() => {
                         setTarget("PYRAMID");
+                        changeTarget("DIX", "PY");
                       }}
                     />
                   </Grid>
@@ -180,6 +189,7 @@ export default function GerarNf() {
                       className={target === "DIX" ? classes.selected : ""}
                       onClick={() => {
                         setTarget("DIX");
+                        changeTarget("PY", "DIX");
                       }}
                     />
                   </Grid>

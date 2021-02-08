@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import List from "@material-ui/core/List";
@@ -67,6 +67,7 @@ export default function ProdutosNfTransferList(props) {
 
   const leftChecked = intersection(checked, left);
   const rightChecked = intersection(checked, right);
+  const [loading, setLoading] = useState(false);
 
   const handleToggle = (value) => () => {
     const currentIndex = checked.indexOf(value);
@@ -180,13 +181,16 @@ export default function ProdutosNfTransferList(props) {
     );
     response = await response.json();
     console.log("cliente conferido");
-    if (response.codigo_cliente) {
+    console.log(response);
+
+    if (response.clientes_cadastro_resumido) {
+      let c = response.clientes_cadastro_resumido[0];
       return setCliente({
         nome: cliente.nome,
         cnpj: cliente.cnpj,
         status: "success",
-        message: `Cliente encontrado: ${response.codigo_cliente}`,
-        codigo: response.codigo_cliente,
+        message: `Cliente encontrado: ${c.codigo_cliente}`,
+        codigo: c.codigo_cliente,
       });
     } else {
       return setCliente({
@@ -203,8 +207,9 @@ export default function ProdutosNfTransferList(props) {
       cliente,
       produtos: right,
     };
+    setLoading(true);
     let response = await fetch(
-      `${process.env.REACT_APP_API_url}/omieCadastrar?key=${process.env.REACT_APP_API_key}&type=nf`,
+      `${process.env.REACT_APP_API_url}/omieCadastrar?key=${process.env.REACT_APP_API_key}&type=nf&empresa=${target}`,
       {
         method: "POST",
         headers: {
@@ -216,8 +221,10 @@ export default function ProdutosNfTransferList(props) {
     );
     response = await response.json();
     if (response.numero_pedido) {
+      setLoading(false);
       return toast.success("Pedido Cadastrado com Successo!");
     } else {
+      setLoading(false);
       return toast.error("Ocorreu um erro");
     }
   }
@@ -385,16 +392,20 @@ export default function ProdutosNfTransferList(props) {
                 </Button>
               </Grid>
               <Grid item>
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  startIcon={<ForwardIcon style={{ color: "#1a508b" }} />}
-                  onClick={() => {
-                    enviarPedido();
-                  }}
-                >
-                  Enviar Pedido
-                </Button>
+                {loading ? (
+                  <CircularProgress />
+                ) : (
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    startIcon={<ForwardIcon style={{ color: "#1a508b" }} />}
+                    onClick={() => {
+                      enviarPedido();
+                    }}
+                  >
+                    Enviar Pedido
+                  </Button>
+                )}
               </Grid>
             </Grid>
           </Grid>
