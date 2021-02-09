@@ -106,7 +106,7 @@ export default function ProdutosNfTransferList(props) {
 
     leftChecked.forEach((e) => {
       let index = newRight.findIndex((item) => item.codigo === e.codigo);
-      if (index > 0) newRight[index].quantidade += e.quantidade;
+      if (index >= 0) newRight[index].quantidade += e.quantidade;
       if (index < 0) newRight.push(e);
     });
 
