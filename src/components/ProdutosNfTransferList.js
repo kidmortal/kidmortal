@@ -30,10 +30,10 @@ const useStyles = makeStyles((theme) => ({
     margin: "auto",
   },
   selecionados: {
-    marginTop: 50,
+    marginTop: 20,
   },
   cardHeader: {
-    padding: theme.spacing(1, 2),
+    padding: 1,
   },
   list: {
     width: 600,

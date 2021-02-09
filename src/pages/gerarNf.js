@@ -1,27 +1,69 @@
 import React, { useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import ProdutosNfTransferList from "../components/ProdutosNfTransferList";
 import { AccountCircle } from "@material-ui/icons";
 import {
   CircularProgress,
+  FormControl,
   IconButton,
+  InputLabel,
   TextField,
   Tooltip,
+  InputBase,
+  MenuItem,
+  Select,
+  Typography,
 } from "@material-ui/core";
 import { SearchIcon } from "@material-ui/data-grid";
 import { toast } from "react-toastify";
 import OmiePyramid from "../assets/omiepyramid.png";
 import OmieDix from "../assets/omiedix.png";
 import WarningIcon from "@material-ui/icons/Warning";
+import InfoIcon from "@material-ui/icons/Info";
 import DoneIcon from "@material-ui/icons/Done";
+
+const BootstrapInput = withStyles((theme) => ({
+  root: {
+    "label + &": {
+      marginTop: theme.spacing(3),
+    },
+  },
+  input: {
+    borderRadius: 4,
+    position: "relative",
+    backgroundColor: theme.palette.background.paper,
+    border: "1px solid #ced4da",
+    fontSize: 16,
+    padding: "10px 26px 10px 12px",
+    transition: theme.transitions.create(["border-color", "box-shadow"]),
+    // Use the system font instead of the default Roboto font.
+    fontFamily: [
+      "-apple-system",
+      "BlinkMacSystemFont",
+      '"Segoe UI"',
+      "Roboto",
+      '"Helvetica Neue"',
+      "Arial",
+      "sans-serif",
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"',
+    ].join(","),
+    "&:focus": {
+      borderRadius: 4,
+      borderColor: "#80bdff",
+      boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+    },
+  },
+}))(InputBase);
 
 const useStyles = makeStyles((theme) => ({
   root: {
     marginTop: 20,
   },
   pedidoBling: {
-    marginRight: 50,
+    marginRight: 30,
   },
   selected: {
     border: "2px solid #555",
@@ -33,13 +75,13 @@ const useStyles = makeStyles((theme) => ({
     width: 200,
   },
   condicao: {
-    width: 200,
+    width: 250,
   },
   vendedor: {
     width: 200,
   },
   observacoes: {
-    width: 620,
+    width: 675,
   },
 }));
 
@@ -51,8 +93,8 @@ export default function GerarNf() {
   const [cliente, setCliente] = useState({
     nome: "",
     cnpj: "",
-    status: "",
-    message: "",
+    status: "idle",
+    message: "Ainda não verificado",
   });
   const [vendedor, setVendedor] = useState("");
   const [condicao, setCondicao] = useState("");
@@ -97,7 +139,7 @@ export default function GerarNf() {
             nome: cliente.nome,
             cnpj: cliente.cnpj,
             status: "idle",
-            message: "none",
+            message: "Ainda não verificado",
           });
         }
       });
@@ -106,7 +148,11 @@ export default function GerarNf() {
   function renderStatus(status, message) {
     switch (status) {
       case "idle":
-        return;
+        return (
+          <Tooltip title={message}>
+            <InfoIcon style={{ color: "blue" }} />
+          </Tooltip>
+        );
       case "pending":
         return (
           <Tooltip title={message}>
@@ -132,6 +178,17 @@ export default function GerarNf() {
     }
   }
 
+  function renderPagamento(status, message, menuText) {
+    return (
+      <Grid container>
+        <Grid item>{renderStatus(status, message)}</Grid>
+        <Grid item>
+          <Typography>{menuText}</Typography>
+        </Grid>
+      </Grid>
+    );
+  }
+
   function changeTarget(oldPrefix, newPrefix) {
     let newProdutos = [...right];
     newProdutos.forEach((e) => {
@@ -154,42 +211,48 @@ export default function GerarNf() {
             <Grid
               container
               spacing={1}
-              alignItems="flex-end"
+              alignItems="flex-start"
               alignContent="center"
+              direction="column"
             >
               <Grid item>
-                <AccountCircle />
+                <Grid container spacing={1} alignItems="flex-end">
+                  <Grid item>
+                    <AccountCircle />
+                  </Grid>
+                  <Grid item>
+                    <TextField
+                      id="input-with-icon-grid"
+                      label="Pedido Bling"
+                      value={pedido}
+                      onChange={(e) => {
+                        setPedido(e.target.value);
+                      }}
+                    />
+                  </Grid>
+                  <Grid item>
+                    <IconButton
+                      color="primary"
+                      aria-label="search"
+                      component="span"
+                      onClick={() => {
+                        getPedidoFromBling();
+                      }}
+                    >
+                      <SearchIcon style={{ color: "blue" }} />
+                    </IconButton>
+                  </Grid>
+                </Grid>
               </Grid>
-              <Grid item>
-                <TextField
-                  id="input-with-icon-grid"
-                  label="Pedido Bling"
-                  value={pedido}
-                  onChange={(e) => {
-                    setPedido(e.target.value);
-                  }}
-                />
-              </Grid>
-              <Grid item>
-                <IconButton
-                  color="primary"
-                  aria-label="search"
-                  component="span"
-                  onClick={() => {
-                    getPedidoFromBling();
-                  }}
-                >
-                  <SearchIcon style={{ color: "blue" }} />
-                </IconButton>
-              </Grid>
+
               <Grid item>
                 <Grid container className={classes.buttons} spacing={4}>
                   <Grid item>
                     <img
                       alt="source"
                       src={OmiePyramid}
-                      width={50}
-                      height={50}
+                      width={40}
+                      height={40}
                       className={target === "PYRAMID" ? classes.selected : ""}
                       onClick={() => {
                         setTarget("PYRAMID");
@@ -201,8 +264,34 @@ export default function GerarNf() {
                     <img
                       alt="source"
                       src={OmieDix}
-                      width={50}
-                      height={50}
+                      width={40}
+                      height={40}
+                      className={target === "DIX" ? classes.selected : ""}
+                      onClick={() => {
+                        setTarget("DIX");
+                        changeTarget("PY", "DIX");
+                      }}
+                    />
+                  </Grid>
+                  <Grid item>
+                    <img
+                      alt="source"
+                      src={OmieDix}
+                      width={40}
+                      height={40}
+                      className={target === "DIX" ? classes.selected : ""}
+                      onClick={() => {
+                        setTarget("DIX");
+                        changeTarget("PY", "DIX");
+                      }}
+                    />
+                  </Grid>
+                  <Grid item>
+                    <img
+                      alt="source"
+                      src={OmieDix}
+                      width={40}
+                      height={40}
                       className={target === "DIX" ? classes.selected : ""}
                       onClick={() => {
                         setTarget("DIX");
@@ -238,13 +327,39 @@ export default function GerarNf() {
                     />
                   </Grid>
                   <Grid item>
-                    <TextField
-                      id="standard-search"
-                      label="Pagamento"
-                      type="search"
-                      value={condicao}
-                      className={classes.condicao}
-                    />
+                    <FormControl className={classes.condicao}>
+                      <InputLabel id="demo-simple-select-label">
+                        Pagamento
+                      </InputLabel>
+                      <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        value={0}
+                        onChange={() => {}}
+                      >
+                        <MenuItem value={0}>
+                          {renderPagamento(
+                            "error",
+                            "Condição Padrao",
+                            "Ainda não implementado"
+                          )}
+                        </MenuItem>
+                        <MenuItem value={10}>
+                          {renderPagamento(
+                            "success",
+                            "Condiçao recomendada",
+                            "Boleto 30/60 dias"
+                          )}
+                        </MenuItem>
+                        <MenuItem value={20}>
+                          {renderPagamento(
+                            "idle",
+                            "Condição do Bling",
+                            "A vista"
+                          )}
+                        </MenuItem>
+                      </Select>
+                    </FormControl>
                   </Grid>
                   <Grid item>
                     {renderStatus(cliente.status, cliente.message)}
