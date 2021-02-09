@@ -119,7 +119,15 @@ export default function ProdutosTransfer(props) {
   async function addItens() {
     right.map((item) => {
       fetch(
-        `${process.env.REACT_APP_API_url}/omieCadastrar?key=${process.env.REACT_APP_API_key}&TARGET=${props.selectedTarget}&CODIGO=${item.CODIGO}&DESCRICAO=${item.DESCRICAO}&NCM=${item.NCM}&MEDIDA=${item.MEDIDA}`
+        `${process.env.REACT_APP_API_url}/omieCadastrar?key=${process.env.REACT_APP_API_key}&type=produto&target=${props.selectedTarget}`,
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(item),
+        }
       )
         .then((response) => response.json())
         .then((data) => {

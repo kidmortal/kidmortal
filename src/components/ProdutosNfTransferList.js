@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
   },
   list: {
     width: 600,
-    height: 430,
+    height: 330,
     backgroundColor: theme.palette.background.paper,
     overflow: "auto",
   },
@@ -282,11 +282,11 @@ export default function ProdutosNfTransferList(props) {
               numberOfChecked(items) !== 0
             }
             disabled={items.length === 0}
-            inputProps={{ "aria-label": "all items selected" }}
+            inputProps={{ "aria-label": "todos itens selecionados" }}
           />
         }
         title={title}
-        subheader={`${numberOfChecked(items)}/${items.length} selected`}
+        subheader={`${numberOfChecked(items)}/${items.length} selecionados`}
       />
       <Divider />
       <List className={classes.list} dense component="div" role="list">
@@ -391,7 +391,7 @@ export default function ProdutosNfTransferList(props) {
             className={classes.button}
             onClick={handleCheckedRight}
             disabled={leftChecked.length === 0}
-            aria-label="move selected right"
+            aria-label="Mover Selecionados para Direita"
           >
             &gt;
           </Button>
@@ -401,7 +401,7 @@ export default function ProdutosNfTransferList(props) {
             className={classes.button}
             onClick={handleCheckedLeft}
             disabled={rightChecked.length === 0}
-            aria-label="move selected left"
+            aria-label="Mover Selecionados para Esquerda"
           >
             &lt;
           </Button>

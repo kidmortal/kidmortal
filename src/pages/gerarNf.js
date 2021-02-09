@@ -21,16 +21,25 @@ const useStyles = makeStyles((theme) => ({
     marginTop: 20,
   },
   pedidoBling: {
-    marginRight: 250,
+    marginRight: 50,
   },
   selected: {
     border: "2px solid #555",
   },
   cliente: {
-    width: 350,
+    width: 400,
   },
   cnpj: {
     width: 200,
+  },
+  condicao: {
+    width: 200,
+  },
+  vendedor: {
+    width: 200,
+  },
+  observacoes: {
+    width: 620,
   },
 }));
 
@@ -45,6 +54,9 @@ export default function GerarNf() {
     status: "",
     message: "",
   });
+  const [vendedor, setVendedor] = useState("");
+  const [condicao, setCondicao] = useState("");
+  const [observacoes, setObservacoes] = useState("");
   const [left, setLeft] = useState([]);
   const [right, setRight] = useState([]);
 
@@ -61,8 +73,9 @@ export default function GerarNf() {
           return toast.error(response.erros[0].erro.msg);
         }
         if (response.pedidos) {
-          let itens = response.pedidos[0].pedido.itens;
-          let cliente = response.pedidos[0].pedido.cliente;
+          let pedido = response.pedidos[0].pedido;
+          let itens = pedido.itens;
+          let cliente = pedido.cliente;
           let newItens = [];
           itens.forEach((e) => {
             e = e.item;
@@ -75,7 +88,11 @@ export default function GerarNf() {
               message: "idle",
             });
           });
+          console.log(pedido);
           setLeft(newItens);
+          setVendedor(pedido.vendedor);
+          setCondicao("Ainda não implementado");
+          setObservacoes(pedido.observacaointerna);
           setCliente({
             nome: cliente.nome,
             cnpj: cliente.cnpj,
@@ -199,26 +216,69 @@ export default function GerarNf() {
           </Grid>
 
           <Grid item>
-            <Grid container spacing={3} alignItems="center">
+            <Grid container spacing={2} alignItems="center" direction="column">
               <Grid item>
-                <TextField
-                  id="standard-search"
-                  label="Razão Social"
-                  type="search"
-                  value={cliente.nome}
-                  className={classes.cliente}
-                />
+                <Grid container spacing={3} alignItems="center">
+                  <Grid item>
+                    <TextField
+                      id="standard-search"
+                      label="Razão Social"
+                      type="search"
+                      value={cliente.nome}
+                      className={classes.cliente}
+                    />
+                  </Grid>
+                  <Grid item>
+                    <TextField
+                      id="standard-search"
+                      label="CNPJ"
+                      type="search"
+                      value={cliente.cnpj}
+                      className={classes.cnpj}
+                    />
+                  </Grid>
+                  <Grid item>
+                    <TextField
+                      id="standard-search"
+                      label="Pagamento"
+                      type="search"
+                      value={condicao}
+                      className={classes.condicao}
+                    />
+                  </Grid>
+                  <Grid item>
+                    {renderStatus(cliente.status, cliente.message)}
+                  </Grid>
+                </Grid>
               </Grid>
-              <Grid item>
-                <TextField
-                  id="standard-search"
-                  label="CNPJ"
-                  type="search"
-                  value={cliente.cnpj}
-                  className={classes.cnpj}
-                />
+              <Grid
+                container
+                spacing={3}
+                justify="center"
+                alignContent="center"
+              >
+                <Grid item>
+                  <TextField
+                    id="standard-search"
+                    label="Vendedor"
+                    type="search"
+                    value={vendedor}
+                    className={classes.vendedor}
+                  />
+                </Grid>
+                <Grid item>
+                  <TextField
+                    id="standard-search"
+                    label="Observacoes"
+                    type="Observacoes"
+                    value={observacoes}
+                    className={classes.observacoes}
+                  />
+                </Grid>
+                <Grid item>
+                  {renderStatus(cliente.status, cliente.message)}
+                </Grid>
               </Grid>
-              <Grid item>{renderStatus(cliente.status, cliente.message)}</Grid>
             </Grid>
           </Grid>
         </Grid>
