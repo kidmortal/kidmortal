@@ -17,8 +17,8 @@ import { TextField } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: 350,
-    height: 250,
+    width: 250,
+    height: 350,
   },
 }));
 
@@ -37,6 +37,7 @@ export default function EditCliente(props) {
   const classes = useStyles();
   const [clienteName, setClienteName] = useState("");
   const [clienteCnpj, setClienteCnpj] = useState("");
+  const [clienteCondicao, setClienteCondicao] = useState("");
 
   useEffect(() => {
     let cnpjString = "";
@@ -47,6 +48,7 @@ export default function EditCliente(props) {
     }
     setClienteCnpj(cnpjString);
     setClienteName(props.currentCliente.nome);
+    setClienteCondicao(props.currentCliente.condicaoNF);
   }, [props.currentCliente]);
 
   function updateClienteData() {
@@ -61,8 +63,9 @@ export default function EditCliente(props) {
         },
         body: JSON.stringify({
           cliente: props.currentCliente._id,
-          name: clienteName,
+          nome: clienteName,
           cnpj: cnpjArray,
+          condicaoNF: clienteCondicao,
         }),
       }
     )
@@ -72,6 +75,7 @@ export default function EditCliente(props) {
           let currentCliente = props.currentCliente;
           currentCliente.nome = clienteName;
           currentCliente.cnpj = cnpjArray;
+          currentCliente.condicaoNF = clienteCondicao;
           let updateClientes = props.clientes;
           let clienteIndex = updateClientes.findIndex(
             (cliente) => cliente._id === props.currentCliente._id
@@ -126,6 +130,17 @@ export default function EditCliente(props) {
             value={clienteCnpj}
             onChange={(e) => {
               setClienteCnpj(e.target.value);
+            }}
+          />
+        </Grid>
+        <Grid item>
+          <TextField
+            id="standard-search"
+            label="Condicao NF"
+            type="search"
+            value={clienteCondicao}
+            onChange={(e) => {
+              setClienteCondicao(e.target.value);
             }}
           />
         </Grid>

@@ -25,6 +25,7 @@ const columns = [
       return stringCnpj;
     },
   },
+  { id: "condicaoNF", label: "Condicao", minWidth: 150 },
 ];
 
 const useStyles = makeStyles({
@@ -33,7 +34,7 @@ const useStyles = makeStyles({
   },
   container: {
     height: 440,
-    width: 550,
+    width: 700,
   },
 });
 

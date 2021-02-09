@@ -22,41 +22,7 @@ import OmieDix from "../assets/omiedix.png";
 import WarningIcon from "@material-ui/icons/Warning";
 import InfoIcon from "@material-ui/icons/Info";
 import DoneIcon from "@material-ui/icons/Done";
-
-const BootstrapInput = withStyles((theme) => ({
-  root: {
-    "label + &": {
-      marginTop: theme.spacing(3),
-    },
-  },
-  input: {
-    borderRadius: 4,
-    position: "relative",
-    backgroundColor: theme.palette.background.paper,
-    border: "1px solid #ced4da",
-    fontSize: 16,
-    padding: "10px 26px 10px 12px",
-    transition: theme.transitions.create(["border-color", "box-shadow"]),
-    // Use the system font instead of the default Roboto font.
-    fontFamily: [
-      "-apple-system",
-      "BlinkMacSystemFont",
-      '"Segoe UI"',
-      "Roboto",
-      '"Helvetica Neue"',
-      "Arial",
-      "sans-serif",
-      '"Apple Color Emoji"',
-      '"Segoe UI Emoji"',
-      '"Segoe UI Symbol"',
-    ].join(","),
-    "&:focus": {
-      borderRadius: 4,
-      borderColor: "#80bdff",
-      boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
-    },
-  },
-}))(InputBase);
+import DoneOutlineIcon from "@material-ui/icons/DoneOutline";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -69,13 +35,13 @@ const useStyles = makeStyles((theme) => ({
     border: "2px solid #555",
   },
   cliente: {
-    width: 400,
+    width: 370,
   },
   cnpj: {
-    width: 200,
+    width: 180,
   },
   condicao: {
-    width: 250,
+    width: 300,
   },
   vendedor: {
     width: 200,
@@ -118,6 +84,7 @@ export default function GerarNf() {
           let pedido = response.pedidos[0].pedido;
           let itens = pedido.itens;
           let cliente = pedido.cliente;
+          let pagamento = pedido.parcelas[0].parcela.forma_pagamento.descricao;
           let newItens = [];
           itens.forEach((e) => {
             e = e.item;
@@ -133,7 +100,7 @@ export default function GerarNf() {
           console.log(pedido);
           setLeft(newItens);
           setVendedor(pedido.vendedor);
-          setCondicao("Ainda não implementado");
+          setCondicao(pagamento);
           setObservacoes(pedido.observacaointerna);
           setCliente({
             nome: cliente.nome,
@@ -153,6 +120,12 @@ export default function GerarNf() {
             <InfoIcon style={{ color: "blue" }} />
           </Tooltip>
         );
+      case "info":
+        return (
+          <Tooltip title={message}>
+            <InfoIcon style={{ color: "green" }} />
+          </Tooltip>
+        );
       case "pending":
         return (
           <Tooltip title={message}>
@@ -163,6 +136,12 @@ export default function GerarNf() {
         return (
           <Tooltip title={message}>
             <DoneIcon style={{ color: "green" }} />
+          </Tooltip>
+        );
+      case "correct":
+        return (
+          <Tooltip title={message}>
+            <DoneOutlineIcon style={{ color: "green" }} />
           </Tooltip>
         );
 
@@ -180,11 +159,11 @@ export default function GerarNf() {
 
   function renderPagamento(status, message, menuText) {
     return (
-      <Grid container>
-        <Grid item>{renderStatus(status, message)}</Grid>
+      <Grid container justify="space-between">
         <Grid item>
-          <Typography>{menuText}</Typography>
+          <Typography>{menuText} </Typography>
         </Grid>
+        <Grid item>{renderStatus(status, message)}</Grid>
       </Grid>
     );
   }
@@ -340,22 +319,22 @@ export default function GerarNf() {
                         <MenuItem value={0}>
                           {renderPagamento(
                             "error",
-                            "Condição Padrao",
-                            "Ainda não implementado"
+                            "Ainda Não implementado",
+                            condicao
                           )}
                         </MenuItem>
-                        <MenuItem value={10}>
+                        <MenuItem value={1}>
                           {renderPagamento(
-                            "success",
-                            "Condiçao recomendada",
-                            "Boleto 30/60 dias"
+                            "info",
+                            "Condiçao recomendada baseado no valor do pedido",
+                            "BOLETO 30/60 DIAS"
                           )}
                         </MenuItem>
-                        <MenuItem value={20}>
+                        <MenuItem value={2}>
                           {renderPagamento(
-                            "idle",
-                            "Condição do Bling",
-                            "A vista"
+                            "correct",
+                            "Condiçao cadastrada para o cliente",
+                            "BOLETO 60 DIAS"
                           )}
                         </MenuItem>
                       </Select>
