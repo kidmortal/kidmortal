@@ -1,5 +1,4 @@
 import firebase from "./firebase";
-import { useSelector } from "react-redux";
 
 class FirebaseFunctions {
   addCoins(amount, player) {
