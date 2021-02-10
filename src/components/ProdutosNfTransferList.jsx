@@ -62,6 +62,7 @@ export default function ProdutosNfTransferList(props) {
     setRight,
     target,
     cliente,
+    condicao,
     setCliente,
   } = props;
 
@@ -186,16 +187,14 @@ export default function ProdutosNfTransferList(props) {
     if (response.clientes_cadastro_resumido) {
       let c = response.clientes_cadastro_resumido[0];
       return setCliente({
-        nome: cliente.nome,
-        cnpj: cliente.cnpj,
+        ...cliente,
         status: "success",
         message: `Cliente encontrado: ${c.codigo_cliente}`,
         codigo: c.codigo_cliente,
       });
     } else {
       return setCliente({
-        nome: cliente.nome,
-        cnpj: cliente.cnpj,
+        ...cliente,
         status: "error",
         message: `Cliente não encontrado`,
       });
@@ -204,6 +203,7 @@ export default function ProdutosNfTransferList(props) {
 
   async function enviarPedido() {
     let pedido = {
+      condicao,
       cliente,
       produtos: right,
     };

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import ProdutosNfTransferList from "../components/ProdutosNfTransferList";
@@ -58,57 +58,114 @@ export default function GerarNf() {
   const [cliente, setCliente] = useState({
     nome: "",
     cnpj: "",
+    condicaoNF: "",
     status: "idle",
     message: "Ainda não verificado",
   });
   const [vendedor, setVendedor] = useState("");
-  const [condicao, setCondicao] = useState("");
+  const [condicao, setCondicao] = useState("A31");
+  const [condicaoBling, setCondicaoBling] = useState("");
+  const [condicoes, setCondicoes] = useState([]);
   const [observacoes, setObservacoes] = useState("");
   const [left, setLeft] = useState([]);
   const [right, setRight] = useState([]);
 
-  function getPedidoFromBling() {
-    if (!pedido) return toast.error("Faltou o numero carai");
-    fetch(
-      `${process.env.REACT_APP_API_url}/blingPedido?key=${process.env.REACT_APP_API_key}&pedido=${pedido}`
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        let response = data.retorno;
+  useEffect(() => {
+    fetchCondicoes();
+  }, [cliente]);
 
-        if (response.erros) {
-          return toast.error(response.erros[0].erro.msg);
-        }
-        if (response.pedidos) {
-          let pedido = response.pedidos[0].pedido;
-          let itens = pedido.itens;
-          let cliente = pedido.cliente;
-          let pagamento = pedido.parcelas[0].parcela.forma_pagamento.descricao;
-          let newItens = [];
-          itens.forEach((e) => {
-            e = e.item;
-            newItens.push({
-              quantidade: parseInt(e.quantidade),
-              codigo: e.codigo,
-              descricao: e.descricao,
-              valor: parseFloat(e.valorunidade).toFixed(2),
-              status: "idle",
-              message: "idle",
-            });
-          });
-          console.log(pedido);
-          setLeft(newItens);
-          setVendedor(pedido.vendedor);
-          setCondicao(pagamento);
-          setObservacoes(pedido.observacaointerna);
-          setCliente({
-            nome: cliente.nome,
-            cnpj: cliente.cnpj,
-            status: "idle",
-            message: "Ainda não verificado",
-          });
-        }
+  async function fetchCondicoes() {
+    let condicoes = await fetch(
+      `${process.env.REACT_APP_API_url}/mongoCondicoes?key=${process.env.REACT_APP_API_key}&type=list`
+    );
+    condicoes = await condicoes.json();
+    console.log(cliente);
+    setCondicoes(condicoes);
+  }
+
+  async function fetchClienteCondicao(cnpj) {
+    return fetch(
+      `${process.env.REACT_APP_API_url}/mongoClientes?key=${process.env.REACT_APP_API_key}&type=find`,
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ cnpj }),
+      }
+    );
+  }
+
+  function renderCondicoes(condicao) {
+    let status, message;
+
+    status = "idle";
+    message = "Condição Disponivel no Omie";
+
+    if (condicao.nome === condicaoBling) {
+      status = "info";
+      message = "Condição No Bling";
+    }
+
+    if (condicao.nome === cliente.condicaoNF) {
+      status = "correct";
+      message = "Condição Padrão do Cliente";
+    }
+
+    return (
+      <MenuItem value={condicao.codigoOmie}>
+        {renderPagamento(status, message, condicao.nome)}
+      </MenuItem>
+    );
+  }
+
+  function fetchPedidoBling() {
+    return fetch(
+      `${process.env.REACT_APP_API_url}/blingPedido?key=${process.env.REACT_APP_API_key}&pedido=${pedido}`
+    );
+  }
+
+  async function getPedidoFromBling() {
+    if (!pedido) return toast.error("Faltou o numero carai");
+    let response = await (await fetchPedidoBling()).json();
+    response = response.retorno;
+    if (response.erros) {
+      return toast.error(response.erros[0].erro.msg);
+    }
+    if (response.pedidos) {
+      let pedido = response.pedidos[0].pedido;
+      let itens = pedido.itens;
+      let clienteBling = pedido.cliente;
+      let pagamento = pedido.parcelas[0].parcela.forma_pagamento.descricao;
+      let newItens = [];
+      itens.forEach((e) => {
+        e = e.item;
+        newItens.push({
+          quantidade: parseInt(e.quantidade),
+          codigo: e.codigo,
+          descricao: e.descricao,
+          valor: parseFloat(e.valorunidade).toFixed(2),
+          status: "idle",
+          message: "idle",
+        });
       });
+      let clientCondicao = await (
+        await fetchClienteCondicao(clienteBling.cnpj)
+      ).json();
+      setLeft(newItens);
+      setVendedor(pedido.vendedor);
+      setCondicaoBling(pagamento);
+      setObservacoes(pedido.observacaointerna);
+      let newCliente = {
+        nome: clienteBling.nome,
+        cnpj: clienteBling.cnpj,
+        condicaoNF: clientCondicao ? clientCondicao.condicaoNF : "",
+        status: "idle",
+        message: "Ainda não verificado",
+      };
+      setCliente(newCliente);
+    }
   }
 
   function renderStatus(status, message) {
@@ -312,30 +369,12 @@ export default function GerarNf() {
                       <Select
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
-                        value={0}
-                        onChange={() => {}}
+                        value={condicao}
+                        onChange={(e) => {
+                          setCondicao(e.target.value);
+                        }}
                       >
-                        <MenuItem value={0}>
-                          {renderPagamento(
-                            "error",
-                            "Ainda Não implementado",
-                            condicao
-                          )}
-                        </MenuItem>
-                        <MenuItem value={1}>
-                          {renderPagamento(
-                            "info",
-                            "Condiçao recomendada baseado no valor do pedido",
-                            "BOLETO 30/60 DIAS"
-                          )}
-                        </MenuItem>
-                        <MenuItem value={2}>
-                          {renderPagamento(
-                            "correct",
-                            "Condiçao cadastrada para o cliente",
-                            "BOLETO 60 DIAS"
-                          )}
-                        </MenuItem>
+                        {condicoes.map((condicao) => renderCondicoes(condicao))}
                       </Select>
                     </FormControl>
                   </Grid>
@@ -386,6 +425,7 @@ export default function GerarNf() {
           setRight={setRight}
           target={target}
           cliente={cliente}
+          condicao={condicao}
           setCliente={setCliente}
         />
       </Grid>
