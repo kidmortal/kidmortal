@@ -79,7 +79,24 @@ export default function GerarNf() {
       `${process.env.REACT_APP_API_url}/mongoCondicoes?key=${process.env.REACT_APP_API_key}&type=list`
     );
     condicoes = await condicoes.json();
-    console.log(cliente);
+    condicoes.forEach((cond) => {
+      let status = "idle";
+      let message = "Condição Disponivel no Omie";
+
+      if (cond.nome === condicaoBling) {
+        status = "info";
+        message = "Condição No Bling";
+        if (condicao == !cliente.condicaoNF) setCondicao(cond.codigoOmie);
+      }
+
+      if (cond.nome === cliente.condicaoNF) {
+        status = "correct";
+        message = "Condição Padrão do Cliente";
+        setCondicao(cond.codigoOmie);
+      }
+      cond.status = status;
+      cond.message = message;
+    });
     setCondicoes(condicoes);
   }
 
@@ -98,24 +115,9 @@ export default function GerarNf() {
   }
 
   function renderCondicoes(condicao) {
-    let status, message;
-
-    status = "idle";
-    message = "Condição Disponivel no Omie";
-
-    if (condicao.nome === condicaoBling) {
-      status = "info";
-      message = "Condição No Bling";
-    }
-
-    if (condicao.nome === cliente.condicaoNF) {
-      status = "correct";
-      message = "Condição Padrão do Cliente";
-    }
-
     return (
       <MenuItem value={condicao.codigoOmie}>
-        {renderPagamento(status, message, condicao.nome)}
+        {renderPagamento(condicao.status, condicao.message, condicao.nome)}
       </MenuItem>
     );
   }

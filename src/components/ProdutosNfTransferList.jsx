@@ -16,7 +16,6 @@ import WarningIcon from "@material-ui/icons/Warning";
 import ForwardIcon from "@material-ui/icons/Forward";
 import Avatar from "@material-ui/core/Avatar";
 import { toast } from "react-toastify";
-import EditProdutoNf from "./editProdutoNf";
 
 const useStyles = makeStyles((theme) => ({
   root: {
