@@ -13,11 +13,12 @@ const useStyles = makeStyles({
 
 const pedidosColumns = [
   { id: "id", label: "Pedido" },
-  { id: "status", label: "Status" },
+  { id: "status", label: "Status", format: (value) => <h5>{value}</h5> },
   {
     id: "cliente",
     label: "Cliente",
-    format: (value) => (value.length > 30 ? value.slice(0, 30) : value),
+    format: (value) =>
+      value.length > 25 ? <h5>{value.slice(0, 25)}</h5> : <h5>{value}</h5>,
   },
   {
     id: "valor",
@@ -51,7 +52,7 @@ const notasColumn = [
             : null
         }
       >
-        {value.length > 30 ? value.slice(0, 30) : value}
+        {value.length > 25 ? value.slice(0, 25) : value}
       </h5>
     ),
   },
