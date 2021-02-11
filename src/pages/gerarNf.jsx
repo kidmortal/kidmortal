@@ -65,6 +65,7 @@ export default function GerarNf() {
   const [vendedor, setVendedor] = useState("");
   const [condicao, setCondicao] = useState("A31");
   const [condicaoBling, setCondicaoBling] = useState("");
+  const [condicaoValor, setCondicaoValor] = useState("");
   const [condicoes, setCondicoes] = useState([]);
   const [observacoes, setObservacoes] = useState("");
   const [left, setLeft] = useState([]);
@@ -112,6 +113,19 @@ export default function GerarNf() {
         body: JSON.stringify({ cnpj }),
       }
     );
+  }
+
+  function getCondicaoBaseadaNoValor(valor) {
+    valor = parseFloat(valor);
+    if (valor < 4000) {
+      setCondicaoValor("BOLETO 30 DIAS");
+    }
+    if (valor >= 4000 && valor < 9000) {
+      setCondicaoValor("BOLETO 30/60 DIAS");
+    }
+    if (valor >= 9000) {
+      setCondicaoValor("BOLETO 30/60/90 DIAS");
+    }
   }
 
   function renderCondicoes(condicao) {

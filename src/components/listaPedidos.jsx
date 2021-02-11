@@ -40,7 +40,20 @@ const notasColumn = [
   {
     id: "nome",
     label: "Nome",
-    format: (value) => (value.length > 30 ? value.slice(0, 30) : value),
+    format: (value, cancelado) => (
+      <h5
+        style={
+          cancelado
+            ? {
+                textDecorationLine: "line-through",
+                textDecorationStyle: "solid",
+              }
+            : null
+        }
+      >
+        {value.length > 30 ? value.slice(0, 30) : value}
+      </h5>
+    ),
   },
   {
     id: "boleto",
@@ -83,6 +96,7 @@ export default function Pedidos() {
             valor: nota.valorTotal,
             boleto: nota.boleto,
             danfe: nota.nfUrl,
+            cancelado: nota.cancelado,
           });
         });
         newNotas = newNotas.reverse();

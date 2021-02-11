@@ -9,7 +9,6 @@ import TableHead from "@material-ui/core/TableHead";
 import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
 
-
 const useStyles = makeStyles({
   root: {
     width: "100%",
@@ -60,7 +59,9 @@ export default function Tabela(props) {
                       const value = row[column.id];
                       return (
                         <TableCell key={column.id} align={column.align}>
-                          {column.format ? column.format(value) : value}
+                          {column.format
+                            ? column.format(value, row.cancelado)
+                            : value}
                         </TableCell>
                       );
                     })}
