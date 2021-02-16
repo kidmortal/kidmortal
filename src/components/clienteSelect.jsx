@@ -20,10 +20,18 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ClienteSelect(props) {
   const classes = useStyles();
+  const { setDataRecebimento, dataRecebimento, clientes } = props;
   const [dataInputError, setDataInputError] = useState({
     error: false,
     message: "",
   });
+
+  useEffect(() => {
+    let now = new Date();
+    props.setDataRecebimento(
+      `${now.getDate()}/${now.getMonth() + 1}/${now.getFullYear()}`
+    );
+  }, [clientes]);
 
   function validateData(data) {
     if (!data) {
@@ -62,12 +70,6 @@ export default function ClienteSelect(props) {
       props.setDataRecebimento(validateData(props.dataRecebimento));
     }
   }
-  useEffect(() => {
-    let now = new Date();
-    props.setDataRecebimento(
-      `${now.getDate()}/${now.getMonth() + 1}/${now.getFullYear()}`
-    );
-  });
 
   return (
     <Grid container>
@@ -106,8 +108,10 @@ export default function ClienteSelect(props) {
               helperText={dataInputError.message}
               id="dataRecebimento"
               label="DATA LANÇAMENTO"
-              value={props.dataRecebimento}
-              onChange={(e) => props.setDataRecebimento(e.target.value)}
+              value={dataRecebimento}
+              onChange={(e) => {
+                setDataRecebimento(e.target.value);
+              }}
               onKeyDown={handleTab}
             />
           </Grid>
