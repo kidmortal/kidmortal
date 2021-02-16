@@ -67,6 +67,8 @@ export default function ProdutosNfTransferList(props) {
 
   const leftChecked = intersection(checked, left);
   const rightChecked = intersection(checked, right);
+  const [disabled, setDisabled] = useState(true);
+  const [erros, setErros] = useState(0);
   const [loading, setLoading] = useState(false);
 
   const handleToggle = (value) => () => {
@@ -136,6 +138,7 @@ export default function ProdutosNfTransferList(props) {
   async function gerarNF() {
     conferirCliente().then(() => {
       conferirProdutos();
+      setDisabled(false);
     });
   }
 
@@ -153,6 +156,7 @@ export default function ProdutosNfTransferList(props) {
       e.status = "error";
       e.message = `Codigo Não encontrado`;
       changeStatus(e);
+      setDisabled(true);
     }
   }
 
@@ -305,6 +309,7 @@ export default function ProdutosNfTransferList(props) {
                   className={classes.input}
                   id="quantidade"
                   label="QUANTIDADE"
+                  type="number"
                   value={value.quantidade}
                   onChange={(event) => {
                     setRight((right) =>
@@ -333,6 +338,7 @@ export default function ProdutosNfTransferList(props) {
                   className={classes.input}
                   id="valor"
                   label="VALOR"
+                  type="number"
                   value={value.valor}
                   onChange={(event) => {
                     setRight((right) =>
@@ -343,6 +349,7 @@ export default function ProdutosNfTransferList(props) {
                       )
                     );
                   }}
+                  on
                 />
               </ListItemText>
 
@@ -430,6 +437,7 @@ export default function ProdutosNfTransferList(props) {
                   <Button
                     variant="contained"
                     color="secondary"
+                    disabled={disabled}
                     startIcon={<ForwardIcon style={{ color: "#1a508b" }} />}
                     onClick={() => {
                       enviarPedido();

@@ -14,7 +14,8 @@ const useStyles = makeStyles((theme) => ({
     minWidth: 280,
   },
   dataSelect: {
-    width: 120,
+    marginTop: 8,
+    width: 160,
   },
 }));
 
@@ -27,10 +28,8 @@ export default function ClienteSelect(props) {
   });
 
   useEffect(() => {
-    let now = new Date();
-    props.setDataRecebimento(
-      `${now.getDate()}/${now.getMonth() + 1}/${now.getFullYear()}`
-    );
+    let today = new Date();
+    props.setDataRecebimento(today.toISOString().substr(0, 10));
   }, [clientes]);
 
   function validateData(data) {
@@ -97,25 +96,23 @@ export default function ClienteSelect(props) {
         </FormControl>
       </Grid>
       <Grid item>
-        <Grid container spacing={1} alignItems="flex-end">
-          <Grid item>
-            <TodayIcon />
-          </Grid>
-          <Grid item>
-            <TextField
-              className={classes.dataSelect}
-              error={dataInputError.error}
-              helperText={dataInputError.message}
-              id="dataRecebimento"
-              label="DATA LANÇAMENTO"
-              value={dataRecebimento}
-              onChange={(e) => {
-                setDataRecebimento(e.target.value);
-              }}
-              onKeyDown={handleTab}
-            />
-          </Grid>
-        </Grid>
+        <TextField
+          className={classes.dataSelect}
+          error={dataInputError.error}
+          helperText={dataInputError.message}
+          id="dataRecebimento"
+          type="date"
+          value={dataRecebimento}
+          onChange={(e) => {
+            console.log(`lol ${e.target.value}`);
+            setDataRecebimento(e.target.value);
+          }}
+          onKeyDown={handleTab}
+          label="Data Recebimento"
+          InputLabelProps={{
+            shrink: true,
+          }}
+        />
       </Grid>
     </Grid>
   );

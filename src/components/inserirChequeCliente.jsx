@@ -79,7 +79,8 @@ export default function InserirChequeCliente(props) {
       }
       let [dia, mes, ano] = dataArray;
       let dataValid = new Date(`${mes}/${dia}/${ano}`);
-      if (dataValid === "Invalid Date") {
+      console.log(dataValid.getDate());
+      if (!dataValid.getDate()) {
         setDataInputError({
           error: true,
           message: "Data invalida",
@@ -349,6 +350,7 @@ export default function InserirChequeCliente(props) {
                     helperText={valorInputError.message}
                     id="valor"
                     label="VALOR"
+                    type="number"
                     value={valor}
                     onChange={(e) => setValor(e.target.value)}
                     onKeyDown={handleTab}
