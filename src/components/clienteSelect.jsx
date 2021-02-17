@@ -7,21 +7,31 @@ import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
+import { Autocomplete } from "@material-ui/lab";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
     margin: theme.spacing(1),
     minWidth: 280,
+    maxWidth: 280,
   },
   dataSelect: {
     marginTop: 8,
-    width: 160,
+    width: 140,
+  },
+  clienteSelect: {
+    width: 200,
   },
 }));
 
 export default function ClienteSelect(props) {
   const classes = useStyles();
-  const { setDataRecebimento, dataRecebimento, clientes } = props;
+  const {
+    setDataRecebimento,
+    dataRecebimento,
+    clientes,
+    setSelectedCliente,
+  } = props;
   const [dataInputError, setDataInputError] = useState({
     error: false,
     message: "",
@@ -74,25 +84,18 @@ export default function ClienteSelect(props) {
     <Grid container>
       <Grid item>
         <FormControl className={classes.formControl}>
-          <InputLabel htmlFor="grouped-select">CLIENTE</InputLabel>
-          <Select defaultValue="" id="grouped-select">
-            <MenuItem value="" key={0}>
-              <em>Nenhum</em>
-            </MenuItem>
-            {props.clientes.map((cliente) => {
-              return (
-                <MenuItem
-                  key={cliente.id}
-                  value={cliente.nome}
-                  onClick={() => {
-                    props.setSelectedCliente(cliente._id);
-                  }}
-                >
-                  {cliente.nome}
-                </MenuItem>
-              );
-            })}
-          </Select>
+          <Autocomplete
+            id="combo-box-demo"
+            options={props.clientes}
+            getOptionLabel={(option) => option.nome}
+            style={{ width: 280 }}
+            renderInput={(params) => (
+              <TextField {...params} label="Cliente" variant="outlined" />
+            )}
+            onChange={(event, value) => {
+              setSelectedCliente(value);
+            }}
+          />
         </FormControl>
       </Grid>
       <Grid item>

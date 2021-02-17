@@ -329,7 +329,6 @@ export default function ProdutosNfTransferList(props) {
                   id="codigo"
                   label="CODIGO"
                   value={value.codigo}
-                  disabled
                 />
               </ListItemText>
               <ListItemText>

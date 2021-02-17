@@ -38,9 +38,7 @@ export default function Cheques() {
   const [lote, setLote] = useState("12/12/2020 SA-00005 50,25");
   const [clientes, setClientes] = useState([]);
   const [cheques, setCheques] = useState([]);
-  const [lancamentos, setLancamentos] = useState([
-    { data: "10/10/10", descricao: "3 kilos de picanha fresca", valor: 145 },
-  ]);
+  const [lancamentos, setLancamentos] = useState([]);
   const totalPagamentos = getTotal(cheques);
   const selectedCheques = getCurrentSelection(cheques, dataRecebimento);
 
@@ -79,10 +77,10 @@ export default function Cheques() {
 
     for (let index = 0; index < cheques.length; index++) {
       const element = cheques[index];
-      let split = dataRecebimento.split("/");
-      let day = parseInt(split[0]);
+      let split = dataRecebimento.split("-");
+      let day = parseInt(split[2]);
       let month = parseInt(split[1]);
-      let year = parseInt(split[2]);
+      let year = parseInt(split[0]);
       let elementDate = new Date(element.recebidoEm);
       let elementDay = elementDate.getDate() + 1;
       let elementMonth = elementDate.getMonth() + 1;
@@ -111,7 +109,7 @@ export default function Cheques() {
   function fetchChequesCliente() {
     if (selectedCliente) {
       fetch(
-        `${process.env.REACT_APP_API_url}/mongoCheques?key=${process.env.REACT_APP_API_key}&type=list&cliente=${selectedCliente}`
+        `${process.env.REACT_APP_API_url}/mongoCheques?key=${process.env.REACT_APP_API_key}&type=list&cliente=${selectedCliente._id}`
       )
         .then((response) => response.json())
         .then((data) => {
@@ -123,7 +121,7 @@ export default function Cheques() {
   function fetchLancamentosCliente() {
     if (selectedCliente) {
       fetch(
-        `${process.env.REACT_APP_API_url}/mongoLancamentos?key=${process.env.REACT_APP_API_key}&type=list&cliente=${selectedCliente}`
+        `${process.env.REACT_APP_API_url}/mongoLancamentos?key=${process.env.REACT_APP_API_key}&type=list&cliente=${selectedCliente._id}`
       )
         .then((response) => response.json())
         .then((data) => {

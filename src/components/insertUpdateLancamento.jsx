@@ -108,6 +108,7 @@ export default function InsertLancamento(props) {
                   className={classes.input}
                   id="data"
                   label="DATA"
+                  type="date"
                   value={data}
                   onChange={(e) => setData(e.target.value)}
                 />
@@ -140,6 +141,7 @@ export default function InsertLancamento(props) {
                   className={classes.input}
                   id="valor"
                   label="VALOR"
+                  type="number"
                   value={valor}
                   onChange={(e) => setValor(e.target.value)}
                 />

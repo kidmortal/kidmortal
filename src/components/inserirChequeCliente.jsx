@@ -310,6 +310,7 @@ export default function InserirChequeCliente(props) {
                     className={classes.input}
                     error={dataInputError.error}
                     helperText={dataInputError.message}
+                    autoComplete="off"
                     id="data"
                     label="DATA"
                     value={data}
@@ -329,6 +330,7 @@ export default function InserirChequeCliente(props) {
                     className={classes.input}
                     error={numeroInputError.error}
                     helperText={numeroInputError.message}
+                    autoComplete="off"
                     id="numero"
                     label="NUMERO"
                     value={numero}
@@ -348,6 +350,7 @@ export default function InserirChequeCliente(props) {
                     className={classes.input}
                     error={valorInputError.error}
                     helperText={valorInputError.message}
+                    autoComplete="off"
                     id="valor"
                     label="VALOR"
                     type="number"

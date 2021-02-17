@@ -50,9 +50,8 @@ export default function EditSelectedCheque(props) {
     let dados = props.selectedRow;
     setId(dados._id);
     let date = new Date(dados.dataCheque);
-    setData(
-      `${date.getDate() + 1}/${date.getMonth() + 1}/${date.getFullYear()}`
-    );
+    if (!date.getDate()) return;
+    setData(date.toISOString().substr(0, 10));
     setNumero(dados.numeroCheque);
     setValor(dados.valorCheque);
     setDataInputError({
@@ -247,6 +246,7 @@ export default function EditSelectedCheque(props) {
                   helperText={dataInputError.message}
                   id="data"
                   label="DATA"
+                  type="date"
                   value={data}
                   onChange={(e) => setData(e.target.value)}
                 />
