@@ -65,7 +65,7 @@ export default function GerarNf() {
   const [vendedor, setVendedor] = useState("");
   const [condicao, setCondicao] = useState("A31");
   const [condicaoBling, setCondicaoBling] = useState("");
-  const [condicaoValor, setCondicaoValor] = useState("");
+  const [loading, setLoading] = useState(false);
   const [condicoes, setCondicoes] = useState([]);
   const [observacoes, setObservacoes] = useState("");
   const [left, setLeft] = useState([]);
@@ -131,7 +131,9 @@ export default function GerarNf() {
 
   async function getPedidoFromBling() {
     if (!pedido) return toast.error("Faltou o numero carai");
+    setLoading(true);
     let response = await (await fetchPedidoBling()).json();
+    setLoading(false);
     response = response.retorno;
     if (response.erros) {
       return toast.error(response.erros[0].erro.msg);
@@ -266,19 +268,28 @@ export default function GerarNf() {
                       onChange={(e) => {
                         setPedido(e.target.value);
                       }}
+                      onKeyPress={(e) => {
+                        if (e.key === "Enter") {
+                          getPedidoFromBling();
+                        }
+                      }}
                     />
                   </Grid>
                   <Grid item>
-                    <IconButton
-                      color="primary"
-                      aria-label="search"
-                      component="span"
-                      onClick={() => {
-                        getPedidoFromBling();
-                      }}
-                    >
-                      <SearchIcon style={{ color: "blue" }} />
-                    </IconButton>
+                    {loading ? (
+                      <CircularProgress />
+                    ) : (
+                      <IconButton
+                        color="primary"
+                        aria-label="search"
+                        component="span"
+                        onClick={() => {
+                          getPedidoFromBling();
+                        }}
+                      >
+                        <SearchIcon style={{ color: "blue" }} />
+                      </IconButton>
+                    )}
                   </Grid>
                 </Grid>
               </Grid>
