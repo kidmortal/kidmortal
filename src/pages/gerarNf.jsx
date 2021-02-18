@@ -115,19 +115,6 @@ export default function GerarNf() {
     );
   }
 
-  function getCondicaoBaseadaNoValor(valor) {
-    valor = parseFloat(valor);
-    if (valor < 4000) {
-      setCondicaoValor("BOLETO 30 DIAS");
-    }
-    if (valor >= 4000 && valor < 9000) {
-      setCondicaoValor("BOLETO 30/60 DIAS");
-    }
-    if (valor >= 9000) {
-      setCondicaoValor("BOLETO 30/60/90 DIAS");
-    }
-  }
-
   function renderCondicoes(condicao) {
     return (
       <MenuItem value={condicao.codigoOmie}>

@@ -10,10 +10,18 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import Checkbox from "@material-ui/core/Checkbox";
 import Button from "@material-ui/core/Button";
 import Divider from "@material-ui/core/Divider";
-import { Chip, CircularProgress, TextField, Tooltip } from "@material-ui/core";
+import {
+  Chip,
+  CircularProgress,
+  IconButton,
+  TextField,
+  Tooltip,
+} from "@material-ui/core";
 import DoneIcon from "@material-ui/icons/Done";
 import WarningIcon from "@material-ui/icons/Warning";
 import ForwardIcon from "@material-ui/icons/Forward";
+import AutorenewIcon from "@material-ui/icons/Autorenew";
+import WrapTextIcon from "@material-ui/icons/WrapText";
 import Avatar from "@material-ui/core/Avatar";
 import { toast } from "react-toastify";
 
@@ -35,6 +43,12 @@ const useStyles = makeStyles((theme) => ({
   },
   button: {
     margin: theme.spacing(0.5, 0),
+  },
+  input: {
+    width: 120,
+  },
+  icons: {
+    width: 60,
   },
 }));
 
@@ -68,7 +82,6 @@ export default function ProdutosNfTransferList(props) {
   const leftChecked = intersection(checked, left);
   const rightChecked = intersection(checked, right);
   const [disabled, setDisabled] = useState(true);
-  const [erros, setErros] = useState(0);
   const [loading, setLoading] = useState(false);
 
   const handleToggle = (value) => () => {
@@ -150,7 +163,9 @@ export default function ProdutosNfTransferList(props) {
     if (response.codigo_produto) {
       e.status = "success";
       e.message = `Codigo Encontrado: ${response.codigo_produto}`;
+      console.log(response);
       e.codigoOmie = response.codigo_produto;
+      if (response.valor_unitario > 0) e.custo = response.valor_unitario;
       changeStatus(e);
     } else {
       e.status = "error";
@@ -261,7 +276,7 @@ export default function ProdutosNfTransferList(props) {
     }
   }
 
-  const customList = (title, items) => (
+  const leftList = (title, items) => (
     <Card>
       <CardHeader
         className={classes.cardHeader}
@@ -282,6 +297,7 @@ export default function ProdutosNfTransferList(props) {
         title={title}
         subheader={`${numberOfChecked(items)}/${items.length} selecionados`}
       />
+
       <Divider />
       <List className={classes.list} dense component="div" role="list">
         {items.map((value) => {
@@ -329,31 +345,220 @@ export default function ProdutosNfTransferList(props) {
                   id="codigo"
                   label="CODIGO"
                   value={value.codigo}
+                  onChange={(event) => {
+                    setRight((right) =>
+                      right.map((e) =>
+                        e.codigo === value.codigo
+                          ? { ...e, codigo: event.target.value }
+                          : e
+                      )
+                    );
+                  }}
+                  disabled
+                />
+              </ListItemText>
+              <ListItemText>
+                <Grid container direction="row" alignItems="center">
+                  <Grid item>
+                    <TextField
+                      autoComplete="off"
+                      className={classes.input}
+                      id="valor"
+                      label="VALOR"
+                      type="number"
+                      value={value.valor}
+                      onChange={(event) => {
+                        setRight((right) =>
+                          right.map((e) =>
+                            e.codigo === value.codigo
+                              ? { ...e, valor: event.target.value }
+                              : e
+                          )
+                        );
+                      }}
+                    />
+                  </Grid>
+
+                  <Grid item className={classes.icons}>
+                    {renderStatus(value.status, value.message)}
+                  </Grid>
+                </Grid>
+              </ListItemText>
+              <ListItemIcon>
+                {value.custo ? (
+                  <Tooltip title="Mudar valor para custo">
+                    <IconButton
+                      className={classes.margin}
+                      onClick={() => {
+                        setRight((right) =>
+                          right.map((e) =>
+                            e.codigo === value.codigo
+                              ? { ...e, valor: e.custo, custo: e.valor }
+                              : e
+                          )
+                        );
+                      }}
+                    >
+                      <AutorenewIcon style={{ color: "#3ca738" }} />
+                    </IconButton>
+                  </Tooltip>
+                ) : (
+                  ""
+                )}
+              </ListItemIcon>
+            </ListItem>
+          );
+        })}
+        <ListItem />
+      </List>
+    </Card>
+  );
+
+  const rightList = (title, items) => (
+    <Card>
+      <Grid container alignItems="center" spacing={3}>
+        <Grid item>
+          <CardHeader
+            className={classes.cardHeader}
+            avatar={
+              <Checkbox
+                onClick={handleToggleAll(items)}
+                checked={
+                  numberOfChecked(items) === items.length && items.length !== 0
+                }
+                indeterminate={
+                  numberOfChecked(items) !== items.length &&
+                  numberOfChecked(items) !== 0
+                }
+                disabled={items.length === 0}
+                inputProps={{ "aria-label": "todos itens selecionados" }}
+              />
+            }
+            title={title}
+            subheader={`${numberOfChecked(items)}/${items.length} selecionados`}
+          />
+        </Grid>
+        <Grid item>
+          <Tooltip title={"Modo Editor de Texto"}>
+            <IconButton
+              className={classes.margin}
+              onClick={() => {
+                toast.error("Ainda vou fazer");
+              }}
+            >
+              <WrapTextIcon style={{ color: "blue" }} />
+            </IconButton>
+          </Tooltip>
+        </Grid>
+      </Grid>
+
+      <Divider />
+      <List className={classes.list} dense component="div" role="list">
+        {items.map((value) => {
+          const labelId = `transfer-list-all-item-${value}-label`;
+
+          return (
+            <ListItem
+              key={value.codigo}
+              role="listitem"
+              button
+              onClick={handleToggle(value)}
+            >
+              <ListItemIcon>
+                <Checkbox
+                  checked={checked.indexOf(value) !== -1}
+                  tabIndex={-1}
+                  disableRipple
+                  inputProps={{ "aria-labelledby": labelId }}
+                />
+              </ListItemIcon>
+              <ListItemText id={labelId} primary={``} />
+              <ListItemText>
+                <TextField
+                  autoComplete="off"
+                  className={classes.input}
+                  id="quantidade"
+                  label="QUANTIDADE"
+                  type="number"
+                  value={value.quantidade}
+                  onChange={(event) => {
+                    setRight((right) =>
+                      right.map((e) =>
+                        e.codigo === value.codigo
+                          ? { ...e, quantidade: event.target.value }
+                          : e
+                      )
+                    );
+                  }}
                 />
               </ListItemText>
               <ListItemText>
                 <TextField
                   autoComplete="off"
                   className={classes.input}
-                  id="valor"
-                  label="VALOR"
-                  type="number"
-                  value={value.valor}
+                  id="codigo"
+                  label="CODIGO"
+                  value={value.codigo}
                   onChange={(event) => {
                     setRight((right) =>
                       right.map((e) =>
                         e.codigo === value.codigo
-                          ? { ...e, valor: event.target.value }
+                          ? { ...e, codigo: event.target.value }
                           : e
                       )
                     );
                   }}
-                  on
+                  disabled
                 />
               </ListItemText>
+              <ListItemText>
+                <Grid container direction="row" alignItems="center">
+                  <Grid item>
+                    <TextField
+                      autoComplete="off"
+                      className={classes.input}
+                      id="valor"
+                      label="VALOR"
+                      type="number"
+                      value={value.valor}
+                      onChange={(event) => {
+                        setRight((right) =>
+                          right.map((e) =>
+                            e.codigo === value.codigo
+                              ? { ...e, valor: event.target.value }
+                              : e
+                          )
+                        );
+                      }}
+                    />
+                  </Grid>
 
+                  <Grid item className={classes.icons}>
+                    {renderStatus(value.status, value.message)}
+                  </Grid>
+                </Grid>
+              </ListItemText>
               <ListItemIcon>
-                {renderStatus(value.status, value.message)}
+                {value.custo ? (
+                  <Tooltip title="Mudar valor para custo">
+                    <IconButton
+                      className={classes.margin}
+                      onClick={() => {
+                        setRight((right) =>
+                          right.map((e) =>
+                            e.codigo === value.codigo
+                              ? { ...e, valor: e.custo, custo: e.valor }
+                              : e
+                          )
+                        );
+                      }}
+                    >
+                      <AutorenewIcon style={{ color: "#3ca738" }} />
+                    </IconButton>
+                  </Tooltip>
+                ) : (
+                  ""
+                )}
               </ListItemIcon>
             </ListItem>
           );
@@ -371,7 +576,7 @@ export default function ProdutosNfTransferList(props) {
       alignItems="center"
       className={classes.root}
     >
-      <Grid item>{customList("Escolhas", left)}</Grid>
+      <Grid item>{leftList("Escolhas", left)}</Grid>
       <Grid item>
         <Grid container direction="column" alignItems="center">
           <Button
@@ -405,7 +610,7 @@ export default function ProdutosNfTransferList(props) {
           spacing={3}
         >
           <Grid item className={classes.selecionados}>
-            {customList("Selecionados", right)}
+            {rightList("Selecionados", right)}
           </Grid>
           <Grid item>
             <Grid container spacing={3}>
