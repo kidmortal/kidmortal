@@ -240,6 +240,7 @@ export default function ProdutosNfTransferList(props) {
     response = await response.json();
     if (response.numero_pedido) {
       setLoading(false);
+      setRight([]);
       return toast.success("Pedido Cadastrado com Successo!");
     } else {
       setLoading(false);
