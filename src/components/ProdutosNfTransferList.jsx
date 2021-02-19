@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import EditorProdutos from "../components/editorProdutos";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import List from "@material-ui/core/List";
@@ -81,6 +82,7 @@ export default function ProdutosNfTransferList(props) {
 
   const leftChecked = intersection(checked, left);
   const rightChecked = intersection(checked, right);
+  const [open, setOpen] = useState(false);
   const [disabled, setDisabled] = useState(true);
   const [loading, setLoading] = useState(false);
 
@@ -206,6 +208,7 @@ export default function ProdutosNfTransferList(props) {
       let c = response.clientes_cadastro_resumido[0];
       return setCliente({
         ...cliente,
+        nome: c.razao_social,
         status: "success",
         message: `Cliente encontrado: ${c.codigo_cliente}`,
         codigo: c.codigo_cliente,
@@ -417,6 +420,14 @@ export default function ProdutosNfTransferList(props) {
 
   const rightList = (title, items) => (
     <Card>
+      <EditorProdutos
+        open={open}
+        setOpen={setOpen}
+        cliente={cliente}
+        setCliente={setCliente}
+        right={right}
+        setRight={setRight}
+      />
       <Grid container alignItems="center" spacing={3}>
         <Grid item>
           <CardHeader
@@ -444,6 +455,7 @@ export default function ProdutosNfTransferList(props) {
             <IconButton
               className={classes.margin}
               onClick={() => {
+                setOpen(true);
                 toast.error("Ainda vou fazer");
               }}
             >
