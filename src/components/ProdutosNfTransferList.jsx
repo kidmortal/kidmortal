@@ -456,7 +456,6 @@ export default function ProdutosNfTransferList(props) {
               className={classes.margin}
               onClick={() => {
                 setOpen(true);
-                toast.error("Ainda vou fazer");
               }}
             >
               <WrapTextIcon style={{ color: "blue" }} />

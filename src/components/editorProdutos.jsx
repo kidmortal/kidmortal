@@ -91,7 +91,7 @@ export default function EditorProdutos(props) {
         newRight.push({
           quantidade: params[0],
           codigo: params[1],
-          valor: params[2],
+          valor: params[2].replace(",", "."),
         });
       }
     });
