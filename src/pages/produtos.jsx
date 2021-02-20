@@ -25,6 +25,7 @@ export default function Produtos() {
     >
       <Grid item>
         <ProdutosSearchOptions
+          data={data}
           setData={setData}
           selectedTarget={selectedTarget}
           setSelectedTarget={setSelectedTarget}

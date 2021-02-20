@@ -9,6 +9,7 @@ import Mongodb from "../assets/mongodb.png";
 import OmiePyramid from "../assets/omiepyramid.png";
 import OmieDix from "../assets/omiedix.png";
 import SearchIcon from "@material-ui/icons/Search";
+import { toast } from "react-toastify";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -32,6 +33,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ProdutosSearchOptions(props) {
   const classes = useStyles();
+  const { data, setData, selectedTarget, setSelectedTarget } = props;
   const [selectedSource, setSelectedSource] = useState("mongodb");
   const [search, setSearch] = useState("");
 
@@ -41,8 +43,34 @@ export default function ProdutosSearchOptions(props) {
     )
       .then((response) => response.json())
       .then((data) => {
-        props.setData(data);
+        setData(data);
       });
+  }
+
+  function requestExcelData() {
+    fetch(
+      `${process.env.REACT_APP_MICROSOFT_url}/${search}?${process.env.REACT_APP_MICROSOFT_key}`
+    )
+      .then((response) => response.json())
+      .then((dataRequest) => {
+        let produtos = [...data];
+        produtos.push(dataRequest);
+        setData(produtos);
+      });
+  }
+
+  function requestData() {
+    switch (selectedSource) {
+      case "mongodb":
+        return requestMongoData();
+      case "excel":
+        return requestExcelData();
+      case "bling":
+        return toast.error("fodase irmao");
+
+      default:
+        break;
+    }
   }
 
   function SourceOptions() {
@@ -96,12 +124,12 @@ export default function ProdutosSearchOptions(props) {
             alt="source"
             src={Bling}
             className={
-              props.selectedTarget === "blingpyramid"
+              selectedTarget === "blingpyramid"
                 ? classes.imgSelected
                 : classes.img
             }
             onClick={() => {
-              props.setSelectedTarget("blingpyramid");
+              setSelectedTarget("blingpyramid");
             }}
           />
         </Grid>
@@ -110,12 +138,12 @@ export default function ProdutosSearchOptions(props) {
             alt="source"
             src={OmiePyramid}
             className={
-              props.selectedTarget === "omiepyramid"
+              selectedTarget === "omiepyramid"
                 ? classes.imgSelected
                 : classes.img
             }
             onClick={() => {
-              props.setSelectedTarget("omiepyramid");
+              setSelectedTarget("omiepyramid");
             }}
           />
         </Grid>
@@ -124,12 +152,10 @@ export default function ProdutosSearchOptions(props) {
             alt="source"
             src={OmieDix}
             className={
-              props.selectedTarget === "omiedix"
-                ? classes.imgSelected
-                : classes.img
+              selectedTarget === "omiedix" ? classes.imgSelected : classes.img
             }
             onClick={() => {
-              props.setSelectedTarget("omiedix");
+              setSelectedTarget("omiedix");
             }}
           />
         </Grid>
@@ -160,7 +186,7 @@ export default function ProdutosSearchOptions(props) {
           color="primary"
           startIcon={<SearchIcon />}
           onClick={() => {
-            requestMongoData();
+            requestData();
           }}
         >
           Search
