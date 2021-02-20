@@ -150,6 +150,46 @@ export default function ProdutosNfTransferList(props) {
     );
   }
 
+  function requestExcelData(codigo) {
+    return fetch(
+      `${process.env.REACT_APP_MICROSOFT_url}/${codigo}?${process.env.REACT_APP_MICROSOFT_key}`
+    );
+  }
+
+  async function cadastrarProdutoExcel(element) {
+    element.status = "pending";
+    element.message = `Cadastrando produto`;
+    changeStatus(element);
+    let produto = await (await requestExcelData(element.codigo)).json();
+    await fetch(
+      `${process.env.REACT_APP_API_url}/omieCadastrar?key=${
+        process.env.REACT_APP_API_key
+      }&type=produto&target=${"omie" + target.toLowerCase()}`,
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(produto),
+      }
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.status === "error") {
+          element.status = "error";
+          element.message = data.message;
+          changeStatus(element);
+          toast.error(`Falha ao cadastrar o produto ${element.codigo}`);
+        }
+        if (data.status === "success") {
+          toast.success(`Produto ${element.codigo} foi cadastrado`);
+          conferirProduto(element);
+        }
+        console.log(data);
+      });
+  }
+
   async function gerarNF() {
     conferirCliente().then(() => {
       conferirProdutos();
@@ -174,6 +214,7 @@ export default function ProdutosNfTransferList(props) {
       e.message = `Codigo Não encontrado`;
       changeStatus(e);
       setDisabled(true);
+      cadastrarProdutoExcel(e);
     }
   }
 
