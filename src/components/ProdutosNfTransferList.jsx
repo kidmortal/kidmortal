@@ -151,6 +151,11 @@ export default function ProdutosNfTransferList(props) {
   }
 
   function requestExcelData(codigo) {
+    if (target === "DIX") {
+      console.log("its dix");
+      codigo = codigo.replace("DIX", "PY");
+      console.log(codigo);
+    }
     return fetch(
       `${process.env.REACT_APP_MICROSOFT_url}/${codigo}?${process.env.REACT_APP_MICROSOFT_key}`
     );
