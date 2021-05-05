@@ -184,6 +184,7 @@ export default function PlayerRanking(props) {
           <Grid container direction="column" alignItems="center">
             <ToolTip title="Send Money">
               <Fab
+                disabled
                 color="primary"
                 size="small"
                 aria-label="Send Money"
