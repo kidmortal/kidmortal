@@ -1,4 +1,4 @@
-[![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=kidmortal&theme=github_dark&custom_title=Most%20Loved%20Languages%20❤&border_color=30363d)](https://github.com/anuraghazra/github-readme-stats)
+<div><img align="center" width="55%" src="https://github-readme-stats.vercel.app/api/wakatime?username=kidmortal&theme=github_dark&size_weight=0.5&count_weight=0.5&langs_count=10" alt="My GitHub Time Stats" /></div>
 
 Go check my portfolio, its looking prety cool
 
