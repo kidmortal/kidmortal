@@ -1,4 +1,4 @@
-<div><img align="center" width="55%" src="https://github-readme-stats.vercel.app/api/wakatime?username=kidmortal&theme=github_dark&size_weight=0.5&count_weight=0.5&langs_count=10" alt="My GitHub Time Stats" /></div>
+<div><img align="center" width="55%" src="https://github-stats-extended.vercel.app/api/wakatime?username=kidmortal&theme=github_dark&size_weight=0.5&count_weight=0.5&langs_count=10" alt="My GitHub Time Stats" /></div>
 
 Go check my portfolio, its looking prety cool
 
