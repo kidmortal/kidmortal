@@ -5,3 +5,7 @@ Go check my portfolio, its looking prety cool
 https://portfolio.kidmortal.com/
 
 [![wakatime](https://wakatime.com/badge/user/df445858-58a6-4172-a4be-3b67be4d426e.svg)](https://wakatime.com/@df445858-58a6-4172-a4be-3b67be4d426e)
+
+<a href="https://top.gg/bot/1447399858213228688">
+  <img src="https://top.gg/api/widget/1447399858213228688.svg">
+</a>
